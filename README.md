@@ -1,4 +1,4 @@
-# WebWallet
+# Web Wallet for Lyra blockchain
 
 A pure browser based wallet app for Lyra blockchain. Your private key never leaves your device. 
 
