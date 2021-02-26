@@ -1,0 +1,217 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>About Page template By Adobe Dreamweaver</title>
+<link href="AboutPageAssets/styles/aboutPageStyle.css" rel="stylesheet" type="text/css">
+
+<!--The following script tag downloads a font from the Adobe Edge Web Fonts server for use within the web page. We recommend that you do not modify it.-->
+<link href="css/bootstrap-4.4.1.css" rel="stylesheet" type="text/css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<style type="text/css">
+.blas {
+	font-size: 50pt;
+	font-family: Verdana;
+}
+</style>
+<script src="AboutPageAssets/js/jquery.jsonrpcclient.js"></script>
+<script>var __adobewebfontsappname__="dreamweaver"</script><script src="http://use.edgefonts.net/montserrat:n4:default;source-sans-pro:n2:default.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsrsasign/8.0.20/jsrsasign-all-min.js"></script>
+	<script src="AboutPageAssets/js/sha256.js"></script>
+<script src="AboutPageAssets/js/lyracrypto.js"></script>
+<script language="javascript">
+	var pvk = "54ff7b8aa7730b5fb41676f55c721967a2dd553678a40b856b580db9f946cda7";
+  var puk = "046f8815c5e79ba81f1cc9e4f8a311c70d8fa55e9792bd0d682e8a7ac157f28187b31edf7555b7b60ca6623150e7dd19d23d1d9ac2fc64d89a73bb2386247f2082"; 
+  var accountId = "LFbJq1N4fSdSLudWWACgYfpwKfpLrekT6ECR6knCX2br66wydpNpbFywoT6FrSwvoVSrb8zPzrcrFG4K7q7i8UVFKtkfnN";
+  var foo;
+  var unrecv = 0;
+  var unrecvlyr = 0;
+  console.log("started.");
+
+  function updbal(resp) {
+    $("#bala").text(resp.balance.LYR);
+    if(resp.unreceived && unrecv == 0) {
+      unrecv++;
+      updurcv();
+    }
+  }
+  function updurcv() {
+    if(unrecv == 0)
+    {
+      $('#xp').css("display", "none");
+      $("#unrecv").text("");
+    }      
+    else {
+      $("#uncnt").text(unrecvlyr == 0 ? '?' : unrecvlyr.toString());
+      $("#xp").show();
+      if(unrecvlyr == 0)
+        $("#unrecv").text('?');
+      else
+        $("#unrecv").text(unrecv);
+    }      
+  }
+  function success_cb(data) {
+    console.log("success cb");
+    console.log(data);
+  }
+  function error_cb(data) {
+    console.log("error cb: ");
+    console.log(data);
+  }
+	$(document).ready(function(){
+
+		$("#pubkey").text(accountId);
+
+    console.log("create wss.");
+			foo = new $.JsonRpcClient({ 
+        ajaxUrl: '/api/v1/socket', 
+        socketUrl: 'wss://testnet.lyra.live/api/v1/socket',
+        oncallback: function(resp) {
+          if(resp.method == "Sign")
+          {
+            var signt = lyraSign(resp.params[0], pvk);
+            return ["der", signt];
+          }
+          else
+          {
+            console.log("unsupported server call back method: " + resp.method);
+            return null;
+          }
+        },
+        onmessage: function(event) {
+			    console.log(`[message] Data received from server: ${event.data}`);
+          var result = JSON.parse(event.data);
+          if(result.method == "Notify") {
+            unrecvlyr += result.params[0].funds.LYR;
+            unrecv++; updurcv();            
+          }
+			  },
+        onopen: function(event) {
+			    console.log("wss open.");
+			  },
+        onerror: function(event) {
+			    console.log("wss error.");
+			  }
+      });
+			foo.call('Status', [ '2.2', 'testnet' ], success_cb, error_cb);
+      foo.call('Monitor', [ accountId ]);
+      foo.call('Balance', [ accountId ], updbal, error_cb);
+      console.log("wss created.");
+
+		$("#Button1").click(function(){
+			pvk = lyraGenWallet();
+			puk = prvToPub(pvk);		
+			$("#pvtkey").text(lyraEncPvt(pvk));
+      accountId = lyraEncPub(puk);
+			$("#pubkey").text(accountId);
+      console.log(pvk);
+      console.log(puk);
+      console.log(accountId);
+		});
+    $("#Button2").click(function(){
+      foo.call('Balance', [ accountId ], updbal, error_cb);
+    });
+		$("#Button4").click(function(){
+      unrecv = 0; unrecvlyr = 0; updurcv();
+      foo.call('Receive', [ accountId ], updbal, error_cb);
+		});
+  });
+	</script>
+</head>
+
+<body>
+<header>
+  <div class="profileLogo"> 
+    <!-- Profile logo. Add a img tag in place of <span>. -->
+    <p class="logoPlaceholder"><img style="max-width:100%; max-height:100%;" src="AboutPageAssets/images/lyrasite.jpg" alt="Lyra Live Inc,."></p>
+  </div>
+  <div class="profilePhoto"> 
+    <!-- Profile photo --> 
+    <img style="max-width:100%; max-height:100%;" src="AboutPageAssets/images/lyralogo.jpg" alt="Lyra"> </div>
+  <!-- Identity details -->
+  <section class="profileHeader">
+    <h1>Wallet</h1>
+    <h3>PIGS NEVER DIE. THEY ALWAYS GET KILLED.</h3>
+    <hr>
+    <div class="blas">
+      <span style="color: darkblue; font-weight: bolder; " id="bala"></span> <span style="font-size: 18pt;">LYR</span>
+    </div>
+    <div>
+      <span id="xp" style="display: none;">+ <span id="uncnt"></span> LYR</span>
+    </div>
+  </section>
+  <!-- Links to Social network accounts -->
+  <aside class="socialNetworkNavBar">
+    <div class="socialNetworkNav"> 
+      <button id="Button3" class="btn btn-primary">Send</button>
+    </div> &nbsp; &nbsp;
+    <div class="socialNetworkNav"> 
+	<button id="Button4" type="button" class="btn btn-primary">
+    	Receive <span class="badge badge-pill badge-light" id="unrecv"></span>
+  	</button>
+    </div>
+  </aside>
+</header>
+<!-- content -->
+<section class="mainContent"> 
+  <!-- Contact details -->
+  <section class="section1">
+    <h2 class="sectionTitle">Wallet Address</h2>
+    <hr class="sectionTitleRule">
+    <hr class="sectionTitleRule2">
+    <div class="section1Content">
+      <p><span id="pubkey" style="font-size: x-small;"></span></p>
+    </div>
+  </section>
+  <!-- Previous experience details -->
+  <section class="section2" style="display: none;">
+    <h2 class="sectionTitle">Content Holder 2</h2>
+    <hr class="sectionTitleRule">
+    <hr class="sectionTitleRule2">
+    <!-- First Title & company details  -->
+    <article class="section2Content">
+      <h2 class="sectionContentTitle">Title & Company</h2>
+      <h3 class="sectionContentSubTitle">Position / Date - Year</h3>
+      <p class="sectionContent"> Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. </p>
+    </article>
+    <!-- Second Title & company details  -->
+    <article class="section2Content">
+      <h2 class="sectionContentTitle"> Title & Company</h2>
+      <h3 class="sectionContentSubTitle">Position / Date - Year</h3>
+      <p class="sectionContent"> Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. </p>
+    </article>
+    <!-- Replicate the above Div block to add more title and company details --> 
+  </section>
+  <!-- Links to expore your past projects and download your CV -->
+  <aside class="externalResourcesNav">
+    <div class="externalResources"> <a href="#" title="Download CV Link">BUY LYR</a> </div>
+    <span class="stretch"></span>
+    <div class="externalResources"><a href="#" title="Behance Link">SWAP</a> </div>
+    <span class="stretch"></span>
+    <div class="externalResources"><a href="#" title="Github Link">GITHUB</a> </div>
+  </aside>
+</section>
+<footer>
+  <hr>
+  <p class="footerDisclaimer">2020  Copyrights - <span>All Rights Reserved</span></p>
+  <p class="footerNote">Wizard - <span>Email me</span></p>
+</footer>
+<script type="text/javascript">
+$(function() {
+	$( "#Button1" ).button(); 
+});
+$(function() {
+	$( "#Button2" ).button(); 
+});
+$(function() {
+	$( "#Button3" ).button(); 
+});
+$(function() {
+	$( "#Button4" ).button(); 
+});
+</script>
+</body>
+</html>
