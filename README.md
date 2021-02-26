@@ -4,6 +4,9 @@ A pure browser based wallet app for Lyra blockchain. Your private key never leav
 
 ![Screen Shot of PoC](https://github.com/LYRA-Block-Lattice/WebWallet/blob/main/images/ScreenshotPoC.png?raw=true)
 
+# Project state
+
+Currently the project is just beginning. The wallet App is only a proof of concept.
 
 # About Lyra JsonRPC API
 
@@ -11,7 +14,7 @@ The current Lyra API is powerful but can't be used easily out side of the Micros
 
 [JsonRPC](https://www.jsonrpc.org/specification) is a stateless, light-weight remote procedure call (RPC) protocol. By utilizing JsonRPC Lyra blockchain has a great interoperability.
 
-Run [this](https://github.com/LYRA-Block-Lattice/Lyra-Core/tree/testnet/Utils/Scripts) script to get familiar with Lyra JsonRPC API.
+Run this [script](https://github.com/LYRA-Block-Lattice/Lyra-Core/tree/testnet/Utils/Scripts) to get familiar with Lyra JsonRPC API.
 
 # Help wanted
 
