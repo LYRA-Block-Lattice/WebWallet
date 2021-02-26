@@ -10,7 +10,7 @@ Currently the project is just beginning. The wallet App is only a proof of conce
 
 # Help wanted
 
-We need you help to add function, improve usability, make a better UI, etc. Just fork, change, and create push request.
+We need you help to add function, improve usability, make a better UI, etc. Just fork, change, test, and create a pull request.
 
 # About Lyra JsonRPC API
 
