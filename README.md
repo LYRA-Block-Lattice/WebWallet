@@ -14,7 +14,7 @@ We need you help to add function, improve usability, make a better UI, etc. Just
 
 # About Lyra JsonRPC API
 
-The current Lyra API is powerful but can't be used easily out side of the Microsoft Dotnet world. With the growth of Lyra ecosystems, we need a net set of API to allow any programming language on any platform to use Lyra blockchain freely. 
+The current Lyra API is powerful but can't be used easily out side of the Microsoft Dotnet world. With the growth of Lyra ecosystems, we need a new set of API to allow any programming language on any platform to use Lyra blockchain freely. 
 
 [JsonRPC](https://www.jsonrpc.org/specification) is a stateless, light-weight remote procedure call (RPC) protocol. By utilizing JsonRPC Lyra blockchain has a great interoperability.
 

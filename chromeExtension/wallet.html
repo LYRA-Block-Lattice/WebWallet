@@ -1,0 +1,103 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Wallet for Lyra</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>About Page template By Adobe Dreamweaver</title>
+<link href="AboutPageAssets/styles/aboutPageStyle.css" rel="stylesheet" type="text/css">
+
+<!--The following script tag downloads a font from the Adobe Edge Web Fonts server for use within the web page. We recommend that you do not modify it.-->
+<link href="css/bootstrap-4.4.1.css" rel="stylesheet" type="text/css">
+<script src="AboutPageAssets/js/jquery.min.js"></script>
+<script src="AboutPageAssets/js/bootstrap.min.js"></script>
+<style type="text/css">
+.blas {
+	font-size: 50pt;
+	font-family: Verdana;
+}
+</style>
+<script src="AboutPageAssets/js/jquery.jsonrpcclient.js"></script>
+<script src="AboutPageAssets/js/jsrsasign-all-min.js"></script>
+	<script src="AboutPageAssets/js/sha256.js"></script>
+<script src="AboutPageAssets/js/lyracrypto.js"></script>
+<script language="javascript" src="wallet.js"></script>
+</head>
+
+<body>
+<header>
+  <div class="profileLogo"> 
+    <!-- Profile logo. Add a img tag in place of <span>. -->
+    <p class="logoPlaceholder"><img style="max-width:100%; max-height:100%;" src="AboutPageAssets/images/lyrasite.jpg" alt="Lyra Live Inc,."></p>
+  </div>
+  <section class="profileHeader">
+    <h1>Wallet</h1>
+    <h3>PIGS NEVER DIE. THEY ALWAYS GET KILLED.</h3>
+    <hr>
+    <div class="blas">
+      <span style="color: darkblue; font-weight: bolder; " id="bala"></span> <span style="font-size: 18pt;">LYR</span>
+    </div>
+    <div>
+      <span id="xp" style="display: none;">+ <span id="uncnt"></span> LYR</span>
+    </div>
+  </section>
+  <!-- Links to Social network accounts -->
+  <aside class="socialNetworkNavBar">
+    <div class="socialNetworkNav"> 
+      <button id="Button3" class="btn btn-primary">Send</button>
+    </div> &nbsp; &nbsp;
+    <div class="socialNetworkNav"> 
+	<button id="Button4" type="button" class="btn btn-primary">
+    	Receive <span class="badge badge-pill badge-light" id="unrecv"></span>
+  	</button>
+    </div>
+  </aside>
+</header>
+<!-- content -->
+<section class="mainContent"> 
+  <!-- Contact details -->
+  <section class="section1">
+    <h2 class="sectionTitle">Wallet Address</h2>
+    <hr class="sectionTitleRule">
+    <hr class="sectionTitleRule2">
+    <div class="section1Content">
+      <p><span id="pubkey" style="font-size: x-small;"></span></p>
+    </div>
+  </section>
+  <!-- Previous experience details -->
+  <section class="section2" style="display: none;">
+    <h2 class="sectionTitle">Content Holder 2</h2>
+    <hr class="sectionTitleRule">
+    <hr class="sectionTitleRule2">
+    <!-- First Title & company details  -->
+    <article class="section2Content">
+      <h2 class="sectionContentTitle">Title & Company</h2>
+      <h3 class="sectionContentSubTitle">Position / Date - Year</h3>
+      <p class="sectionContent"> Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. </p>
+    </article>
+    <!-- Second Title & company details  -->
+    <article class="section2Content">
+      <h2 class="sectionContentTitle"> Title & Company</h2>
+      <h3 class="sectionContentSubTitle">Position / Date - Year</h3>
+      <p class="sectionContent"> Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. </p>
+    </article>
+    <!-- Replicate the above Div block to add more title and company details --> 
+  </section>
+  <!-- Links to expore your past projects and download your CV -->
+  <aside class="externalResourcesNav">
+    <div class="externalResources"> <a href="#" title="Download CV Link">BUY LYR</a> </div>
+    <span class="stretch"></span>
+    <div class="externalResources"><a href="#" title="Behance Link">SWAP</a> </div>
+    <span class="stretch"></span>
+    <div class="externalResources"><a href="#" title="Github Link">GITHUB</a> </div>
+  </aside>
+</section>
+<footer>
+  <hr>
+  <p class="footerDisclaimer">2020  Lyra Inc. - <span>All Rights Reserved</span></p>
+  <p class="footerNote">Wizard - <span><a href="https://t.me/lyra_live">Telegram</a></span></p>
+</footer>
+<script type="text/javascript" src="wallet2.js"></script>
+</body>
+</html>
