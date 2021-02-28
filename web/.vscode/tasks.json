@@ -8,6 +8,16 @@
 				"$go"
 			],
 			"label": "yarn: start"
+		},
+		{
+			"type": "npm",
+			"script": "build",
+			"problemMatcher": [
+				"$go"
+			],
+			"group": "build",
+			"label": "npm: build",
+			"detail": "craco build"
 		}
 	]
 }
