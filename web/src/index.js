@@ -4,6 +4,19 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+export const addTodo = ({ id, text }) => ({
+  type: "ADD_TODO",
+  payload: {
+    id,
+    text,
+  },
+});
+
+export const doneTodo = id => ({
+  type: "DONE_TODO",
+  payload: id,
+});
+
 ReactDOM.render(
   <React.StrictMode>
     <App />

@@ -1,10 +1,15 @@
 import React, { Component } from 'react';
-import LyraCrypto from './lyracrypto';
+import LyraCrypto from './crypto';
 
 class Lyratest extends Component {
-  constructor() {
-    super();
-    this.state = { color: "red" };
+  constructor(props) {
+    super(props);
+
+    this.state = { 
+      pvk: "54ff7b8aa7730b5fb41676f55c721967a2dd553678a40b856b580db9f946cda7",
+      puk: "046f8815c5e79ba81f1cc9e4f8a311c70d8fa55e9792bd0d682e8a7ac157f28187b31edf7555b7b60ca6623150e7dd19d23d1d9ac2fc64d89a73bb2386247f2082",
+      accountId: "LFbJq1N4fSdSLudWWACgYfpwKfpLrekT6ECR6knCX2br66wydpNpbFywoT6FrSwvoVSrb8zPzrcrFG4K7q7i8UVFKtkfnN",
+    };
     this.unrecv = 0;
     this.unrecvlyr = 0;
 
@@ -22,7 +27,7 @@ class Lyratest extends Component {
     this.start(this);
   }
   render() {
-    return <h2>I am a Car!</h2>;
+    return <p><br/><h2>I am a Car!</h2></p>;
   }
 
   lc;
