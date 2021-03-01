@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import LyraCrypto from './crypto';
+import JsonRpcClient from './jsonrpcclient';
 
 class Lyratest extends Component {
   constructor(props) {
@@ -13,7 +14,6 @@ class Lyratest extends Component {
       unrecvlyr: 0,
       unrecvmsg: "",  
     };
-
   }
   render() {
     return (
@@ -32,83 +32,79 @@ class Lyratest extends Component {
 
   lc;
   ws;
+  lapp;
 
   receive() {
-    this.ws.call('Receive', [ this.state.accountId ] ).then(function (result) {
-      console.log("ws Receive got reply");
-      this.updbal(result);
-    }).catch(err => {
-      console.log("ws Receive error");
-      console.log(err);
-    });
+    this.ws.call('Receive', [ this.state.accountId ], (resp) => this.lapp.updbal(resp), this.error_cb);
   }
 
   componentDidMount() {
     console.log("lyra app started.");
-
+    this.lapp = this;
     this.lc = new LyraCrypto();
 
     var aid = this.lc.lyraEncPub(this.state.puk);
     console.log("pub account id is " + aid);
     require('assert').equal(aid, this.state.accountId);
 
-    var lapp = this;
-
-    var WebSocket = require('rpc-websockets').Client
-
     // instantiate Client and connect to an RPC server
     //var ws = new WebSocket('wss://192.168.3.62:4504/api/v1/socket');
-    this.ws = new WebSocket('wss://testnet.lyra.live/api/v1/socket');
-    
-    this.ws.on('open', function () {
-      console.log("ws open. " + new Date().toLocaleString());
-      // call an RPC method with parameters
-      lapp.ws.call('Status', [ '2.2', 'testnet' ]).then(function (result) {
-        console.log("ws status got reply");
-        //require('assert').equal(result, 8)
-      })
-
-      lapp.ws.call('Balance', [ lapp.state.accountId ] ).then(function (result) {
-        console.log("ws Balance got reply");
-        lapp.updbal(result);
-        //require('assert').equal(result, 8)
-      }).catch(err => {
-        console.log("ws balance error");
-        console.log(err);
-      });
-
-      lapp.ws.call('Monitor', [ lapp.state.accountId ]);
-
-      lapp.ws.on('Sign', function (resp) {
-        console.log("Signing " + resp[0] + " of " + resp[1]);
-          var signt = lapp.lc.lyraSign(resp[1], lapp.state.pvk);
+    this.ws = new JsonRpcClient({
+      ajaxUrl: '/api/v1/socket',
+      socketUrl: 'wss://testnet.lyra.live/api/v1/socket',
+      oncallback: (resp) => {
+        if (resp.method === "Sign") {
+          console.log("Signing " + resp.params[0] + " of " + resp.params[1]);
+          var signt = this.lc.lyraSign(resp.params[1], this.state.pvk);
           return ["der", signt];
-      })
+        }
+        else {
+          console.log("unsupported server call back method: " + resp.method);
+          return null;
+        }
+      },
+      onmessage: (event) => {
+        console.log(`[message] Data received from server: ${event.data}`);
+        var result = JSON.parse(event.data);
+        if (result.method === "Notify") {
+          var news = result.params[0];
+          console.log("WS Notify: " + news.catalog)
+          if (news.catalog === "Receiving") {
+            this.setState({ unrecvlyr: this.state.unrecvlyr + news.content.funds.LYR });
+            this.setState({ unrecv: this.state.unrecv + 1 });
+            this.updurcv();
+          }
+        }
+      },
+      onopen: (event) => {
+        console.log("wss open.");
 
-      // close a websocket connection
-      //ws.close()
-    });
-
-    this.ws.on("error", (err) => {
-      console.log("WS error: " + err);
-    });
-    this.ws.on("close", () => console.log("WS: closed"));
-    this.ws.on("Notify", (news) => {
-      console.log("WS Notify: " + news[0].catalog)
-      if(news[0].catalog === "Receiving") {
-        this.setState( { unrecvlyr: this.state.unrecvlyr + news[0].content.funds.LYR });
-        this.setState( { unrecv: this.state.unrecv + 1 });
-        this.updurcv();
+        this.ws.call('Monitor', [ this.state.accountId ]);
+        this.ws.call('Balance', [ this.state.accountId ], (resp) => this.lapp.updbal(resp), this.error_cb);
+        console.log("wss created.");
+      },
+      onclose: () => {
+        console.log("wss close.");
+      },
+      onerror: function (event) {
+        console.log("wss error.");
       }
-    }); 
+    });
+
+    this.ws.call('Status', [ '2.2', 'testnet' ], this.success_cb, this.error_cb);
   }
 
   updbal(resp) {
     this.setState( { balance: resp.balance.LYR} );
+    if(!resp.unreceived)
+    {
+      this.setState( { unrecv: 0 } );
+      this.setState( { unrecvlyr: 0 } );
+    }
     if (resp.unreceived && this.unrecv === 0) {
       this.setState( { unrecv: this.state.unrecv + 1} );
-      this.updurcv();
     }
+    this.updurcv();
   }
   updurcv() {
     if(this.state.unrecv === 0)
@@ -130,64 +126,6 @@ class Lyratest extends Component {
     console.log("error cb: ");
     console.log(data);
   }
-  /*  $(document).ready(function(){
-  
-        $("#pubkey").text(accountId);
-  
-    console.log("create wss.");
-        foo = new $.JsonRpcClient({ 
-        ajaxUrl: '/api/v1/socket', 
-        socketUrl: 'wss://testnet.lyra.live/api/v1/socket',
-        oncallback: function(resp) {
-          if(resp.method == "Sign")
-          {
-            var signt = lyraSign(resp.params[0], pvk);
-            return ["der", signt];
-          }
-          else
-          {
-            console.log("unsupported server call back method: " + resp.method);
-            return null;
-          }
-        },
-        onmessage: function(event) {
-                console.log(`[message] Data received from server: ${event.data}`);
-          var result = JSON.parse(event.data);
-          if(result.method == "Notify") {
-            unrecvlyr += result.params[0].funds.LYR;
-            unrecv++; updurcv();            
-          }
-              },
-        onopen: function(event) {
-                console.log("wss open.");
-              },
-        onerror: function(event) {
-                console.log("wss error.");
-              }
-      });
-            foo.call('Status', [ '2.2', 'testnet' ], success_cb, error_cb);
-      foo.call('Monitor', [ accountId ]);
-      foo.call('Balance', [ accountId ], updbal, error_cb);
-      console.log("wss created.");
-  
-        $("#Button1").click(function(){
-            pvk = lyraGenWallet();
-            puk = prvToPub(pvk);		
-            $("#pvtkey").text(lyraEncPvt(pvk));
-      accountId = lyraEncPub(puk);
-            $("#pubkey").text(accountId);
-      console.log(pvk);
-      console.log(puk);
-      console.log(accountId);
-        });
-    $("#Button2").click(function(){
-      foo.call('Balance', [ accountId ], updbal, error_cb);
-    });
-        $("#Button4").click(function(){
-      unrecv = 0; unrecvlyr = 0; updurcv();
-      foo.call('Receive', [ accountId ], updbal, error_cb);
-        });
-  });*/
 }
 
 export default Lyratest;
