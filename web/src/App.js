@@ -6,6 +6,7 @@ import Lyratest from './lyra/Lyratest';
 
 import logo from './logo.png';
 import './App.less';
+import 'antd/dist/antd.css';
 
 // test
 import rootReducer from "./todo/useReducers";

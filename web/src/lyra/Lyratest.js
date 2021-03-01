@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Badge } from 'antd';
 import LyraCrypto from './crypto';
 import JsonRpcClient from './jsonrpcclient';
 
@@ -16,12 +17,14 @@ class Lyratest extends Component {
     };
   }
   render() {
-    return (
-      <div onClick={() => this.receive()}>
+    return (      
+      <div style={{ color: 'white' }} onClick={() => this.receive()}>
         <div style={{ fontSize: '8pt' }}>{this.state.accountId}</div>
-        <div className="blas">
-          <span style={{ color: 'orange', fontWeight: 'bolder' }} id="bala">{this.state.balance}</span>
-          <span style={{ fontSize: '18pt' }}>LYR</span>
+        <div>
+          <Badge count={this.state.unrecv}>
+            <span className="blas" style={{ color: 'orange', fontWeight: 'bolder' }} id="bala">{this.state.balance}</span>
+          </Badge>
+            &nbsp;&nbsp;<span style={{ color: 'white', fontSize: '18pt' }}>LYR</span>
         </div>
         <div style={{ fontSize: '12pt' }}>
           {this.state.unrecvmsg}
@@ -101,15 +104,18 @@ class Lyratest extends Component {
       this.setState( { unrecv: 0 } );
       this.setState( { unrecvlyr: 0 } );
     }
-    if (resp.unreceived && this.unrecv === 0) {
+    if (resp.unreceived && this.state.unrecv === 0) {
       this.setState( { unrecv: this.state.unrecv + 1} );
     }
-    this.updurcv();
+    this.updurcv(resp.unreceived);
   }
-  updurcv() {
+  updurcv(un) {
     if(this.state.unrecv === 0)
     {
-      this.setState( { unrecvmsg: "" } );
+      if(un)
+        this.setState( { unrecvmsg: "+ ? LYR" } );
+      else
+        this.setState( { unrecvmsg: "" } );
     }      
     else {
       if(this.state.unrecvlyr === 0)
