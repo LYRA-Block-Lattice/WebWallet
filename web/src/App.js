@@ -8,8 +8,7 @@ import logo from './logo.png';
 import './App.less';
 
 // test
-import rootReducer from "./lyra/useReducers";
-import Todo from "./lyra/Todo";
+import rootReducer from "./todo/useReducers";
 
 const store = createStore(rootReducer);
 
@@ -18,7 +17,7 @@ function App() {
   return (
     <div className="App">
       <Provider store={store}>
-        <Todo />
+        
       </Provider>
       
       <header className="App-header">        

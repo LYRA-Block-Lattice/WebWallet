@@ -12,22 +12,9 @@ class Lyratest extends Component {
     };
     this.unrecv = 0;
     this.unrecvlyr = 0;
-
-    console.log("lyra app started.");
-
-    this.pvk = "54ff7b8aa7730b5fb41676f55c721967a2dd553678a40b856b580db9f946cda7";
-    this.puk = "046f8815c5e79ba81f1cc9e4f8a311c70d8fa55e9792bd0d682e8a7ac157f28187b31edf7555b7b60ca6623150e7dd19d23d1d9ac2fc64d89a73bb2386247f2082";
-    this.accountId = "LFbJq1N4fSdSLudWWACgYfpwKfpLrekT6ECR6knCX2br66wydpNpbFywoT6FrSwvoVSrb8zPzrcrFG4K7q7i8UVFKtkfnN";
-
-    this.lc = new LyraCrypto();
-
-    var aid = this.lc.lyraEncPub(this.puk);
-    console.log("pub account id is " + aid);
-    require('assert').equal(aid, this.accountId);
-    this.start(this);
   }
   render() {
-    return <p><br/><h2>I am a Car!</h2></p>;
+    return <p><br/>I am a Car!</p>;
   }
 
   lc;
@@ -39,7 +26,21 @@ class Lyratest extends Component {
   unrecv;
   unrecvlyr;
 
-  start(lapp) {
+  componentDidMount() {
+    console.log("lyra app started.");
+
+    this.pvk = "54ff7b8aa7730b5fb41676f55c721967a2dd553678a40b856b580db9f946cda7";
+    this.puk = "046f8815c5e79ba81f1cc9e4f8a311c70d8fa55e9792bd0d682e8a7ac157f28187b31edf7555b7b60ca6623150e7dd19d23d1d9ac2fc64d89a73bb2386247f2082";
+    this.accountId = "LFbJq1N4fSdSLudWWACgYfpwKfpLrekT6ECR6knCX2br66wydpNpbFywoT6FrSwvoVSrb8zPzrcrFG4K7q7i8UVFKtkfnN";
+
+    this.lc = new LyraCrypto();
+
+    var aid = this.lc.lyraEncPub(this.puk);
+    console.log("pub account id is " + aid);
+    require('assert').equal(aid, this.accountId);
+
+    var lapp = this;
+
     var WebSocket = require('rpc-websockets').Client
 
     // instantiate Client and connect to an RPC server
