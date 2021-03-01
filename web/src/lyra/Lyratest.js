@@ -4,40 +4,53 @@ import LyraCrypto from './crypto';
 class Lyratest extends Component {
   constructor(props) {
     super(props);
-
     this.state = { 
       pvk: "54ff7b8aa7730b5fb41676f55c721967a2dd553678a40b856b580db9f946cda7",
       puk: "046f8815c5e79ba81f1cc9e4f8a311c70d8fa55e9792bd0d682e8a7ac157f28187b31edf7555b7b60ca6623150e7dd19d23d1d9ac2fc64d89a73bb2386247f2082",
       accountId: "LFbJq1N4fSdSLudWWACgYfpwKfpLrekT6ECR6knCX2br66wydpNpbFywoT6FrSwvoVSrb8zPzrcrFG4K7q7i8UVFKtkfnN",
+      balance: 0,
+      unrecv: 0,
+      unrecvlyr: 0,
+      unrecvmsg: "",  
     };
-    this.unrecv = 0;
-    this.unrecvlyr = 0;
+
   }
   render() {
-    return <p><br/>I am a Car!</p>;
+    return (
+      <div onClick={() => this.receive()}>
+        <div style={{ fontSize: '8pt' }}>{this.state.accountId}</div>
+        <div className="blas">
+          <span style={{ color: 'orange', fontWeight: 'bolder' }} id="bala">{this.state.balance}</span>
+          <span style={{ fontSize: '18pt' }}>LYR</span>
+        </div>
+        <div style={{ fontSize: '12pt' }}>
+          {this.state.unrecvmsg}
+        </div>
+      </div>
+    );
   }
 
   lc;
+  ws;
 
-  pvk;
-  puk;
-  accountId;
-  foo;
-  unrecv;
-  unrecvlyr;
+  receive() {
+    this.ws.call('Receive', [ this.state.accountId ] ).then(function (result) {
+      console.log("ws Receive got reply");
+      this.updbal(result);
+    }).catch(err => {
+      console.log("ws Receive error");
+      console.log(err);
+    });
+  }
 
   componentDidMount() {
     console.log("lyra app started.");
 
-    this.pvk = "54ff7b8aa7730b5fb41676f55c721967a2dd553678a40b856b580db9f946cda7";
-    this.puk = "046f8815c5e79ba81f1cc9e4f8a311c70d8fa55e9792bd0d682e8a7ac157f28187b31edf7555b7b60ca6623150e7dd19d23d1d9ac2fc64d89a73bb2386247f2082";
-    this.accountId = "LFbJq1N4fSdSLudWWACgYfpwKfpLrekT6ECR6knCX2br66wydpNpbFywoT6FrSwvoVSrb8zPzrcrFG4K7q7i8UVFKtkfnN";
-
     this.lc = new LyraCrypto();
 
-    var aid = this.lc.lyraEncPub(this.puk);
+    var aid = this.lc.lyraEncPub(this.state.puk);
     console.log("pub account id is " + aid);
-    require('assert').equal(aid, this.accountId);
+    require('assert').equal(aid, this.state.accountId);
 
     var lapp = this;
 
@@ -45,17 +58,17 @@ class Lyratest extends Component {
 
     // instantiate Client and connect to an RPC server
     //var ws = new WebSocket('wss://192.168.3.62:4504/api/v1/socket');
-    var ws = new WebSocket('wss://testnet.lyra.live/api/v1/socket');
-
-    ws.on('open', function () {
-      console.log("ws open");
+    this.ws = new WebSocket('wss://testnet.lyra.live/api/v1/socket');
+    
+    this.ws.on('open', function () {
+      console.log("ws open. " + new Date().toLocaleString());
       // call an RPC method with parameters
-      ws.call('Status', [ '2.2', 'testnet' ]).then(function (result) {
+      lapp.ws.call('Status', [ '2.2', 'testnet' ]).then(function (result) {
         console.log("ws status got reply");
         //require('assert').equal(result, 8)
       })
 
-      ws.call('Balance', [ lapp.accountId ] ).then(function (result) {
+      lapp.ws.call('Balance', [ lapp.state.accountId ] ).then(function (result) {
         console.log("ws Balance got reply");
         lapp.updbal(result);
         //require('assert').equal(result, 8)
@@ -64,55 +77,50 @@ class Lyratest extends Component {
         console.log(err);
       });
 
-      // // send a notification to an RPC server
-      // ws.notify('openedNewsModule')
+      lapp.ws.call('Monitor', [ lapp.state.accountId ]);
 
-      // // subscribe to receive an event
-      // ws.subscribe('feedUpdated')
-
-      // ws.on('Sign', function (resp) {
-      //     var signt = this.lc.lyraSign(resp.params[1], this.pvk);
-      //     return ["der", signt];
-      // })
-
-      // // unsubscribe from an event
-      // ws.unsubscribe('feedUpdated')
-
-      // // login your client to be able to use protected methods
-      // ws.login({ 'username': 'confi1', 'password': 'foobar' }).then(function () {
-      //   ws.call('account').then(function (result) {
-      //     require('assert').equal(result, ['confi1', 'confi2'])
-      //   })
-      // }).catch(function (error) {
-      //   console.log('auth failed')
-      // })
+      lapp.ws.on('Sign', function (resp) {
+        console.log("Signing " + resp[0] + " of " + resp[1]);
+          var signt = lapp.lc.lyraSign(resp[1], lapp.state.pvk);
+          return ["der", signt];
+      })
 
       // close a websocket connection
       //ws.close()
-    })
+    });
+
+    this.ws.on("error", (err) => {
+      console.log("WS error: " + err);
+    });
+    this.ws.on("close", () => console.log("WS: closed"));
+    this.ws.on("Notify", (news) => {
+      console.log("WS Notify: " + news[0].catalog)
+      if(news[0].catalog === "Receiving") {
+        this.setState( { unrecvlyr: this.state.unrecvlyr + news[0].content.funds.LYR });
+        this.setState( { unrecv: this.state.unrecv + 1 });
+        this.updurcv();
+      }
+    }); 
   }
 
   updbal(resp) {
-    //$("#bala").text(resp.balance.LYR);
+    this.setState( { balance: resp.balance.LYR} );
     if (resp.unreceived && this.unrecv === 0) {
-      this.unrecv++;
+      this.setState( { unrecv: this.state.unrecv + 1} );
       this.updurcv();
     }
   }
   updurcv() {
-    // if(unrecv == 0)
-    // {
-    //   $('#xp').css("display", "none");
-    //   $("#unrecv").text("");
-    // }      
-    // else {
-    //   $("#uncnt").text(unrecvlyr == 0 ? '?' : unrecvlyr.toString());
-    //   $("#xp").show();
-    //   if(unrecvlyr == 0)
-    //     $("#unrecv").text('?');
-    //   else
-    //     $("#unrecv").text(unrecv);
-    // }      
+    if(this.state.unrecv === 0)
+    {
+      this.setState( { unrecvmsg: "" } );
+    }      
+    else {
+      if(this.state.unrecvlyr === 0)
+        this.setState( { unrecvmsg: "+ ? LYR" } );
+      else
+        this.setState( { unrecvmsg: "+ " + this.state.unrecvlyr + " LYR" } );
+    }      
   }
   success_cb(data) {
     console.log("success cb");
