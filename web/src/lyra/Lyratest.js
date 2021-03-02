@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Badge } from 'antd';
 import LyraCrypto from './crypto';
 import JsonRpcClient from './jsonrpcclient';
+import { SendOutlined } from '@ant-design/icons';
 
 class Lyratest extends Component {
   constructor(props) {
@@ -19,7 +20,6 @@ class Lyratest extends Component {
   render() {
     return (      
       <div style={{ color: 'white' }} onClick={() => this.receive()}>
-        <div style={{ fontSize: '8pt' }}>{this.state.accountId}</div>
         <div>
           <Badge count={this.state.unrecv}>
             <span className="blas" style={{ color: 'orange', fontWeight: 'bolder' }} id="bala">{this.state.balance}</span>
@@ -29,6 +29,8 @@ class Lyratest extends Component {
         <div style={{ fontSize: '12pt' }}>
           {this.state.unrecvmsg}
         </div>
+        <p>&nbsp;</p>
+        <div style={{ fontSize: '8pt' }}>{this.state.accountId}</div>
       </div>
     );
   }
@@ -50,10 +52,7 @@ class Lyratest extends Component {
     console.log("pub account id is " + aid);
     require('assert').equal(aid, this.state.accountId);
 
-    // instantiate Client and connect to an RPC server
-    //var ws = new WebSocket('wss://192.168.3.62:4504/api/v1/socket');
     this.ws = new JsonRpcClient({
-      ajaxUrl: '/api/v1/socket',
       socketUrl: 'wss://testnet.lyra.live/api/v1/socket',
       oncallback: (resp) => {
         if (resp.method === "Sign") {
@@ -88,6 +87,8 @@ class Lyratest extends Component {
       },
       onclose: () => {
         console.log("wss close.");
+        // lol force reopen
+        this.ws.call('Status', [ '2.2', 'testnet' ], this.success_cb, this.error_cb);
       },
       onerror: function (event) {
         console.log("wss error.");
