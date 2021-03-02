@@ -3,7 +3,7 @@ import { Badge } from 'antd';
 import { Modal } from 'antd';
 import LyraCrypto from './crypto';
 import JsonRpcClient from './jsonrpcclient';
-import { InfoIcon, PayIcon } from './icons';
+import { InfoIcon, PayIcon, SwapIcon } from './icons';
 import Send from './SendForm';
 
 class Lyratest extends Component {
@@ -20,6 +20,7 @@ class Lyratest extends Component {
       showAddr: false,
       showSend: false,
       showSendConfirm : false,
+      showSwap: false,
     };
     this.send = this.send.bind(this)
   }
@@ -29,9 +30,9 @@ class Lyratest extends Component {
       <div style={{ color: 'white' }}>
         <div onClick={() => this.receive()}>
           <Badge count={this.state.unrecv}>
-            <span className="blas" style={{ color: 'orange', fontWeight: 'bolder' }} id="bala">{this.state.balance}</span>
+            <span className="blas" style={{ color: 'orange', fontWeight: 'bolder' }} id="bala">{this.state.balance.toFixed(4).replace(/\d(?=(\d{3})+\.)/g, '$&,')}</span>
           </Badge>
-            &nbsp;&nbsp;<span style={{ color: 'white', fontSize: '18pt' }}>LYR</span>
+            &nbsp;&nbsp;<span style={{ fontFamily: 'Times', color: 'white', fontSize: '3vw' }}>LYR</span>
         </div>
         <div style={{ fontSize: '12pt' }}>
           {this.state.unrecvmsg}
@@ -40,6 +41,7 @@ class Lyratest extends Component {
         <div>
           <InfoIcon onClick={() => this.setState({ showAddr: true })}></InfoIcon> 
           <PayIcon onClick={() => this.setState({ showSend: true })}></PayIcon>
+          <SwapIcon onClick={() => this.setState({ showSwap: true })}></SwapIcon>
         </div>               
         <Modal title="My Wallet Address" 
           visible={this.state.showAddr}
@@ -48,13 +50,20 @@ class Lyratest extends Component {
           >
           <div style={{ fontSize: '8pt' }}>{this.state.accountId}</div>
         </Modal>
-        <Modal title="Send Token" ref={(win) => {this._send = win}}
+        <Modal title="Send Token"
           footer={null}
           visible={this.state.showSend}
           onOk={() => this.send()}
           onCancel={() => this.setState({ showSend: false })}
           >
           <Send func={this.send}></Send>
+        </Modal>
+        <Modal title="Token Swap"
+          visible={this.state.showSwap}
+          onOk={() => this.setState({ showSwap: false })}
+          onCancel={() => this.setState({ showSwap: false })}
+        >
+          <p>TBA</p>
         </Modal>
         <Modal title="Confirm Token Sending"
           visible={this.state.showSendConfirm}
@@ -168,7 +177,7 @@ class Lyratest extends Component {
       if(this.state.unrecvlyr === 0)
         this.setState( { unrecvmsg: "+ ? LYR" } );
       else
-        this.setState( { unrecvmsg: "+ " + this.state.unrecvlyr + " LYR" } );
+        this.setState( { unrecvmsg: "+ " + this.state.unrecvlyr.toFixed(4).replace(/\d(?=(\d{3})+\.)/g, '$&,') + " LYR" } );
     }      
   }
   success_cb(data) {
