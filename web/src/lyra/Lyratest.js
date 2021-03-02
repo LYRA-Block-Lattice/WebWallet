@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { Badge } from 'antd';
+import { Modal } from 'antd';
 import LyraCrypto from './crypto';
 import JsonRpcClient from './jsonrpcclient';
-import { SendOutlined } from '@ant-design/icons';
+import { InfoIcon, PayIcon } from './icons';
+import Send from './SendForm';
 
 class Lyratest extends Component {
   constructor(props) {
@@ -15,12 +17,17 @@ class Lyratest extends Component {
       unrecv: 0,
       unrecvlyr: 0,
       unrecvmsg: "",  
+      showAddr: false,
+      showSend: false,
+      showSendConfirm : false,
     };
+    this.send = this.send.bind(this)
   }
+
   render() {
     return (      
-      <div style={{ color: 'white' }} onClick={() => this.receive()}>
-        <div>
+      <div style={{ color: 'white' }}>
+        <div onClick={() => this.receive()}>
           <Badge count={this.state.unrecv}>
             <span className="blas" style={{ color: 'orange', fontWeight: 'bolder' }} id="bala">{this.state.balance}</span>
           </Badge>
@@ -30,7 +37,33 @@ class Lyratest extends Component {
           {this.state.unrecvmsg}
         </div>
         <p>&nbsp;</p>
-        <div style={{ fontSize: '8pt' }}>{this.state.accountId}</div>
+        <div>
+          <InfoIcon onClick={() => this.setState({ showAddr: true })}></InfoIcon> 
+          <PayIcon onClick={() => this.setState({ showSend: true })}></PayIcon>
+        </div>               
+        <Modal title="My Wallet Address" 
+          visible={this.state.showAddr}
+          onOk={() => this.setState({ showAddr: false })}
+          onCancel={() => this.setState({ showAddr: false })}
+          >
+          <div style={{ fontSize: '8pt' }}>{this.state.accountId}</div>
+        </Modal>
+        <Modal title="Send Token" ref={(win) => {this._send = win}}
+          footer={null}
+          visible={this.state.showSend}
+          onOk={() => this.send()}
+          onCancel={() => this.setState({ showSend: false })}
+          >
+          <Send func={this.send}></Send>
+        </Modal>
+        <Modal title="Confirm Token Sending"
+          visible={this.state.showSendConfirm}
+        >
+          <p>Send from: </p>
+          <p>Send to: </p>
+          <p>Token: </p>
+          <p>Amount: </p>
+        </Modal>
       </div>
     );
   }
@@ -39,6 +72,19 @@ class Lyratest extends Component {
   ws;
   lapp;
 
+  send(values) {
+    console.log("send token by values: " + values);
+    // this.setState({showSendConfirm: true});
+    // return;
+    // do validate 
+    this.ws.call('Send', [ 
+      this.state.accountId,
+      values.amount,
+      values.destaddr,
+      values.tokenname
+    ], (resp) => this.lapp.updbal(resp), this.error_cb);
+    this.setState({ showSend: false });
+  }
   receive() {
     this.ws.call('Receive', [ this.state.accountId ], (resp) => this.lapp.updbal(resp), this.error_cb);
   }
@@ -46,7 +92,7 @@ class Lyratest extends Component {
   componentDidMount() {
     console.log("lyra app started.");
     this.lapp = this;
-    this.lc = new LyraCrypto();
+    this.lc = new LyraCrypto();    
 
     var aid = this.lc.lyraEncPub(this.state.puk);
     console.log("pub account id is " + aid);
