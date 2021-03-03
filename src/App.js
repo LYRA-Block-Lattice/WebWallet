@@ -1,10 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
+import './App.less';
+import { Button } from 'antd';
 
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import OpenWallet from './pages/OpenWallet';
+import MainPage from './pages/MainPage';
+import Info from './pages/Info';
+import useToken from './pages/useToken';
+
+import logo from './logo.png';
 import Lyratest from './lyra/Lyratest';
 import { SettingsIcon } from './lyra/icons';
 
-import logo from './logo.png';
-import './App.less';
+
 import 'antd/dist/antd.css';
 import { Menu, Dropdown } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
@@ -23,23 +31,45 @@ const menu = (
 );
 
 function App() {
+  const { token, setToken } = useToken();
+
+  if(!token) {
+    return <OpenWallet setToken={setToken} />
+  }
+
   return (
-    <div>
-      <div style={{ position: 'absolute', top: '0px', right: '0px' }}>
-      <Dropdown overlay={menu} trigger={['click']}>
-         <SettingsIcon onClick={e => e.preventDefault()}></SettingsIcon>
-      </Dropdown>
-        
-        </div>
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <br /><br />
-          <Lyratest></Lyratest>
-        </header>
-      </div>
+    <div className="wrapper">
+      <BrowserRouter>
+        <Switch>
+          <Route path="/info">
+            <Info />
+          </Route>
+          <Route path="/main">
+            <MainPage />
+          </Route>
+        </Switch>
+      </BrowserRouter>
+      <Button type="primary" onClick={e => setToken(null)}>Close Wallet {token}</Button>
     </div>
   );
 }
+  // return (
+  //   <div>
+  //     <div style={{ position: 'absolute', top: '0px', right: '0px' }}>
+  //     <Dropdown overlay={menu} trigger={['click']}>
+  //        <SettingsIcon onClick={e => e.preventDefault()}></SettingsIcon>
+  //     </Dropdown>
+        
+  //       </div>
+  //     <div className="App">
+  //       <header className="App-header">
+  //         <img src={logo} className="App-logo" alt="logo" />
+  //         <br /><br />
+  //         <Lyratest></Lyratest>
+  //       </header>
+  //     </div>
+  //   </div>
+  // );
+//}
 
 export default App;

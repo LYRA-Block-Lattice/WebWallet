@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Badge } from 'antd';
 import { Modal } from 'antd';
+import localforage from "localforage";
+
 import LyraCrypto from './crypto';
 import JsonRpcClient from './jsonrpcclient';
 import { InfoIcon, PayIcon, SwapIcon } from './icons';
@@ -34,7 +36,7 @@ class Lyratest extends Component {
           </Badge>
             &nbsp;&nbsp;<span style={{ fontFamily: 'Times', color: 'white', fontSize: '3vw' }}>LYR</span>
         </div>
-        <div style={{ fontSize: '12pt' }}>
+        <div style={{ fontFamily: 'Times', fontSize: '12pt' }}>
           {this.state.unrecvmsg}
         </div>
         <p>&nbsp;</p>
@@ -102,6 +104,8 @@ class Lyratest extends Component {
     console.log("lyra app started.");
     this.lapp = this;
     this.lc = new LyraCrypto();    
+
+    console.log('localforage is: ', localforage);
 
     var aid = this.lc.lyraEncPub(this.state.puk);
     console.log("pub account id is " + aid);
