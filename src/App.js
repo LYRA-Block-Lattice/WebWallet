@@ -31,26 +31,19 @@ const menu = (
 );
 
 function App() {
-  const { token, setToken } = useToken();
-
-  if(!token) {
-    return <OpenWallet setToken={setToken} />
-  }
-
-  return (
-    <div className="wrapper">
-      <BrowserRouter>
-        <Switch>
-          <Route path="/info">
-            <Info />
-          </Route>
-          <Route path="/main">
-            <MainPage />
-          </Route>
-        </Switch>
-      </BrowserRouter>
-      <Button type="primary" onClick={e => setToken(null)}>Close Wallet {token}</Button>
-    </div>
+return (
+  <div className="wrapper">
+    <BrowserRouter>
+      <Switch>
+        <Route path="/info">
+          <Info />
+        </Route>
+        <Route path="/">
+          <MainPage />
+        </Route>
+      </Switch>
+    </BrowserRouter>
+  </div>
   );
 }
   // return (
