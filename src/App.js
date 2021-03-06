@@ -4,7 +4,7 @@ import './App.less';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { Provider } from "react-redux";
 import store from "./pages/todo/redux/store";
-import TodoApp from "./pages/TodoApp";
+import TodoApp from "./pages/todo/TodoApp";
 
 import Send from './pages/SendForm';
 import Swap from './pages/SwapForm';
