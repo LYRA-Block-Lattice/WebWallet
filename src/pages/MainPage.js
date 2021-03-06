@@ -22,13 +22,10 @@ export default function MainPage() {
             <div>
                 <ul>
                     <li>
-                        <Link to="/">Home</Link>
-                    </li>
-                    <li>
                         <Link to="/info">About Your Wallet</Link>
                     </li>
                     <li>
-                        <Link to="/dashboard">Dashboard</Link>
+                        <Link to="/send">Send Token</Link>
                     </li>
                 </ul>
                 <h2>The wallet's main page.</h2>

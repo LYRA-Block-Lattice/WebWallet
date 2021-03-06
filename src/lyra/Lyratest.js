@@ -6,7 +6,7 @@ import localforage from "localforage";
 import LyraCrypto from './crypto';
 import JsonRpcClient from './jsonrpcclient';
 import { InfoIcon, PayIcon, SwapIcon } from './icons';
-import Send from './SendForm';
+import Send from '../pages/SendForm';
 
 class Lyratest extends Component {
   constructor(props) {

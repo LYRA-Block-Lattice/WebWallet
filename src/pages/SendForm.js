@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Form, Input, Button, InputNumber, Select } from 'antd';
+import "antd/dist/antd.css";
+
 const { Option, OptGroup } = Select;
 
 const layout = {
@@ -66,7 +68,7 @@ class Send extends Component {
                     },
                 ]}
             >
-                <Select defaultValue="LYR" style={{ width: 120 }}>
+                <Select defaultValue="LYR" showArrow={true} style={{ width: 120 }}>
                 <OptGroup label="Official">
                     <Option value="LYR">LYR</Option>
                 </OptGroup>

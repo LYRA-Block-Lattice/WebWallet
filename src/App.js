@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './App.less';
-import { Button } from 'antd';
 
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import OpenWallet from './pages/OpenWallet';
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
+
+import SendForm from './pages/SendForm';
 import MainPage from './pages/MainPage';
 import Info from './pages/Info';
 import useToken from './pages/useToken';
@@ -13,7 +15,7 @@ import Lyratest from './lyra/Lyratest';
 import { SettingsIcon } from './lyra/icons';
 
 
-import 'antd/dist/antd.css';
+//import 'antd/dist/antd.css';
 import { Menu, Dropdown } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 
@@ -30,20 +32,33 @@ const menu = (
   </Menu>
 );
 
+
+const store = createStore(() => ({
+  birds: [
+    {
+      name: 'robin',
+      views: 1
+    }
+  ]
+}));
+
 function App() {
-return (
-  <div className="wrapper">
-    <BrowserRouter>
-      <Switch>
-        <Route path="/info">
-          <Info />
-        </Route>
-        <Route path="/">
-          <MainPage />
-        </Route>
-      </Switch>
-    </BrowserRouter>
-  </div>
+  return (
+    <Provider store={store}>
+      <BrowserRouter>
+        <Switch>
+          <Route path="/info">
+            <Info />
+          </Route>
+          <Route path="/send">
+            <SendForm />
+          </Route>
+          <Route path="/">
+            <MainPage />
+          </Route>
+        </Switch>
+      </BrowserRouter>
+    </Provider>
   );
 }
   // return (
