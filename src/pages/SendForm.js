@@ -20,10 +20,6 @@ const tailLayout = {
 };
 
 class Send extends Component {
-    constructor(props) {
-        super(props);
-    }
-
   onFinish(values) {
     console.log('Success:', values);
     this.props.func(values);
@@ -68,7 +64,7 @@ class Send extends Component {
                     },
                 ]}
             >
-                <Select defaultValue="LYR" showArrow={true} style={{ width: 120 }}>
+                <Select style={{ width: 120 }}>
                 <OptGroup label="Official">
                     <Option value="LYR">LYR</Option>
                 </OptGroup>

@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import {
+  Link
+} from "react-router-dom";
 import { Badge } from 'antd';
 import { Modal } from 'antd';
 import localforage from "localforage";
@@ -41,9 +44,15 @@ class Lyratest extends Component {
         </div>
         <p>&nbsp;</p>
         <div>
-          <InfoIcon onClick={() => this.setState({ showAddr: true })}></InfoIcon> 
-          <PayIcon onClick={() => this.setState({ showSend: true })}></PayIcon>
-          <SwapIcon onClick={() => this.setState({ showSwap: true })}></SwapIcon>
+          <Link to="/info">
+            <InfoIcon></InfoIcon>
+          </Link>
+          <Link to="/send">
+            <PayIcon></PayIcon>
+          </Link>
+          <Link to="/swap">
+            <SwapIcon></SwapIcon>
+          </Link>
         </div>               
         <Modal title="My Wallet Address" 
           visible={this.state.showAddr}
