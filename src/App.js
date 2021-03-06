@@ -3,7 +3,7 @@ import './App.less';
 
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { Provider } from "react-redux";
-import store from "./pages/redux/store";
+import store from "./pages/todo/redux/store";
 import TodoApp from "./pages/TodoApp";
 
 import Send from './pages/SendForm';
