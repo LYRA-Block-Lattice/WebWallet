@@ -3,13 +3,11 @@ import {
   Link
 } from "react-router-dom";
 import { Badge } from 'antd';
-import { Modal } from 'antd';
 import localforage from "localforage";
 
 import LyraCrypto from './crypto';
 import JsonRpcClient from './jsonrpcclient';
 import { InfoIcon, PayIcon, SwapIcon } from './icons';
-import Send from '../pages/SendForm';
 
 class Lyratest extends Component {
   constructor(props) {
@@ -54,36 +52,6 @@ class Lyratest extends Component {
             <SwapIcon></SwapIcon>
           </Link>
         </div>               
-        <Modal title="My Wallet Address" 
-          visible={this.state.showAddr}
-          onOk={() => this.setState({ showAddr: false })}
-          onCancel={() => this.setState({ showAddr: false })}
-          >
-          <div style={{ fontSize: '8pt' }}>{this.state.accountId}</div>
-        </Modal>
-        <Modal title="Send Token"
-          footer={null}
-          visible={this.state.showSend}
-          onOk={() => this.send()}
-          onCancel={() => this.setState({ showSend: false })}
-          >
-          <Send func={this.send}></Send>
-        </Modal>
-        <Modal title="Token Swap"
-          visible={this.state.showSwap}
-          onOk={() => this.setState({ showSwap: false })}
-          onCancel={() => this.setState({ showSwap: false })}
-        >
-          <p>TBA</p>
-        </Modal>
-        <Modal title="Confirm Token Sending"
-          visible={this.state.showSendConfirm}
-        >
-          <p>Send from: </p>
-          <p>Send to: </p>
-          <p>Token: </p>
-          <p>Amount: </p>
-        </Modal>
       </div>
     );
   }

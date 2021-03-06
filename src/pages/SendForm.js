@@ -20,25 +20,20 @@ const tailLayout = {
 };
 
 class Send extends Component {
-  onFinish(values) {
-    console.log('Success:', values);
-    this.props.func(values);
-  }
-
-  onFinishFailed(errorInfo){
+  onFinishFailed(errorInfo) {
     console.log('Failed:', errorInfo);
   }
 
   render() {
     return (
-        <div>
+      <div>
         <Form
           {...layout}
           name="basic"
           initialValues={{
             remember: true,
           }}
-          onFinish={this.props.func}
+          onFinish={this.props.onsend}
           onFinishFailed={this.onFinishFailed}
         >
           <Form.Item
@@ -53,27 +48,27 @@ class Send extends Component {
           >
             <Input />
           </Form.Item>
-    
-            <Form.Item
-                label="TokenName"
-                name="tokenname"
-                rules={[
-                    {
-                        required: true,
-                        message: 'Please select token name you want to send!',
-                    },
-                ]}
-            >
-                <Select style={{ width: 120 }}>
-                <OptGroup label="Official">
-                    <Option value="LYR">LYR</Option>
-                </OptGroup>
-                <OptGroup label="Customized">
-                    <Option value="TST">Test</Option>
-                </OptGroup>
-                </Select>
-            </Form.Item>
-    
+
+          <Form.Item
+            label="TokenName"
+            name="tokenname"
+            rules={[
+              {
+                required: true,
+                message: 'Please select token name you want to send!',
+              },
+            ]}
+          >
+            <Select style={{ width: 120 }}>
+              <OptGroup label="Official">
+                <Option value="LYR">LYR</Option>
+              </OptGroup>
+              <OptGroup label="Customized">
+                <Option value="TST">Test</Option>
+              </OptGroup>
+            </Select>
+          </Form.Item>
+
           <Form.Item
             label="Amount"
             name="amount"
@@ -84,18 +79,18 @@ class Send extends Component {
               },
             ]}
           >
-            <InputNumber min={1} max={92233720368}/>
+            <InputNumber min={1} max={92233720368} />
           </Form.Item>
-    
+
           <Form.Item {...tailLayout}>
             <Button type="primary" htmlType="submit">
               Send
             </Button>
           </Form.Item>
-          
+
         </Form>
-        </div>
-      );
+      </div>
+    );
   }
 };
 
