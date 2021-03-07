@@ -1,6 +1,8 @@
 import KJUR from 'jsrsasign';
 import bs58 from 'bs58';
 
+import CryptoJs from 'crypto-js';
+
 class LyraCrypto {
     fromHexString(hexString) {
         return new Uint8Array(hexString.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
@@ -65,6 +67,15 @@ class LyraCrypto {
             return this.toHexString(data);
         else
             return undefined;
+    }
+
+    encrypt(s, password) {
+        return CryptoJs.AES.encrypt(s, password).toString();
+    }
+
+    decrypt(s, password) {
+        var bytes = CryptoJs.AES.decrypt(s, password);
+        return bytes.toString(CryptoJs.enc.Utf8);
     }
 
     lyraGenWallet() {

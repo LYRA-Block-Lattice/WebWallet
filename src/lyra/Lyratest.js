@@ -13,9 +13,9 @@ class Lyratest extends Component {
   constructor(props) {
     super(props);
     this.state = { 
-      pvk: "54ff7b8aa7730b5fb41676f55c721967a2dd553678a40b856b580db9f946cda7",
-      puk: "046f8815c5e79ba81f1cc9e4f8a311c70d8fa55e9792bd0d682e8a7ac157f28187b31edf7555b7b60ca6623150e7dd19d23d1d9ac2fc64d89a73bb2386247f2082",
-      accountId: "LFbJq1N4fSdSLudWWACgYfpwKfpLrekT6ECR6knCX2br66wydpNpbFywoT6FrSwvoVSrb8zPzrcrFG4K7q7i8UVFKtkfnN",
+      // pvk: "54ff7b8aa7730b5fb41676f55c721967a2dd553678a40b856b580db9f946cda7",
+      // puk: "046f8815c5e79ba81f1cc9e4f8a311c70d8fa55e9792bd0d682e8a7ac157f28187b31edf7555b7b60ca6623150e7dd19d23d1d9ac2fc64d89a73bb2386247f2082",
+      accountId: "",//"LFbJq1N4fSdSLudWWACgYfpwKfpLrekT6ECR6knCX2br66wydpNpbFywoT6FrSwvoVSrb8zPzrcrFG4K7q7i8UVFKtkfnN",
       balance: 0,
       unrecv: 0,
       unrecvlyr: 0,
@@ -77,23 +77,41 @@ class Lyratest extends Component {
     this.ws.call('Receive', [ this.state.accountId ], (resp) => this.lapp.updbal(resp), this.error_cb);
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     console.log("lyra app started.");
     this.lapp = this;
     this.lc = new LyraCrypto();    
 
-    console.log('localforage is: ', localforage);
+    const value = await localforage.getItem('rxstor');
+    var wallets = JSON.parse(value);
 
-    var aid = this.lc.lyraEncPub(this.state.puk);
-    console.log("pub account id is " + aid);
-    require('assert').equal(aid, this.state.accountId);
+    console.log('default wallet is ', wallets[0].name);
+
+    const tokenString = sessionStorage.getItem('token');
+    const userToken = JSON.parse(tokenString);
+
+    var decData = this.lc.decrypt(wallets[0].data, userToken);
+    var actId = this.lc.lyraEncPub(this.lc.prvToPub(this.lc.lyraDec(decData)));
+    this.setState({ accountId: actId} );
+    // var aid = this.lc.lyraEncPub(this.state.puk);
+    // console.log("pub account id is " + aid);
+    // require('assert').equal(aid, this.state.accountId);
 
     this.ws = new JsonRpcClient({
-      socketUrl: 'wss://testnet.lyra.live/api/v1/socket',
-      oncallback: (resp) => {
+      //socketUrl: 'wss://testnet.lyra.live/api/v1/socket',
+      socketUrl: 'wss://localhost:4504/api/v1/socket',
+      oncallback: async (resp) => {
         if (resp.method === "Sign") {
           console.log("Signing " + resp.params[0] + " of " + resp.params[1]);
-          var signt = this.lc.lyraSign(resp.params[1], this.state.pvk);
+
+          const tokenString = sessionStorage.getItem('token');
+          const userToken = JSON.parse(tokenString);
+          const value = await localforage.getItem('rxstor');
+          var wallets = JSON.parse(value);
+          var decData = this.lc.decrypt(wallets[0].data, userToken);
+          var pvk = this.lc.lyraDec(decData);
+
+          var signt = this.lc.lyraSign(resp.params[1], pvk);
           return ["der", signt];
         }
         else {
@@ -124,27 +142,30 @@ class Lyratest extends Component {
       onclose: () => {
         console.log("wss close.");
         // lol force reopen
-        this.ws.call('Status', [ '2.2', 'testnet' ], this.success_cb, this.error_cb);
+        this.ws.call('Status', [ '2.2', 'devnet' ], this.success_cb, this.error_cb);
       },
       onerror: function (event) {
         console.log("wss error.");
       }
     });
 
-    this.ws.call('Status', [ '2.2', 'testnet' ], this.success_cb, this.error_cb);
+    this.ws.call('Status', [ '2.2', 'devnet' ], this.success_cb, this.error_cb);
   }
 
   updbal(resp) {
-    this.setState( { balance: resp.balance.LYR} );
-    if(!resp.unreceived)
+    if(resp.balance)
     {
-      this.setState( { unrecv: 0 } );
-      this.setState( { unrecvlyr: 0 } );
+      this.setState( { balance: resp.balance.LYR} );
+      if(!resp.unreceived)
+      {
+        this.setState( { unrecv: 0 } );
+        this.setState( { unrecvlyr: 0 } );
+      }
+      if (resp.unreceived && this.state.unrecv === 0) {
+        this.setState( { unrecv: this.state.unrecv + 1} );
+      }
+      this.updurcv(resp.unreceived);
     }
-    if (resp.unreceived && this.state.unrecv === 0) {
-      this.setState( { unrecv: this.state.unrecv + 1} );
-    }
-    this.updurcv(resp.unreceived);
   }
   updurcv(un) {
     if(this.state.unrecv === 0)

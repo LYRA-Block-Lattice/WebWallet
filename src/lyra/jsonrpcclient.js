@@ -315,7 +315,7 @@
    *
    * @param {event} event The websocket onmessage-event.
    */
-  JsonRpcClient.prototype._wsOnMessage = function(event) {
+  JsonRpcClient.prototype._wsOnMessage = async function(event) {
 
     // Check if this could be a JSON RPC message.
     var response;
@@ -365,7 +365,7 @@
       // a server call back
       else if ('method' in response) {
         // Construct the JSON-RPC 2.0 request.
-        var cbresult = this.options.oncallback(response);
+        var cbresult = await this.options.oncallback(response);
         var request = {
           jsonrpc: '2.0',
           id: response.id,

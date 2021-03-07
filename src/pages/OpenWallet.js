@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Form, Input, Button } from 'antd';
+import localforage from 'localforage';
 
 import LyraCrypto from '../lyra/crypto';
 
@@ -19,18 +20,42 @@ const tailLayout = {
 };
 
 export default class OpenWallet extends Component {
-    constructor(props){
-        super(props);        
+    constructor(props) {
+        super(props);
         this.onFinish = this.onFinish.bind(this);
     }
     onFinish(values) {
         console.log('Success:', values);
 
-        var lc = new LyraCrypto(); 
-        var pvt = lc.lyraDec(values.pvtkey);
-        var actId = lc.lyraEncPub(lc.prvToPub(pvt));
+        var lc = new LyraCrypto();
+        //var pvt = lc.lyraDec(values.pvtkey);
+        //var actId = lc.lyraEncPub(lc.prvToPub(pvt));
 
-        this.props.setToken(actId);
+        var encData = lc.encrypt(values.pvtkey, values.password);
+
+        var wds = [{ name: 'default', data: encData }];
+
+        localforage.setItem('rxstor', JSON.stringify(wds)).then(function (value) {
+            // Do other things once the value has been saved.
+            console.log("save ok " + value);
+
+            localforage.getItem('rxstor').then(function(value) {
+                // This code runs once the value has been loaded
+                // from the offline store.
+                console.log(value);
+
+                var decData = lc.decrypt(encData, values.password);
+            }).catch(function(err) {
+                // This code runs if there were any errors
+                console.log(err);
+            });   
+
+        }).catch(function(err) {
+            // This code runs if there were any errors
+            console.log("save fail " + err);
+        });
+
+        this.props.setToken(values.password);
     }
 
     onFinishFailed(errorInfo) {
@@ -39,31 +64,40 @@ export default class OpenWallet extends Component {
 
     render() {
         return (
-            <Form
-                {...layout}
-                name="basic"
-                initialValues={{
-                    remember: true,
-                }}
-                onFinish={this.onFinish}
-                onFinishFailed={this.onFinishFailed}
-            >
-                <div>Use this for test: eSAErSXn2djzLgWFxd8vtFfnmgrUAhEntHCgKFwTPi8AY3hnG</div>
-                <Form.Item
-                    label="Private Key"
-                    name="pvtkey"
-                    rules={[{ required: true, message: 'Please input your private key.' }]}
+            <div>
+                <div {...layout}>Use this for test: eSAErSXn2djzLgWFxd8vtFfnmgrUAhEntHCgKFwTPi8AY3hnG</div>
+                <Form
+                    {...layout}
+                    name="basic"
+                    initialValues={{
+                        remember: true,
+                    }}
+                    onFinish={this.onFinish}
+                    onFinishFailed={this.onFinishFailed}
                 >
-                    <Input placeholder="Private Key" />
-                </Form.Item>
+                    <Form.Item
+                        label="Private Key"
+                        name="pvtkey"
+                        rules={[{ required: true, message: 'Please input your private key.' }]}
+                    >
+                        <Input placeholder="Private Key" />
+                    </Form.Item>
 
+                    <Form.Item
+                        label="Password"
+                        name="password"
+                        rules={[{ required: true, message: 'Please input your password!' }]}
+                    >
+                        <Input.Password />
+                    </Form.Item>
 
-                <Form.Item {...tailLayout}>
-                    <Button type="primary" htmlType="submit">
-                        Submit
+                    <Form.Item {...tailLayout}>
+                        <Button type="primary" htmlType="submit">
+                            Create Wallet
                       </Button>
-                </Form.Item>
-            </Form>
+                    </Form.Item>
+                </Form>
+            </div>
         );
     }
 
