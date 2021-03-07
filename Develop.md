@@ -29,6 +29,10 @@ Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
+#### build for relative web path
+$ENV:PUBLIC_URL="https://lyra-block-lattice.github.io/WebWallet"
+npm run build
+
 ### `yarn eject`
 
 **Note: this is a one-way operation. Once you `eject`, you can’t go back!**
