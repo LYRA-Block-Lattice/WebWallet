@@ -42,13 +42,13 @@ class Lyratest extends Component {
         </div>
         <p>&nbsp;</p>
         <div>
-          <Link to="/info">
+          <Link to="./info">
             <InfoIcon></InfoIcon>
           </Link>
-          <Link to="/send">
+          <Link to="./send">
             <PayIcon></PayIcon>
           </Link>
-          <Link to="/swap">
+          <Link to="./swap">
             <SwapIcon></SwapIcon>
           </Link>
         </div>               
