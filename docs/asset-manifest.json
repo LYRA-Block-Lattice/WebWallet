@@ -1,26 +1,26 @@
 {
   "files": {
-    "main.css": "/static/css/main.045f6b86.chunk.css",
-    "main.js": "/static/js/main.8c0bf016.chunk.js",
-    "main.js.map": "/static/js/main.8c0bf016.chunk.js.map",
-    "runtime-main.js": "/static/js/runtime-main.472096b3.js",
-    "runtime-main.js.map": "/static/js/runtime-main.472096b3.js.map",
-    "static/css/2.fc2db407.chunk.css": "/static/css/2.fc2db407.chunk.css",
-    "static/js/2.48e9ce63.chunk.js": "/static/js/2.48e9ce63.chunk.js",
-    "static/js/2.48e9ce63.chunk.js.map": "/static/js/2.48e9ce63.chunk.js.map",
-    "static/js/3.85fae523.chunk.js": "/static/js/3.85fae523.chunk.js",
-    "static/js/3.85fae523.chunk.js.map": "/static/js/3.85fae523.chunk.js.map",
-    "index.html": "/index.html",
-    "static/css/2.fc2db407.chunk.css.map": "/static/css/2.fc2db407.chunk.css.map",
-    "static/css/main.045f6b86.chunk.css.map": "/static/css/main.045f6b86.chunk.css.map",
-    "static/js/2.48e9ce63.chunk.js.LICENSE.txt": "/static/js/2.48e9ce63.chunk.js.LICENSE.txt",
-    "static/media/logo.3ee971f4.png": "/static/media/logo.3ee971f4.png"
+    "main.css": "lyra-block-lattice.github.io/WebWallet/static/css/main.d89063be.chunk.css",
+    "main.js": "lyra-block-lattice.github.io/WebWallet/static/js/main.8c0bf016.chunk.js",
+    "main.js.map": "lyra-block-lattice.github.io/WebWallet/static/js/main.8c0bf016.chunk.js.map",
+    "runtime-main.js": "lyra-block-lattice.github.io/WebWallet/static/js/runtime-main.2d27be2c.js",
+    "runtime-main.js.map": "lyra-block-lattice.github.io/WebWallet/static/js/runtime-main.2d27be2c.js.map",
+    "static/css/2.fc2db407.chunk.css": "lyra-block-lattice.github.io/WebWallet/static/css/2.fc2db407.chunk.css",
+    "static/js/2.1f2be014.chunk.js": "lyra-block-lattice.github.io/WebWallet/static/js/2.1f2be014.chunk.js",
+    "static/js/2.1f2be014.chunk.js.map": "lyra-block-lattice.github.io/WebWallet/static/js/2.1f2be014.chunk.js.map",
+    "static/js/3.85fae523.chunk.js": "lyra-block-lattice.github.io/WebWallet/static/js/3.85fae523.chunk.js",
+    "static/js/3.85fae523.chunk.js.map": "lyra-block-lattice.github.io/WebWallet/static/js/3.85fae523.chunk.js.map",
+    "index.html": "lyra-block-lattice.github.io/WebWallet/index.html",
+    "static/css/2.fc2db407.chunk.css.map": "lyra-block-lattice.github.io/WebWallet/static/css/2.fc2db407.chunk.css.map",
+    "static/css/main.d89063be.chunk.css.map": "lyra-block-lattice.github.io/WebWallet/static/css/main.d89063be.chunk.css.map",
+    "static/js/2.1f2be014.chunk.js.LICENSE.txt": "lyra-block-lattice.github.io/WebWallet/static/js/2.1f2be014.chunk.js.LICENSE.txt",
+    "static/media/logo.3ee971f4.png": "lyra-block-lattice.github.io/WebWallet/static/media/logo.3ee971f4.png"
   },
   "entrypoints": [
-    "static/js/runtime-main.472096b3.js",
+    "static/js/runtime-main.2d27be2c.js",
     "static/css/2.fc2db407.chunk.css",
-    "static/js/2.48e9ce63.chunk.js",
-    "static/css/main.045f6b86.chunk.css",
+    "static/js/2.1f2be014.chunk.js",
+    "static/css/main.d89063be.chunk.css",
     "static/js/main.8c0bf016.chunk.js"
   ]
 }
