@@ -31,19 +31,19 @@ function App() {
     <Provider store={store}>
       <BrowserRouter>
         <Switch>
-          <Route path="./info">
+          <Route path="/info">
             <Info />
           </Route>
-          <Route path="./send">
+          <Route path="/send">
             <Send onsend={(e) => sendToken(token, e)}/>
           </Route>
-          <Route path="./swap">
+          <Route path="/swap">
             <Swap />
           </Route>
-          <Route path="./todo">
+          <Route path="/todo">
             <TodoApp />
           </Route>
-          <Route path="./">
+          <Route path="/">
             <MainPage />
           </Route>
         </Switch>
