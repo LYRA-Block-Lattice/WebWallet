@@ -54,7 +54,8 @@ class LyraCrypto {
 
     lyraDec(pvtKey) {
         var dec = bs58.decode(pvtKey);
-        var buff = dec.toUTF8Array();
+        //var buff = this.toUTF8Array(dec);
+        var buff = dec;
         var data = this.sliceTypedArrays(buff, 0, buff.byteLength - 4);
         var checkbytes = this.sliceTypedArrays(buff, buff.byteLength - 4, 4);
         var check = this.toHexString(checkbytes);

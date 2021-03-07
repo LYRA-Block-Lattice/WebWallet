@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Form, Input, Button } from 'antd';
 
+import LyraCrypto from '../lyra/crypto';
+
 const layout = {
     labelCol: {
         span: 8,
@@ -23,7 +25,12 @@ export default class OpenWallet extends Component {
     }
     onFinish(values) {
         console.log('Success:', values);
-        this.props.setToken(values.pvtkey);
+
+        var lc = new LyraCrypto(); 
+        var pvt = lc.lyraDec(values.pvtkey);
+        var actId = lc.lyraEncPub(lc.prvToPub(pvt));
+
+        this.props.setToken(actId);
     }
 
     onFinishFailed(errorInfo) {

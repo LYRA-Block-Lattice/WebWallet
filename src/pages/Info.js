@@ -10,6 +10,11 @@ export default function Info() {
     }
 
     return (
-        <h2>Information about your wallet</h2>
+        <div>
+            <h2>Information about your wallet</h2>
+            <p>Your wallet address is:</p>
+            <pre>{token}</pre>
+        </div>
+        
     );
 }
