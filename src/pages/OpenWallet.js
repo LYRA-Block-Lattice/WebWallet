@@ -36,11 +36,10 @@ export default class OpenWallet extends Component {
         console.log('Success:', values);
 
         try {
-            var lc = new LyraCrypto();
             var pdata = await persist.getData();
             var wallets = pdata.wallets;
-            var decData = lc.decrypt(wallets[0].data, values.password);
-            var pvk = lc.lyraDec(decData);
+            var decData = LyraCrypto.decrypt(wallets[0].data, values.password);
+            var pvk = LyraCrypto.lyraDec(decData);
     
             if(pvk === undefined) {
                 error();

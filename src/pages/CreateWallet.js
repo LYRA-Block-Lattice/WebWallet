@@ -31,15 +31,19 @@ export default class CreateWallet extends Component {
     async onFinish(values) {
         console.log('Success:', values);
 
-        var lc = new LyraCrypto();
-        //var pvt = lc.lyraDec(values.pvtkey);
-        //var actId = lc.lyraEncPub(lc.prvToPub(pvt));
+        //var pvt = LyraCrypto.lyraDec(values.pvtkey);
+        //var actId = LyraCrypto.lyraEncPub(LyraCrypto.prvToPub(pvt));
 
-        var pvtHex = lc.lyraGenWallet();
-        var prvKey = lc.lyraEncPvt(pvtHex);
-        var encData = lc.encrypt(prvKey, values.password);
+        var pvtHex = LyraCrypto.lyraGenWallet();
+        var prvKey = LyraCrypto.lyraEncPvt(pvtHex);
+        var actId = LyraCrypto.lyraEncPub(LyraCrypto.prvToPub(pvtHex));
+        var encData = LyraCrypto.encrypt(prvKey, values.password);
 
-        var wds = { network: 'testnet', wallets: [{ name: 'default', data: encData }]};
+        var wds = { network: 'testnet', wallets: [{ 
+            name: 'default', 
+            accountId: actId, 
+            data: encData
+        }]};
 
         await persist.setData(wds);
 
@@ -54,7 +58,7 @@ export default class CreateWallet extends Component {
         if(this.state.done) {
             return <Redirect to="/" />;
         }
-        
+
         return (
             <div>
                 <div {...layout}>Create New Wallet</div>

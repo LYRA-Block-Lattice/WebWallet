@@ -2,9 +2,8 @@ import React from 'react';
 import './App.less';
 
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import { Provider } from "react-redux";
-import store from "./pages/todo/redux/store";
-import TodoApp from "./pages/todo/TodoApp";
+
+import LyraContext from './lyra/context';
 
 import CreateWallet from './pages/CreateWallet';
 import RestoreWallet from './pages/RestoreWallet';
@@ -14,37 +13,19 @@ import Swap from './pages/SwapForm';
 import MainPage from './pages/MainPage';
 import Info from './pages/Info';
 
-import useToken from './pages/useToken';
-
-function sendToken(token, e) {
-  console.log("send token to: " + e.destaddr);
-
-  this.ws.call('Send', [ 
-    this.state.accountId,
-    e.amount,
-    e.destaddr,
-    e.tokenname
-  ], (resp) => this.lapp.updbal(resp), this.error_cb);
-}
-
 function App() {
-  const { token } = useToken();
-
   return (
-    <Provider store={store}>
+    <LyraContext.Provider>
       <BrowserRouter>
         <Switch>
           <Route path="/info">
             <Info />
           </Route>
           <Route path="/send">
-            <Send onsend={(e) => sendToken(token, e)}/>
+            <Send />
           </Route>
           <Route path="/swap">
             <Swap />
-          </Route>
-          <Route path="/todo">
-            <TodoApp />
           </Route>
           <Route path="/pref">
             <Preference />
@@ -60,7 +41,7 @@ function App() {
           </Route>
         </Switch>
       </BrowserRouter>
-    </Provider>
+    </LyraContext.Provider>
   );
 }
 

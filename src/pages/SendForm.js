@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { Form, Input, Button, InputNumber, Select } from 'antd';
 import "antd/dist/antd.css";
 
+import lyraClient from '../lyra/client';
+import persist from '../lyra/persist';
+
 const { Option, OptGroup } = Select;
 
 const layout = {
@@ -24,6 +27,33 @@ class Send extends Component {
     console.log('Failed:', errorInfo);
   }
 
+  async onFinish(values) {
+    console.log("send token to: " + values.destaddr);
+
+    var pdata = await persist.getData();
+
+    var client = new lyraClient();
+    await client.CallAsync("Send", 
+      pdata.wallets[0].accountId,
+      values.amount,
+      values.destaddr,
+      values.tokenname)
+    .then(result => {
+      console.log("CallAsync success. " + result);
+
+    })
+    .catch(error => { 
+      console.log("CallAsync failed. " + error);
+
+    });
+    // this.ws.call('Send', [ 
+    //   this.state.accountId,
+    //   e.amount,
+    //   e.destaddr,
+    //   e.tokenname
+    // ], (resp) => this.lapp.updbal(resp), this.error_cb);
+  }
+
   render() {
     return (
       <div>
@@ -33,7 +63,7 @@ class Send extends Component {
           initialValues={{
             remember: true,
           }}
-          onFinish={this.props.onsend}
+          onFinish={this.onFinish}
           onFinishFailed={this.onFinishFailed}
         >
           <Form.Item

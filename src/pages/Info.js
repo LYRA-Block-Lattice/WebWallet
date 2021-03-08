@@ -15,13 +15,12 @@ export default class Info extends Component {
         const tokenString = sessionStorage.getItem('token');
         const token = JSON.parse(tokenString);
 
-        var lc = new LyraCrypto();
         var pdata = await persist.getData();
         this.setState({network: pdata.network});
         var wallets = pdata.wallets;
-        var decData = lc.decrypt(wallets[0].data, token);
-        var pvk = lc.lyraDec(decData);
-        var pub = lc.lyraEncPub(lc.prvToPub(pvk));
+        var decData = LyraCrypto.decrypt(wallets[0].data, token);
+        var pvk = LyraCrypto.lyraDec(decData);
+        var pub = LyraCrypto.lyraEncPub(LyraCrypto.prvToPub(pvk));
         this.setState({pub: pub});
     }
 

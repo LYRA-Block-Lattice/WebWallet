@@ -31,13 +31,15 @@ export default class OpenWallet extends Component {
     async onFinish(values) {
         console.log('Success:', values);
 
-        var lc = new LyraCrypto();
-        //var pvt = lc.lyraDec(values.pvtkey);
-        //var actId = lc.lyraEncPub(lc.prvToPub(pvt));
+        var pvt = LyraCrypto.lyraDec(values.pvtkey);
+        var actId = LyraCrypto.lyraEncPub(LyraCrypto.prvToPub(pvt));
+        var encData = LyraCrypto.encrypt(values.pvtkey, values.password);
 
-        var encData = lc.encrypt(values.pvtkey, values.password);
-
-        var wds = { network: 'testnet', wallets: [{ name: 'default', data: encData }]};
+        var wds = { network: 'testnet', wallets: [{ 
+            name: 'default', 
+            accountId: actId, 
+            data: encData
+        }]};
 
         await persist.setData(wds);
 

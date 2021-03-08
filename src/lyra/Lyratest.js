@@ -78,8 +78,7 @@ class Lyratest extends Component {
   async componentDidMount() {
     console.log("lyra app started.");
     this.lapp = this;
-    this.lc = new LyraCrypto();    
-    
+
     var pdata = await persist.getData();
     var wallets = pdata.wallets;
 
@@ -88,10 +87,10 @@ class Lyratest extends Component {
     const tokenString = sessionStorage.getItem('token');
     const userToken = JSON.parse(tokenString);
 
-    var decData = this.lc.decrypt(wallets[0].data, userToken);
-    var actId = this.lc.lyraEncPub(this.lc.prvToPub(this.lc.lyraDec(decData)));
+    var decData = LyraCrypto.decrypt(wallets[0].data, userToken);
+    var actId = LyraCrypto.lyraEncPub(LyraCrypto.prvToPub(LyraCrypto.lyraDec(decData)));
     this.setState({ accountId: actId} );
-    // var aid = this.lc.lyraEncPub(this.state.puk);
+    // var aid = LyraCrypto.lyraEncPub(this.state.puk);
     // console.log("pub account id is " + aid);
     // require('assert').equal(aid, this.state.accountId);
 
@@ -111,10 +110,10 @@ class Lyratest extends Component {
           const userToken = JSON.parse(tokenString);
           var pdata = await persist.getData();
           var wallets = pdata.wallets;
-          var decData = this.lc.decrypt(wallets[0].data, userToken);
-          var pvk = this.lc.lyraDec(decData);
+          var decData = LyraCrypto.decrypt(wallets[0].data, userToken);
+          var pvk = LyraCrypto.lyraDec(decData);
 
-          var signt = this.lc.lyraSign(resp.params[1], pvk);
+          var signt = LyraCrypto.lyraSign(resp.params[1], pvk);
           return ["der", signt];
         }
         else {
