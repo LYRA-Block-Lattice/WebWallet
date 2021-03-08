@@ -1,0 +1,1 @@
+Moved to [Here](http://wallet.testnet.lyra.live/)
