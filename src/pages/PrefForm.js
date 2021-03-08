@@ -3,6 +3,8 @@ import { Redirect } from 'react-router-dom';
 import { Form, Button, Select } from 'antd';
 import "antd/dist/antd.css";
 
+import persist from '../lyra/persist';
+
 const { Option } = Select;
 
 const layout = {
@@ -24,14 +26,29 @@ class Preference extends Component {
     constructor(props) {
         super(props);
         this.state = { 
-          closed: false
+          closed: false,
+          network: ''
         };
         this.onFinish = this.onFinish.bind(this);
+        this.handleChange = this.handleChange.bind(this);
       }
+    
+    async componentDidMount() {
+        var pdata = await persist.getData();
+        this.setState({network: pdata.network});
+    }
 
     onFinish(values) {
         sessionStorage.setItem('token', null);
         this.setState({closed: true});
+    }
+
+    async handleChange(value) {
+        console.log(value); 
+
+        var pdata = await persist.getData();
+        pdata.network = value;
+        await persist.setData(pdata);
     }
 
     render() {
@@ -46,15 +63,24 @@ class Preference extends Component {
                     name="basic"
                     initialValues={{
                         remember: true,
+                        network: true,
                     }}
+                    fields={[
+                        {
+                          name: ["network"],
+                          value: this.state.network,
+                        },
+                      ]}
                     onFinish={this.onFinish}
                 >
 
                     <Form.Item
                         label="Blockchain Name"
-                        name="blockchainname"
+                        name="network"
                     >
-                        <Select style={{ width: 220 }} defaultValue="testnet">
+                        <Select style={{ width: 220 }}
+                            onChange={this.handleChange}
+                        >
                             <Option value="mainnet">MainNet</Option>
                             <Option value="testnet">TestNet</Option>
                             <Option value="devnet">DevNet (Dev only)</Option>

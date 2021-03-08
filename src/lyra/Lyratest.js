@@ -95,9 +95,14 @@ class Lyratest extends Component {
     // console.log("pub account id is " + aid);
     // require('assert').equal(aid, this.state.accountId);
 
+    var url = 'wss://testnet.lyra.live/api/v1/socket';
+    if(pdata.network === 'mainnet')
+      url = 'wss://mainnet.lyra.live/api/v1/socket';
+    if(pdata.network === 'devnet')
+      url = 'wss://localhost:4504/api/v1/socket';
+
     this.ws = new JsonRpcClient({
-      //socketUrl: 'wss://testnet.lyra.live/api/v1/socket',
-      socketUrl: 'wss://localhost:4504/api/v1/socket',
+     socketUrl: url,
       oncallback: async (resp) => {
         if (resp.method === "Sign") {
           console.log("Signing " + resp.params[0] + " of " + resp.params[1]);
