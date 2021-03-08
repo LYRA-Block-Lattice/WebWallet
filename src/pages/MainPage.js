@@ -5,7 +5,7 @@ import OpenWallet from './OpenWallet';
 import { SettingsIcon } from '../lyra/icons';
 
 import logo from '../logo.png';
-import Lyratest from '../lyra/Lyratest';
+import FrontForm from './FrontForm';
 
 export default function MainPage() {
     const { token, setToken } = useToken();
@@ -26,7 +26,7 @@ export default function MainPage() {
                     <header className="App-header">
                         <img src={logo} className="App-logo" alt="logo" />
                         <br /><br />
-                        <Lyratest></Lyratest>
+                        <FrontForm></FrontForm>
                     </header>
                 </div>
             </div>

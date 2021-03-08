@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { Link } from "react-router-dom";
 import { Badge } from 'antd';
-import persist from './persist';
+import persist from '../lyra/persist';
 
-import LyraCrypto from './crypto';
-import JsonRpcClient from './jsonrpcclient';
-import { InfoIcon, PayIcon, SwapIcon } from './icons';
+import LyraCrypto from '../lyra/crypto';
+import JsonRpcClient from '../lyra/jsonrpcclient';
+import { InfoIcon, PayIcon, SwapIcon } from '../lyra/icons';
 
-class Lyratest extends Component {
+class FrontForm extends Component {
   constructor(props) {
     super(props);
     this.state = { 
@@ -29,13 +29,13 @@ class Lyratest extends Component {
   render() {
     return (      
       <div style={{ color: 'white' }}>
-        <div onClick={() => this.receive()}>
+        <div>
           <Badge count={this.state.unrecv}>
             <span className="blas" style={{ color: 'orange', fontWeight: 'bolder' }} id="bala">{this.state.balance.toFixed(4).replace(/\d(?=(\d{3})+\.)/g, '$&,')}</span>
           </Badge>
             &nbsp;&nbsp;<span style={{ fontFamily: 'Times', color: 'white', fontSize: '3vw' }}>LYR</span>
         </div>
-        <div style={{ fontFamily: 'Times', fontSize: '12pt' }}>
+        <div onClick={() => this.receive()} style={{ fontFamily: 'Times', fontSize: '12pt' }}>
           {this.state.unrecvmsg}
         </div>
         <p>&nbsp;</p>
@@ -54,7 +54,6 @@ class Lyratest extends Component {
     );
   }
 
-  lc;
   ws;
   lapp;
 
@@ -194,4 +193,4 @@ class Lyratest extends Component {
   }
 }
 
-export default Lyratest;
+export default FrontForm;
