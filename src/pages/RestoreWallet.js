@@ -1,12 +1,8 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Form, Input, Button } from 'antd';
 import localforage from 'localforage';
-import { Form, Input, Button, Select, message } from 'antd';
-import "antd/dist/antd.css";
 
 import LyraCrypto from '../lyra/crypto';
-
-const { Option } = Select;
 
 const layout = {
     labelCol: {
@@ -23,10 +19,6 @@ const tailLayout = {
     },
 };
 
-const error = () => {
-    message.error('Wrong password!');
-  };
-
 export default class OpenWallet extends Component {
     constructor(props) {
         super(props);
@@ -36,18 +28,16 @@ export default class OpenWallet extends Component {
         console.log('Success:', values);
 
         var lc = new LyraCrypto();
+        //var pvt = lc.lyraDec(values.pvtkey);
+        //var actId = lc.lyraEncPub(lc.prvToPub(pvt));
 
-        const value = await localforage.getItem('rxstor');
-        var wallets = JSON.parse(value);
-        var decData = lc.decrypt(wallets[0].data, values.password);
-        var pvk = lc.lyraDec(decData);
+        var encData = lc.encrypt(values.pvtkey, values.password);
 
-        if(pvk === undefined) {
-            error();
-        }
-        else {
-            this.props.setToken(values.password);
-        }           
+        var wds = [{ name: 'default', data: encData }];
+
+        await localforage.setItem('rxstor', JSON.stringify(wds));
+
+        this.props.setToken(values.password);
     }
 
     onFinishFailed(errorInfo) {
@@ -68,31 +58,43 @@ export default class OpenWallet extends Component {
                     onFinishFailed={this.onFinishFailed}
                 >
                     <Form.Item
-                        label="Wallet Name"
-                        name="walletname"
+                        label="Private Key"
+                        name="pvtkey"
+                        rules={[{ required: true, message: 'Please input your private key.' }]}
                     >
-                        <Select style={{ width: 120 }} defaultValue="default">
-                            <Option value="default">Default</Option>
-                        </Select>
+                        <Input placeholder="Private Key" />
+                    </Form.Item>
+                    
+                    <Form.Item
+                        label="Name of the wallet"
+                        name="walletname"
+                        rules={[{ required: true, message: 'Please give the wallet a name.' }]}
+                    >
+                        <Input placeholder="Wallet Name" />
                     </Form.Item>
 
                     <Form.Item
-                        label="Password"
+                        label="Set a Password"
                         name="password"
                         rules={[{ required: true, message: 'Please input your password.' }]}
                     >
                         <Input.Password />
                     </Form.Item>
 
+                    <Form.Item
+                        label="Repeat Password"
+                        name="password2"
+                        rules={[{ required: true, message: 'Please confirm your password.' }]}
+                    >
+                        <Input.Password />
+                    </Form.Item>
+
                     <Form.Item {...tailLayout}>
                         <Button type="primary" htmlType="submit">
-                            Open Wallet
+                            Restore by Private Key
                       </Button>
                     </Form.Item>
                 </Form>
-
-                <p><Link to="/create">Create New Wallet</Link></p>
-                <p><Link to="/restore">Restore by Private Key</Link></p>                    
             </div>
         );
     }

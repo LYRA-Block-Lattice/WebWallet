@@ -6,6 +6,8 @@ import { Provider } from "react-redux";
 import store from "./pages/todo/redux/store";
 import TodoApp from "./pages/todo/TodoApp";
 
+import CreateWallet from './pages/CreateWallet';
+import RestoreWallet from './pages/RestoreWallet';
 import Preference from './pages/PrefForm';
 import Send from './pages/SendForm';
 import Swap from './pages/SwapForm';
@@ -46,6 +48,12 @@ function App() {
           </Route>
           <Route path="/pref">
             <Preference />
+          </Route>
+          <Route path="/create">
+            <CreateWallet />
+          </Route>
+          <Route path="/restore">
+            <RestoreWallet />
           </Route>
           <Route path="/">
             <MainPage />
