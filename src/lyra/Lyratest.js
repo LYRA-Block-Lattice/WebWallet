@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from "react-router-dom";
 import { Badge } from 'antd';
-import localforage from "localforage";
+import persist from './persist';
 
 import LyraCrypto from './crypto';
 import JsonRpcClient from './jsonrpcclient';
@@ -79,9 +79,8 @@ class Lyratest extends Component {
     console.log("lyra app started.");
     this.lapp = this;
     this.lc = new LyraCrypto();    
-
-    const value = await localforage.getItem('rxstor');
-    var wallets = JSON.parse(value);
+    
+    var wallets = await persist.getData();
 
     console.log('default wallet is ', wallets[0].name);
 
@@ -104,8 +103,7 @@ class Lyratest extends Component {
 
           const tokenString = sessionStorage.getItem('token');
           const userToken = JSON.parse(tokenString);
-          const value = await localforage.getItem('rxstor');
-          var wallets = JSON.parse(value);
+          var wallets = await persist.getData();
           var decData = this.lc.decrypt(wallets[0].data, userToken);
           var pvk = this.lc.lyraDec(decData);
 

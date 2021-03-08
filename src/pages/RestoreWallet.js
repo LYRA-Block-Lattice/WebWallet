@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Form, Input, Button } from 'antd';
-import localforage from 'localforage';
+import persist from '../lyra/persist';
 
 import LyraCrypto from '../lyra/crypto';
 
@@ -35,7 +35,7 @@ export default class OpenWallet extends Component {
 
         var wds = [{ name: 'default', data: encData }];
 
-        await localforage.setItem('rxstor', JSON.stringify(wds));
+        await persist.setData(wds);
 
         this.props.setToken(values.password);
     }

@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import localforage from 'localforage';
 import { Form, Input, Button, Select, message } from 'antd';
 import "antd/dist/antd.css";
 
 import LyraCrypto from '../lyra/crypto';
+import persist from '../lyra/persist';
 
 const { Option } = Select;
 
@@ -35,19 +35,22 @@ export default class OpenWallet extends Component {
     async onFinish(values) {
         console.log('Success:', values);
 
-        var lc = new LyraCrypto();
-
-        const value = await localforage.getItem('rxstor');
-        var wallets = JSON.parse(value);
-        var decData = lc.decrypt(wallets[0].data, values.password);
-        var pvk = lc.lyraDec(decData);
-
-        if(pvk === undefined) {
+        try {
+            var lc = new LyraCrypto();
+            var wallets = await persist.getData();
+            var decData = lc.decrypt(wallets[0].data, values.password);
+            var pvk = lc.lyraDec(decData);
+    
+            if(pvk === undefined) {
+                error();
+            }
+            else {
+                this.props.setToken(values.password);
+            }   
+        } catch (err) {
+            console.log(err);
             error();
-        }
-        else {
-            this.props.setToken(values.password);
-        }           
+        }         
     }
 
     onFinishFailed(errorInfo) {

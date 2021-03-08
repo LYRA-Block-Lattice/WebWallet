@@ -13,7 +13,14 @@ import { WALLET_OPEN } from "./actionTypes";
 // after open wallet, save {name: 'wallet name', pass: 'password'} 
 
 // save to persistant storage provided by localforage, named 'rxstor'
-// [{name: 'wallet name', data: '[base64(password encrypted binary data)]'}, { ...} ...]
+// 
+// { 
+//   network: 'testnet', 
+//   wallets: [ 
+//      {name: 'wallet name', data: '[base64(password encrypted binary data)]'},
+//      { ...} ...
+//   ]
+// }
 
 export const openWallet = (name, password) => ({
   type: WALLET_OPEN,
