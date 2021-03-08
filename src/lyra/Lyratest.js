@@ -109,7 +109,8 @@ class Lyratest extends Component {
 
           const tokenString = sessionStorage.getItem('token');
           const userToken = JSON.parse(tokenString);
-          var wallets = await persist.getData();
+          var pdata = await persist.getData();
+          var wallets = pdata.wallets;
           var decData = this.lc.decrypt(wallets[0].data, userToken);
           var pvk = this.lc.lyraDec(decData);
 
