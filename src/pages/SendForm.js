@@ -23,6 +23,14 @@ const tailLayout = {
 };
 
 class Send extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { 
+      msg: ''
+    };
+    this.onFinish = this.onFinish.bind(this);
+  }
+
   onFinishFailed(errorInfo) {
     console.log('Failed:', errorInfo);
   }
@@ -32,6 +40,7 @@ class Send extends Component {
 
     var pdata = await persist.getData();
 
+    var sf = this;
     var client = new lyraClient();
     await client.CallAsync("Send", 
       pdata.wallets[0].accountId,
@@ -40,7 +49,7 @@ class Send extends Component {
       values.tokenname)
     .then(result => {
       console.log("CallAsync success. " + result);
-
+      sf.setState({msg: "Token send successfully. Your balance is " + result.balance.LYR});
     })
     .catch(error => { 
       console.log("CallAsync failed. " + error);
@@ -119,6 +128,7 @@ class Send extends Component {
           </Form.Item>
 
         </Form>
+        <h2>{this.state.msg}</h2>
       </div>
     );
   }

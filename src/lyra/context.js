@@ -1,7 +1,5 @@
 import { createContext } from 'react';
 
-import JsonRpcClient from './jsonrpcclient';
-
 const lyraCtx = {
     network: 'testnet',
     wss: undefined

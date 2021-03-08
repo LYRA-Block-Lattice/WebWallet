@@ -60,31 +60,21 @@ class lyraClient {
                 },
                 onopen: (event) => {
                     console.log("wss open.");
-                    console.log("calling method " + method + " with params " + params);
-                    ws.call(method, params, x => console.log("ws success " + x), 
-                        x => {
-                            debugger;
-                            console.log("ws failed " + x)
-                        }
-                            
-                        );
-
+                    //console.log("calling method " + method + " with params " + params);                    
                 },
                 onclose: () => {
                     console.log("wss close.");
                     // lol force reopen
-                    ws.call('Status', ['2.2', 'devnet'], x => console.log("ws success " + x), 
-                    x => console.log("ws failed " + x));
+                    //ws.call('Status', ['2.2', 'devnet'], success, failed);
                 },
                 onerror: function (event) {
                     console.log("wss error.");
+                    failed(event);
                 }
             });
 
-            ws.call('Status', 
-                ['2.2', 'devnet'], 
-                x => console.log("ws success " + x), 
-                x => console.log("ws failed " + x));
+            ws.call(method, params, success, failed);
+            //ws.call('Status', ['2.2', 'devnet'], success, failed);
         });
     }
 }
