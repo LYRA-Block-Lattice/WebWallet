@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import {
-  Link
-} from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Badge } from 'antd';
 import localforage from "localforage";
 

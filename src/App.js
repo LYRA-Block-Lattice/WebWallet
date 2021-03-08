@@ -6,6 +6,7 @@ import { Provider } from "react-redux";
 import store from "./pages/todo/redux/store";
 import TodoApp from "./pages/todo/TodoApp";
 
+import Preference from './pages/PrefForm';
 import Send from './pages/SendForm';
 import Swap from './pages/SwapForm';
 import MainPage from './pages/MainPage';
@@ -42,6 +43,9 @@ function App() {
           </Route>
           <Route path="/todo">
             <TodoApp />
+          </Route>
+          <Route path="/pref">
+            <Preference />
           </Route>
           <Route path="/">
             <MainPage />
