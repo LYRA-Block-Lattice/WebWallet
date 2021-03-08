@@ -80,7 +80,8 @@ class Lyratest extends Component {
     this.lapp = this;
     this.lc = new LyraCrypto();    
     
-    var wallets = await persist.getData();
+    var pdata = await persist.getData();
+    var wallets = pdata.wallets;
 
     console.log('default wallet is ', wallets[0].name);
 

@@ -37,7 +37,8 @@ export default class OpenWallet extends Component {
 
         try {
             var lc = new LyraCrypto();
-            var wallets = await persist.getData();
+            var pdata = await persist.getData();
+            var wallets = pdata.wallets;
             var decData = lc.decrypt(wallets[0].data, values.password);
             var pvk = lc.lyraDec(decData);
     
@@ -60,7 +61,6 @@ export default class OpenWallet extends Component {
     render() {
         return (
             <div>
-                <div {...layout}>Use this for test: eSAErSXn2djzLgWFxd8vtFfnmgrUAhEntHCgKFwTPi8AY3hnG</div>
                 <Form
                     {...layout}
                     name="basic"

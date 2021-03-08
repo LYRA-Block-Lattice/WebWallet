@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { Form, Input, Button } from 'antd';
 import persist from '../lyra/persist';
 
@@ -23,6 +23,9 @@ const tailLayout = {
 export default class CreateWallet extends Component {
     constructor(props) {
         super(props);
+        this.state = { 
+            done: false
+          };
         this.onFinish = this.onFinish.bind(this);
     }
     async onFinish(values) {
@@ -32,13 +35,15 @@ export default class CreateWallet extends Component {
         //var pvt = lc.lyraDec(values.pvtkey);
         //var actId = lc.lyraEncPub(lc.prvToPub(pvt));
 
-        var encData = lc.encrypt(values.pvtkey, values.password);
+        var pvtHex = lc.lyraGenWallet();
+        var prvKey = lc.lyraEncPvt(pvtHex);
+        var encData = lc.encrypt(prvKey, values.password);
 
-        var wds = [{ name: 'default', data: encData }];
+        var wds = { network: 'testnet', wallets: [{ name: 'default', data: encData }]};
 
         await persist.setData(wds);
 
-        this.props.setToken(values.password);
+        this.setState({done: true});
     }
 
     onFinishFailed(errorInfo) {
@@ -46,6 +51,10 @@ export default class CreateWallet extends Component {
     }
 
     render() {
+        if(this.state.done) {
+            return <Redirect to="/" />;
+        }
+        
         return (
             <div>
                 <div {...layout}>Create New Wallet</div>
@@ -61,9 +70,8 @@ export default class CreateWallet extends Component {
                     <Form.Item
                         label="Name of the wallet"
                         name="walletname"
-                        rules={[{ required: true, message: 'Please give the wallet a name.' }]}
                     >
-                        <Input placeholder="Wallet Name" />
+                        <Input placeholder="Wallet Name" defaultValue="default" disabled />
                     </Form.Item>
 
                     <Form.Item

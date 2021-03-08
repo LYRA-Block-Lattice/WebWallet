@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom';
 import { Form, Input, Button } from 'antd';
 import persist from '../lyra/persist';
 
@@ -22,6 +23,9 @@ const tailLayout = {
 export default class OpenWallet extends Component {
     constructor(props) {
         super(props);
+        this.state = { 
+            done: false
+          };
         this.onFinish = this.onFinish.bind(this);
     }
     async onFinish(values) {
@@ -33,11 +37,12 @@ export default class OpenWallet extends Component {
 
         var encData = lc.encrypt(values.pvtkey, values.password);
 
-        var wds = [{ name: 'default', data: encData }];
+        var wds = { network: 'testnet', wallets: [{ name: 'default', data: encData }]};
 
         await persist.setData(wds);
 
-        this.props.setToken(values.password);
+        // use redirect to open wallet
+        this.setState({done: true});
     }
 
     onFinishFailed(errorInfo) {
@@ -45,6 +50,10 @@ export default class OpenWallet extends Component {
     }
 
     render() {
+        if(this.state.done) {
+            return <Redirect to="/" />;
+        }
+
         return (
             <div>
                 <div {...layout}>Use this for test: eSAErSXn2djzLgWFxd8vtFfnmgrUAhEntHCgKFwTPi8AY3hnG</div>
@@ -68,9 +77,8 @@ export default class OpenWallet extends Component {
                     <Form.Item
                         label="Name of the wallet"
                         name="walletname"
-                        rules={[{ required: true, message: 'Please give the wallet a name.' }]}
                     >
-                        <Input placeholder="Wallet Name" />
+                        <Input placeholder="Wallet Name" defaultValue="default" disabled/>
                     </Form.Item>
 
                     <Form.Item

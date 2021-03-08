@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Redirect, Route, Switch } from 'react-router-dom';
-import { Form, Input, Button, InputNumber, Select } from 'antd';
+import { Redirect } from 'react-router-dom';
+import { Form, Button, Select } from 'antd';
 import "antd/dist/antd.css";
 
 const { Option } = Select;
