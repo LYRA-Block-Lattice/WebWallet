@@ -24,7 +24,7 @@ export default class OpenWallet extends Component {
         super(props);
         this.onFinish = this.onFinish.bind(this);
     }
-    onFinish(values) {
+    async onFinish(values) {
         console.log('Success:', values);
 
         var lc = new LyraCrypto();
@@ -35,25 +35,26 @@ export default class OpenWallet extends Component {
 
         var wds = [{ name: 'default', data: encData }];
 
-        localforage.setItem('rxstor', JSON.stringify(wds)).then(function (value) {
+        await localforage.setItem('rxstor', JSON.stringify(wds));
+        //.then(function (value) {
             // Do other things once the value has been saved.
-            console.log("save ok " + value);
+            //console.log("save ok " + value);
 
-            localforage.getItem('rxstor').then(function(value) {
-                // This code runs once the value has been loaded
-                // from the offline store.
-                console.log(value);
+            // localforage.getItem('rxstor').then(function(value) {
+            //     // This code runs once the value has been loaded
+            //     // from the offline store.
+            //     console.log(value);
 
-                var decData = lc.decrypt(encData, values.password);
-            }).catch(function(err) {
-                // This code runs if there were any errors
-                console.log(err);
-            });   
+            //     var decData = lc.decrypt(encData, values.password);
+            // }).catch(function(err) {
+            //     // This code runs if there were any errors
+            //     console.log(err);
+            // });   
 
-        }).catch(function(err) {
-            // This code runs if there were any errors
-            console.log("save fail " + err);
-        });
+        // }).catch(function(err) {
+        //     // This code runs if there were any errors
+        //     console.log("save fail " + err);
+        // });
 
         this.props.setToken(values.password);
     }
