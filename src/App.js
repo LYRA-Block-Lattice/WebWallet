@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.less';
 
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Link, Route, Switch } from 'react-router-dom';
 
 import LyraContext from './lyra/context';
 
@@ -12,11 +12,15 @@ import Send from './pages/SendForm';
 import Swap from './pages/SwapForm';
 import MainPage from './pages/MainPage';
 import Info from './pages/Info';
+import { HomeIcon } from './lyra/icons';
 
 function App() {
   return (
     <LyraContext.Provider>
       <BrowserRouter>
+        <div className="ldark">
+          <Link to="/"><HomeIcon /></Link>
+        </div>
         <Switch>
           <Route path="/info">
             <Info />
