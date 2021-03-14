@@ -1,5 +1,10 @@
 @import '~antd/dist/antd.less';
 
+#root {
+    min-width:200px;        /* Suppose you want minimum width of 1000px */
+    width: auto !important;  /* Firefox will set width as auto */
+    width:400px;            /* As IE6 ignores !important it will set width as 1000px; */
+}
 .wrapper {
   background-color: #43395b;
   min-height: 100vh;

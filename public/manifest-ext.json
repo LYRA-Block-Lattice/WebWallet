@@ -1,0 +1,26 @@
+{
+  "name": "My Lyra",
+  "description": "A browser based wallet manager for Lyra blockchain",
+  "version": "0.1",
+  "manifest_version": 3,
+  "background": {
+    "service_worker": "worker.js"
+  },
+  "permissions": ["storage", "activeTab", "scripting"],
+  "action": {
+    "default_popup": "index.html",
+    "default_icon": {
+      "16": "/images/icocolor2_16.png",
+      "32": "/images/icocolor2_32.png",
+      "48": "/images/icocolor2_48.png",
+      "128": "/images/icocolor2_128.png"
+    }
+  },
+  "icons": {
+    "16": "/images/icocolor2_16.png",
+    "32": "/images/icocolor2_32.png",
+    "48": "/images/icocolor2_48.png",
+    "128": "/images/icocolor2_128.png"
+  },
+  "options_page": "options.html"
+}
