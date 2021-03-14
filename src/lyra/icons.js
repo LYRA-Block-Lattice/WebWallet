@@ -8,8 +8,8 @@ const iconStyle = {
 }
 
 const smallIconStyle = {
-  height: '16px',
-  width: '16px',
+  height: '24px',
+  width: '24px',
   margin: '8px',
   fill: 'lightcyan'
 }
