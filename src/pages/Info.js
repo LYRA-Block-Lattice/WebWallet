@@ -61,6 +61,7 @@ export default class Info extends Component {
                 <p>Current connected blockchain:</p>
                 <pre>{this.state.network}</pre>
                 <Button type="link" onClick={this.shwopvt}>Show my private key</Button>
+                <Button type="link" onClick={this.shwopvt}>Show my private key</Button>
             </div>
             
         );
