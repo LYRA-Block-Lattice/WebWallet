@@ -1,0 +1,36 @@
+.wrapperClass {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 50px;
+}
+
+.createWallet {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: fit-content;
+  padding: 20px 30px;
+  height: 100%;
+  border: 1px solid lightgrey;
+  border-radius: 5px;
+}
+
+.createWallet__form form.Item {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  color: blue;
+}
+
+.createWallet__name {
+  margin: 5px 0px 30px 0px;
+  color: rgb(0, 124, 248);
+  font-weight: 800;
+  font-size: 18px;
+}
+
+.createWallet__button {
+  margin: 20px 0px 0px 0px;
+}
