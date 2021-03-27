@@ -134,7 +134,7 @@ class FrontForm extends Component {
         }
       },
       onopen: (event) => {
-        console.log("wss open.");
+        console.log(new Date().toUTCString() + ' wss open.');
 
         this.ws.call('Monitor', [ this.state.accountId ]);
         this.ws.call('Balance', [ this.state.accountId ], (resp) => this.lapp.updbal(resp), this.error_cb);
@@ -143,14 +143,14 @@ class FrontForm extends Component {
       onclose: () => {
         console.log("wss close.");
         // lol force reopen
-        this.ws.call('Status', [ '2.2', 'devnet' ], this.success_cb, this.error_cb);
+        this.ws.call('Status', [ '2.2.0.0', 'devnet' ], this.success_cb, this.error_cb);
       },
       onerror: function (event) {
         console.log("wss error.");
       }
     });
 
-    this.ws.call('Status', [ '2.2', 'devnet' ], this.success_cb, this.error_cb);
+    this.ws.call('Status', [ '2.2.0.0', 'devnet' ], this.success_cb, this.error_cb);
   }
 
   updbal(resp) {

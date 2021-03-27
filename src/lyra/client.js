@@ -59,7 +59,7 @@ class lyraClient {
                     }
                 },
                 onopen: (event) => {
-                    console.log("wss open.");
+                    console.log(new Date().toUTCString() + ' wss open.');
                     //console.log("calling method " + method + " with params " + params);                    
                 },
                 onclose: () => {
