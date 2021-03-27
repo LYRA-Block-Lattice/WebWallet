@@ -12,6 +12,8 @@ import Send from './pages/SendForm';
 import Swap from './pages/SwapForm';
 import MainPage from './pages/MainPage';
 import Info from './pages/Info';
+import OpenWallet from './pages/OpenWallet';
+
 import { HomeIcon } from './lyra/icons';
 
 function App() {
@@ -39,6 +41,9 @@ function App() {
           </Route>
           <Route path="/restore">
             <RestoreWallet />
+          </Route>
+          <Route path="/open">
+            <OpenWallet />
           </Route>
           <Route path="/">
             <MainPage />

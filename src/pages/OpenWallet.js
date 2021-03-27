@@ -31,7 +31,21 @@ export default class OpenWallet extends Component {
     constructor(props) {
         super(props);
         this.onFinish = this.onFinish.bind(this);
+        this.state = { 
+            exists: false
+          };
     }
+
+    async componentDidMount() {
+        var pdata = await persist.getData();
+        if(pdata === null) {
+          this.setState({ exists: false });
+        }
+        else {
+            this.setState({ exists: true});
+        }
+    }
+
     async onFinish(values) {
         console.log('Success:', values);
 
@@ -57,41 +71,45 @@ export default class OpenWallet extends Component {
         console.log('Failed:', errorInfo);
     }
 
+    OpenWalletForm = () => (
+        <Form
+        {...layout}
+        name="basic"
+        initialValues={{
+            remember: true,
+        }}
+        onFinish={this.onFinish}
+        onFinishFailed={this.onFinishFailed}
+        >
+            <Form.Item
+                label="Wallet Name"
+                name="walletname"
+            >
+                <Select style={{ width: 120 }} defaultValue="default">
+                    <Option value="default">Default</Option>
+                </Select>
+            </Form.Item>
+
+            <Form.Item
+                label="Password"
+                name="password"
+                rules={[{ required: true, message: 'Please input your password.' }]}
+            >
+                <Input.Password />
+            </Form.Item>
+
+            <Form.Item {...tailLayout}>
+                <Button type="primary" htmlType="submit">
+                    Open Wallet
+            </Button>
+            </Form.Item>
+        </Form>
+    )
+
     render() {
         return (
             <div>
-                <Form
-                    {...layout}
-                    name="basic"
-                    initialValues={{
-                        remember: true,
-                    }}
-                    onFinish={this.onFinish}
-                    onFinishFailed={this.onFinishFailed}
-                >
-                    <Form.Item
-                        label="Wallet Name"
-                        name="walletname"
-                    >
-                        <Select style={{ width: 120 }} defaultValue="default">
-                            <Option value="default">Default</Option>
-                        </Select>
-                    </Form.Item>
-
-                    <Form.Item
-                        label="Password"
-                        name="password"
-                        rules={[{ required: true, message: 'Please input your password.' }]}
-                    >
-                        <Input.Password />
-                    </Form.Item>
-
-                    <Form.Item {...tailLayout}>
-                        <Button type="primary" htmlType="submit">
-                            Open Wallet
-                      </Button>
-                    </Form.Item>
-                </Form>
+                { this.state.exists ? <this.OpenWalletForm /> : null }
 
                 <p><Link to="/create">Create New Wallet</Link></p>
                 <p><Link to="/restore">Restore by Private Key</Link></p>                    

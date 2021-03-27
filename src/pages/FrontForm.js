@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { Badge } from 'antd';
 import persist from '../lyra/persist';
 
@@ -27,6 +27,9 @@ class FrontForm extends Component {
   }
 
   render() {
+    if(this.state.accountId === null)
+      return <Redirect to="/open" />;
+
     return (      
       <div style={{ color: 'white' }}>
         <div>
@@ -79,6 +82,11 @@ class FrontForm extends Component {
     this.lapp = this;
 
     var pdata = await persist.getData();
+    if(pdata === null) {
+      this.setState({ accountId: null });
+      return;
+    }
+
     var wallets = pdata.wallets;
 
     console.log('default wallet is ', wallets[0].name);
