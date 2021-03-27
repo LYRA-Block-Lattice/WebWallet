@@ -2,9 +2,13 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Form, Input, Button, Select, message } from 'antd';
 import "antd/dist/antd.css";
+import { Modal, Space } from 'antd';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 
 import LyraCrypto from '../lyra/crypto';
 import persist from '../lyra/persist';
+
+const { confirm } = Modal;
 
 const { Option } = Select;
 
@@ -31,6 +35,8 @@ export default class OpenWallet extends Component {
     constructor(props) {
         super(props);
         this.onFinish = this.onFinish.bind(this);
+        this.removeWallet = this.removeWallet.bind(this);
+        this.showConfirm = this.showConfirm.bind(this);
         this.state = { 
             exists: false
           };
@@ -65,6 +71,27 @@ export default class OpenWallet extends Component {
             console.log(err);
             error();
         }         
+    }
+
+    showConfirm() {
+        const fm = this;
+        confirm({
+          title: 'Do you Want to delete these items?',
+          icon: <ExclamationCircleOutlined />,
+          content: 'Some descriptions',
+          onOk() {
+            console.log('OK');
+            fm.removeWallet();
+          },
+          onCancel() {
+            console.log('Cancel');
+          },
+        });
+      }
+
+    removeWallet() {
+        persist.removeData();
+        this.setState({ exists: false });
     }
 
     onFinishFailed(errorInfo) {
@@ -112,7 +139,10 @@ export default class OpenWallet extends Component {
                 { this.state.exists ? <this.OpenWalletForm /> : null }
 
                 <p><Link to="/create">Create New Wallet</Link></p>
-                <p><Link to="/restore">Restore by Private Key</Link></p>                    
+                <p><Link to="/restore">Restore by Private Key</Link></p> 
+
+                { this.state.exists ? <p><Button type="link" onClick={this.showConfirm}>Remove Wallet</Button></p> : null }
+                   
             </div>
         );
     }

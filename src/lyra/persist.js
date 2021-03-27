@@ -17,6 +17,10 @@ class persist {
     static async setData(data) {
         await localforage.setItem('rxstor', JSON.stringify(data));
     }
+
+    static async removeData() {
+        localforage.removeItem('rxstor');
+    }
 }
 
 export default persist;
