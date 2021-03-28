@@ -2,6 +2,9 @@ import { applyMiddleware, createStore } from "redux";
 import thunk from 'redux-thunk';
 import promise from 'redux-promise-middleware';
 
+import createSagaMiddleware from 'redux-saga';
+
+import rootSaga from './sagas';
 import persist from '../../lyra/persist';
 import * as actionTypes from "./actionTypes";
 //import { openWallet } from "./actions";
@@ -22,7 +25,7 @@ const initState = {
 
 const reducer = (state = initState, action) => {
     switch(action.type) {
-        case "STORE_INIT_FULFILLED": return {
+        case "STORE_INIT_DONE": return {
             ...state,
             existing: action.payload !== undefined && action.payload !== null
         }
@@ -45,7 +48,9 @@ const logger = (store) => (next) => (action) => {
     next(action);
 }
 
-const middleware = applyMiddleware(promise, logger, thunk);
+const sagaMiddleware = createSagaMiddleware();
+
+const middleware = applyMiddleware(promise, logger, thunk, sagaMiddleware);
 
 const store = createStore(reducer, middleware);
 
@@ -53,7 +58,12 @@ store.subscribe(() => {
     console.log("store changed", store.getState())
 })
 
-store.dispatch({type: actionTypes.STORE_INIT, payload: persist.checkData()});
+sagaMiddleware.run(rootSaga);
+
+export const action = type => store.dispatch({type});
+//export const actionx = (type, payload) => store.dispatch({type, payload});
+
+action(actionTypes.STORE_INIT);
 //store.dispatch(openWallet("default", "aaa"));
 
 export default store;

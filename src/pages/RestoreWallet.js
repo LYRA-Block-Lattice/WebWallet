@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { Form, Input, Button } from 'antd';
 import persist from '../lyra/persist';
 
 import LyraCrypto from '../lyra/crypto';
+
+import * as actionTypes from './redux/actionTypes';
 
 const layout = {
     labelCol: {
@@ -20,28 +23,35 @@ const tailLayout = {
     },
 };
 
-export default class OpenWallet extends Component {
+class RestoreWallet extends Component {
     constructor(props) {
         super(props);
         this.state = { 
             done: false
           };
-        this.onFinish = this.onFinish.bind(this);
     }
-    async onFinish(values) {
+
+    onFinish = (values) => 
+    {
         console.log('Success:', values);
 
-        var pvt = LyraCrypto.lyraDec(values.pvtkey);
-        var actId = LyraCrypto.lyraEncPub(LyraCrypto.prvToPub(pvt));
-        var encData = LyraCrypto.encrypt(values.pvtkey, values.password);
+        this.props.dispatch({type: actionTypes.WALLET_RESTORE, payload: {
+            name: "default",
+            privateKey: values.pvtkey,
+            password: values.password
+        }});
 
-        var wds = { network: 'testnet', wallets: [{ 
-            name: 'default', 
-            accountId: actId, 
-            data: encData
-        }]};
+        // var pvt = LyraCrypto.lyraDec(values.pvtkey);
+        // var actId = LyraCrypto.lyraEncPub(LyraCrypto.prvToPub(pvt));
+        // var encData = LyraCrypto.encrypt(values.pvtkey, values.password);
 
-        await persist.setData(wds);
+        // var wds = { network: 'testnet', wallets: [{ 
+        //     name: 'default', 
+        //     accountId: actId, 
+        //     data: encData
+        // }]};
+
+        // await persist.setData(wds);
 
         // use redirect to open wallet
         this.setState({done: true});
@@ -110,3 +120,5 @@ export default class OpenWallet extends Component {
     }
 
 }
+
+export default connect()(RestoreWallet);

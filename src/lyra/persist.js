@@ -18,12 +18,8 @@ class persist {
         return promis;
     }
 
-    static async getData() {
-
-    }
-
-    static async setData(data) {
-        await localforage.setItem('rxstor', JSON.stringify(data));
+    static setData(data) {
+        return localforage.setItem('rxstor', JSON.stringify(data));
     }
 
     static async removeData() {
