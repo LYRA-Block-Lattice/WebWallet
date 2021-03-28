@@ -72,6 +72,12 @@
     this.JSON = JSON;
   };
 
+  JsonRpcClient.prototype.close = function () {
+    if (this._wsSocket !== null) {
+      this._wsSocket.close();
+    }    
+  }
+
   /**
    * @fn call
    * @memberof JsonRpcClient

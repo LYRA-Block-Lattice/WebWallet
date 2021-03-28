@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
+import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom';
 import { Form, Input, Button, Select, message, Modal } from 'antd';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import "antd/dist/antd.css";
 
-import LyraCrypto from '../lyra/crypto';
-import persist from '../lyra/persist';
 import { connect } from 'react-redux';
+import * as actionTypes from './redux/actionTypes';
 
 const { confirm } = Modal;
 
@@ -27,7 +27,7 @@ const tailLayout = {
     },
 };
 
-const error = () => {
+const passwordAlert = () => {
     message.error('Wrong password!');
   };
 
@@ -39,29 +39,17 @@ class OpenWalletPage extends Component {
         this.showConfirm = this.showConfirm.bind(this);
     }
 
-    async componentDidMount() {
-
-    }
+    componentDidUpdate(prevProps){
+        if(this.props.Err !== null){ passwordAlert(); }
+     }
 
     async onFinish(values) {
         console.log('Success:', values);
 
-        try {
-            var pdata = await persist.getData();
-            var wallets = pdata.wallets;
-            var decData = LyraCrypto.decrypt(wallets[0].data, values.password);
-            var pvk = LyraCrypto.lyraDec(decData);
-    
-            if(pvk === undefined) {
-                error();
-            }
-            else {
-                this.props.setToken(values.password);
-            }   
-        } catch (err) {
-            console.log(err);
-            error();
-        }         
+        this.props.dispatch({type: actionTypes.WALLET_OPEN, payload: {
+            name: "default",
+            password: values.password
+        }});   
     }
 
     showConfirm() {
@@ -72,7 +60,7 @@ class OpenWalletPage extends Component {
           content: 'The wallet can\'t be recovered if not backup first.',
           onOk() {
             console.log('Yes');
-            fm.removeWallet();
+            fm.removeWallet("default");
           },
           onCancel() {
             console.log('Cancel');
@@ -80,8 +68,8 @@ class OpenWalletPage extends Component {
         });
       }
 
-    removeWallet() {
-        persist.removeData();
+    removeWallet(name) {
+        this.props.dispatch({type: actionTypes.WALLET_REMOVE, payload: name})
         this.setState({ exists: false });
     }
 
@@ -143,7 +131,9 @@ class OpenWalletPage extends Component {
 const mapStateToProps = state => {
     console.log("state is", state);
     return {
-        IsExists: state.existing
+        IsExists: state.existing,
+        IsOpened: state.opening,
+        Err: state.error
     };    
   }
 

@@ -11,6 +11,7 @@ import * as actionTypes from "./actionTypes";
 
 const initState = {
     wallet: {
+        network: "",
         accountId: "",
         balance: 0,
         unrecv: 0,
@@ -20,7 +21,8 @@ const initState = {
     pending: false,
     name: "default",
     opening: false,
-    password: ""
+    password: "",
+    error: null
 }
 
 const reducer = (state = initState, action) => {
@@ -33,10 +35,37 @@ const reducer = (state = initState, action) => {
             ...state,
             existing: false
         }
-        // case actionTypes.WALLET_OPEN: {
-            
-        //     break;
-        // }
+        case actionTypes.WALLET_RESTORE_DONE: return {
+             ...state,
+             existing: true,
+             opening: false,
+        };
+        case actionTypes.WALLET_REMOVE_DONE: return {
+            ...state,
+            existing: false,
+            opening: false,
+        };     
+        case actionTypes.WALLET_OPEN: return {
+            ...state,
+            opening: false,
+            name: "",
+            wallet: { },
+            error: null
+        };   
+        case actionTypes.WALLET_OPEN_DONE: return {
+            ...state,
+            opening: true,
+            name: action.payload.wallets[0].name,
+            wallet: {
+                network: action.payload.network,
+                accountId: action.payload.wallets[0].accountId,
+            }
+        };
+        case actionTypes.WALLET_OPEN_FAILED: return {
+            ...state,
+            opening: false,
+            error: action.payload
+        };
         default: {
             return state;
         }

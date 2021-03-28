@@ -1,6 +1,6 @@
 import React from 'react';
+import { useSelector } from 'react-redux'
 import { Link } from "react-router-dom";
-import useToken from './useToken';
 import OpenWallet from './OpenWallet';
 import { SettingsIcon } from '../lyra/icons';
 
@@ -8,13 +8,13 @@ import logo from '../logo.png';
 import FrontForm from './FrontForm';
 
 export default function MainPage() {
-    const { token, setToken } = useToken();
+    const opening = useSelector(state => state.opening);
 
-    if (!token) {
-        return <OpenWallet setToken={setToken} />
+    if (!opening) {
+        return <OpenWallet />
     }
 
-    if (token)
+    if (opening)
         return (
             <div className="wrapper">
                 <div style={{ position: 'absolute', top: '0px', right: '0px' }}>

@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
 import { Link, Redirect } from "react-router-dom";
 import { Badge } from 'antd';
-import persist from '../lyra/persist';
 
-import LyraCrypto from '../lyra/crypto';
-import JsonRpcClient from '../lyra/jsonrpcclient';
 import { InfoIcon, PayIcon, SwapIcon } from '../lyra/icons';
 
 class FrontForm extends Component {
@@ -77,84 +74,13 @@ class FrontForm extends Component {
     console.log("lyra app started.");
     this.lapp = this;
 
-    var pdata = await persist.getData();
-    if(pdata === null) {
-      this.setState({ accountId: null });
-      return;
-    }
-
-    var wallets = pdata.wallets;
-
-    console.log('default wallet is ', wallets[0].name);
-
-    const tokenString = sessionStorage.getItem('token');
-    const userToken = JSON.parse(tokenString);
-
-    var decData = LyraCrypto.decrypt(wallets[0].data, userToken);
-    var actId = LyraCrypto.lyraEncPub(LyraCrypto.prvToPub(LyraCrypto.lyraDec(decData)));
-    this.setState({ accountId: actId} );
     // var aid = LyraCrypto.lyraEncPub(this.state.puk);
     // console.log("pub account id is " + aid);
     // require('assert').equal(aid, this.state.accountId);
 
-    var url = 'wss://testnet.lyra.live/api/v1/socket';
-    if(pdata.network === 'mainnet')
-      url = 'wss://mainnet.lyra.live/api/v1/socket';
-    if(pdata.network === 'devnet')
-      url = 'wss://localhost:4504/api/v1/socket';
 
-    this.ws = new JsonRpcClient({
-     socketUrl: url,
-      oncallback: async (resp) => {
-        if (resp.method === "Sign") {
-          console.log("Signing " + resp.params[0] + " of " + resp.params[1]);
 
-          const tokenString = sessionStorage.getItem('token');
-          const userToken = JSON.parse(tokenString);
-          var pdata = await persist.getData();
-          var wallets = pdata.wallets;
-          var decData = LyraCrypto.decrypt(wallets[0].data, userToken);
-          var pvk = LyraCrypto.lyraDec(decData);
-
-          var signt = LyraCrypto.lyraSign(resp.params[1], pvk);
-          return ["der", signt];
-        }
-        else {
-          console.log("unsupported server call back method: " + resp.method);
-          return null;
-        }
-      },
-      onmessage: (event) => {
-        console.log(`[message] Data received from server: ${event.data}`);
-        var result = JSON.parse(event.data);
-        if (result.method === "Notify") {
-          var news = result.params[0];
-          console.log("WS Notify: " + news.catalog)
-          if (news.catalog === "Receiving") {
-            this.setState({ unrecvlyr: this.state.unrecvlyr + news.content.funds.LYR });
-            this.setState({ unrecv: this.state.unrecv + 1 });
-            this.updurcv();
-          }
-        }
-      },
-      onopen: (event) => {
-        console.log(new Date().toUTCString() + ' wss open.');
-
-        this.ws.call('Monitor', [ this.state.accountId ]);
-        this.ws.call('Balance', [ this.state.accountId ], (resp) => this.lapp.updbal(resp), this.error_cb);
-        console.log("wss created.");
-      },
-      onclose: () => {
-        console.log("wss close.");
-        // lol force reopen
-        this.ws.call('Status', [ '2.2.0.0', 'devnet' ], this.success_cb, this.error_cb);
-      },
-      onerror: function (event) {
-        console.log("wss error.");
-      }
-    });
-
-    this.ws.call('Status', [ '2.2.0.0', 'devnet' ], this.success_cb, this.error_cb);
+    //this.ws.call('Status', [ '2.2.0.0', 'devnet' ], this.success_cb, this.error_cb);
   }
 
   updbal(resp) {
