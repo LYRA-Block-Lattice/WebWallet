@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Form, Input, Button, Select, message } from 'antd';
-import "antd/dist/antd.css";
-import { Modal, Space } from 'antd';
+import { Form, Input, Button, Select, message, Modal } from 'antd';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
+import "antd/dist/antd.css";
 
 import LyraCrypto from '../lyra/crypto';
 import persist from '../lyra/persist';
@@ -76,11 +75,11 @@ export default class OpenWallet extends Component {
     showConfirm() {
         const fm = this;
         confirm({
-          title: 'Do you Want to delete these items?',
+          title: 'Do you Want to delete wallet?',
           icon: <ExclamationCircleOutlined />,
-          content: 'Some descriptions',
+          content: 'The wallet can\'t be recovered if not backup first.',
           onOk() {
-            console.log('OK');
+            console.log('Yes');
             fm.removeWallet();
           },
           onCancel() {
