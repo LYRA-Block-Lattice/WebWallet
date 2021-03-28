@@ -18,10 +18,6 @@ class FrontForm extends Component {
       unrecv: 0,
       unrecvlyr: 0,
       unrecvmsg: "",  
-      showAddr: false,
-      showSend: false,
-      showSendConfirm : false,
-      showSwap: false,
     };
     this.send = this.send.bind(this)
   }

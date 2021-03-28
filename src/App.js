@@ -1,9 +1,8 @@
 import React from 'react';
 import './App.less';
-
 import { BrowserRouter, Link, Route, Switch } from 'react-router-dom';
 
-import LyraContext from './lyra/context';
+//import LyraContext from './lyra/context';
 
 import CreateWallet from './pages/CreateWallet';
 import RestoreWallet from './pages/RestoreWallet';
@@ -18,7 +17,7 @@ import { HomeIcon } from './lyra/icons';
 
 function App() {
   return (
-    <LyraContext.Provider>
+    //<LyraContext.Provider>
       <BrowserRouter>
         <div className="ldark">
           <Link to="/"><HomeIcon /></Link>
@@ -50,7 +49,7 @@ function App() {
           </Route>
         </Switch>
       </BrowserRouter>
-    </LyraContext.Provider>
+    //</LyraContext.Provider>
   );
 }
 

@@ -6,6 +6,7 @@ import "antd/dist/antd.css";
 
 import LyraCrypto from '../lyra/crypto';
 import persist from '../lyra/persist';
+import { connect } from 'react-redux';
 
 const { confirm } = Modal;
 
@@ -30,25 +31,16 @@ const error = () => {
     message.error('Wrong password!');
   };
 
-export default class OpenWallet extends Component {
+class OpenWalletPage extends Component {
     constructor(props) {
         super(props);
         this.onFinish = this.onFinish.bind(this);
         this.removeWallet = this.removeWallet.bind(this);
         this.showConfirm = this.showConfirm.bind(this);
-        this.state = { 
-            exists: false
-          };
     }
 
     async componentDidMount() {
-        var pdata = await persist.getData();
-        if(pdata === null) {
-          this.setState({ exists: false });
-        }
-        else {
-            this.setState({ exists: true});
-        }
+
     }
 
     async onFinish(values) {
@@ -103,6 +95,7 @@ export default class OpenWallet extends Component {
         name="basic"
         initialValues={{
             remember: true,
+            walletname: "default"
         }}
         onFinish={this.onFinish}
         onFinishFailed={this.onFinishFailed}
@@ -111,7 +104,7 @@ export default class OpenWallet extends Component {
                 label="Wallet Name"
                 name="walletname"
             >
-                <Select style={{ width: 120 }} defaultValue="default">
+                <Select style={{ width: 120 }}>
                     <Option value="default">Default</Option>
                 </Select>
             </Form.Item>
@@ -135,15 +128,25 @@ export default class OpenWallet extends Component {
     render() {
         return (
             <div>
-                { this.state.exists ? <this.OpenWalletForm /> : null }
+                { this.props.IsExists ? <this.OpenWalletForm /> : null }
 
                 <p><Link to="/create">Create New Wallet</Link></p>
                 <p><Link to="/restore">Restore by Private Key</Link></p> 
 
-                { this.state.exists ? <p><Button type="link" onClick={this.showConfirm}>Remove Wallet</Button></p> : null }
+                { this.props.IsExists ? <p><Button type="link" onClick={this.showConfirm}>Remove Wallet</Button></p> : null }
                    
             </div>
         );
     }
-
 }
+
+const mapStateToProps = state => {
+    console.log("state is", state);
+    return {
+        IsExists: state.existing
+    };    
+  }
+
+const OpenWallet = connect(mapStateToProps)(OpenWalletPage);
+
+export default OpenWallet;
