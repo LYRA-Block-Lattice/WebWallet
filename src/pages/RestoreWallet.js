@@ -2,9 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { Form, Input, Button } from 'antd';
-import persist from '../lyra/persist';
-
-import LyraCrypto from '../lyra/crypto';
 
 import * as actionTypes from './redux/actionTypes';
 

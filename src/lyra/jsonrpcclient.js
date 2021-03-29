@@ -285,7 +285,7 @@
         // Set up sending of message for when the socket is open.
         socket.onopen = function(event) {
           // Hook for extra onopen callback
-          self.options.onopen(event);
+          self.options.onopen.next();
 
           // Send queued requests.
           var timeout = self.options.timeout;
@@ -328,7 +328,7 @@
     try {
       response = this.JSON.parse(event.data);
     } catch (err) {
-      this.options.onmessage(event);
+      this.options.onmessage.next(event);
       return;
     }
 
@@ -371,7 +371,7 @@
       // a server call back
       else if ('method' in response) {
         // Construct the JSON-RPC 2.0 request.
-        var cbresult = await this.options.oncallback(response);
+        var cbresult = this.options.oncallback.next(response);
         var request = {
           jsonrpc: '2.0',
           id: response.id,
@@ -389,7 +389,7 @@
     }
 
     // If we get here it's an invalid JSON-RPC response, pass to fallback message handler.
-    this.options.onmessage(event);
+    this.options.onmessage.next(event);
   };
 
   /**
@@ -407,7 +407,7 @@
    **/
   JsonRpcClient.prototype._wsOnClose = function(event) {
     this._failAllCalls('Socket closed.');
-    this.options.onclose(event);
+    this.options.onclose.next(event);
   };
 
   /**

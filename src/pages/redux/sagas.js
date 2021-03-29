@@ -6,6 +6,8 @@ import LyraCrypto from '../../lyra/crypto';
 import JsonRpcClient from '../../lyra/jsonrpcclient';
 
 let ws;
+let network;
+let accountId;
 
 function* checkWalletExists () {
     const data = yield persist.checkData();
@@ -43,10 +45,19 @@ function* openWallet(action) {
     }
     else {
         yield put({type: actionTypes.WALLET_OPEN_DONE, payload: pdata});
+        yield put({type: actionTypes.WSRPC_CREATE, payload: {
+            network: pdata.network,
+            accountId: wallets[0].accountId
+        } });
     }   
 }
 
 function* wscallback(resp) {
+    while(true) {
+        let evt = yield null;
+        console.log("wscallback from server", evt);
+    }
+
     if (resp.method === "Sign") {
         yield put({type: actionTypes.WSRPC_SERVER_SIGNREQ});
         console.log("Signing " + resp.params[0] + " of " + resp.params[1]);
@@ -67,36 +78,59 @@ function* wscallback(resp) {
     }
 }
 
-function* wsonmessage(event) {
-    console.log(`[message] Data received from server: ${event.data}`);
-    yield put({type: actionTypes.WSRPC_MESSAGE});
-    var result = JSON.parse(event.data);
-    if (result.method === "Notify") {
-        var news = result.params[0];
-        console.log("WS Notify: " + news.catalog)
-        if (news.catalog === "Receiving") {
-            this.setState({ unrecvlyr: this.state.unrecvlyr + news.content.funds.LYR });
-            this.setState({ unrecv: this.state.unrecv + 1 });
-            this.updurcv();
-        }
+function* wsonmessage() {
+    while(true) {
+        let evt = yield null;
+        console.log("[message] Data received from server", evt);
     }
+    // yield put({type: actionTypes.WSRPC_MESSAGE});
+    // var result = JSON.parse(event.data);
+    // if (result.method === "Notify") {
+    //     var news = result.params[0];
+    //     console.log("WS Notify: " + news.catalog)
+    //     if (news.catalog === "Receiving") {
+    //         this.setState({ unrecvlyr: this.state.unrecvlyr + news.content.funds.LYR });
+    //         this.setState({ unrecv: this.state.unrecv + 1 });
+    //         this.updurcv();
+    //     }
+    // }
 }
 
 function* wsonopen(event) {
     console.log(new Date().toUTCString() + ' wss open.');
 
-    yield put({ type: actionTypes.WSRPC_CONNECTED });
+    ws.call('Monitor', [accountId]);
+    //ws.call('Balance', [accountId], (resp) => this.lapp.updbal(resp), this.error_cb);
+    console.log("wss created and monitored.");
 
-    this.ws.call('Monitor', [this.state.accountId]);
-    this.ws.call('Balance', [this.state.accountId], (resp) => this.lapp.updbal(resp), this.error_cb);
-    console.log("wss created.");
+    yield put({ type: actionTypes.WSRPC_CONNECTED });
 }
 
 function* wsonclose() {
     console.log("wss close.");
-    yield put({ type: actionTypes.WSRPC_CLOSED });
+    //yield put({ type: actionTypes.WSRPC_CLOSED });
     // lol force reopen
-    this.ws.call('Status', ['2.2.0.0', 'devnet'], this.success_cb, this.error_cb);
+    var url = 'wss://testnet.lyra.live/api/v1/socket';
+    if(network === 'mainnet')
+      url = 'wss://mainnet.lyra.live/api/v1/socket';
+    if(network === 'devnet')
+      url = 'wss://localhost:4504/api/v1/socket';
+
+    if(ws !== undefined) {
+        ws.close();
+    }
+
+    ws = new JsonRpcClient({
+        socketUrl: url,
+        oncallback: wscallback(),
+        onmessage: wsonmessage(),
+        onopen: wsonopen(),
+        onclose: wsonclose(),
+        onerror: wsonerror
+      });
+
+    ws.call('Status', ['2.2.0.0', 'testnet']);
+    console.log("force wss reopen.");
 }
 
 function* wsonerror(err) {
@@ -104,7 +138,10 @@ function* wsonerror(err) {
     yield put({ type: actionTypes.WSRPC_ERROR, payload: err });
 }
 
-function* wsrpc (network) {
+function* wsrpc (action) {
+    network = action.payload.network;
+    accountId = action.payload.accountId;
+
     var url = 'wss://testnet.lyra.live/api/v1/socket';
     if(network === 'mainnet')
       url = 'wss://mainnet.lyra.live/api/v1/socket';
@@ -117,12 +154,16 @@ function* wsrpc (network) {
 
     ws = new JsonRpcClient({
       socketUrl: url,
-      oncallback: wscallback,
-      onmessage: wsonmessage,
-      onopen: wsonopen,
-      onclose: wsonclose,
+      oncallback: wscallback(),
+      onmessage: wsonmessage(),
+      onopen: wsonopen(),
+      onclose: wsonclose(),
       onerror: wsonerror
     });
+
+    yield ws.call('Status', [ '2.2.0.0', 'devnet' ], 
+        a => console.log("connected."), 
+        err => console.log("connect error"));
 
     yield put({ type: actionTypes.WSRPC_CREATED });
 }
