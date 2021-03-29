@@ -52,30 +52,38 @@ function* openWallet(action) {
     }   
 }
 
-function* wscallback(resp) {
-    while(true) {
-        let evt = yield null;
-        console.log("wscallback from server", evt);
+function* wscallback(servercall) {
+    // while(true) {
+    //     let evt = yield null;
+    //     console.log("wscallback from server", evt);
+    // }
+
+    console.log("wscallback called!", servercall);
+    while(true)
+    {
+        console.log("wscallback called in while loop", servercall);
+        let resp = yield servercall;
+        console.log("wscallback from server", resp);
+        if (resp.method === "Sign") {
+            yield put({type: actionTypes.WSRPC_SERVER_SIGNREQ});
+            console.log("Signing " + resp.params[0] + " of " + resp.params[1]);
+    
+            const tokenString = sessionStorage.getItem('token');
+            const userToken = JSON.parse(tokenString);
+            var pdata = persist.getData();
+            var wallets = pdata.wallets;
+            var decData = LyraCrypto.decrypt(wallets[0].data, userToken);
+            var pvk = LyraCrypto.lyraDec(decData);
+    
+            var signt = LyraCrypto.lyraSign(resp.params[1], pvk);
+            yield ["der", signt];
+        }
+        else {
+            console.log("unsupported server call back method: " + resp.method);
+            yield null;
+        }
     }
 
-    if (resp.method === "Sign") {
-        yield put({type: actionTypes.WSRPC_SERVER_SIGNREQ});
-        console.log("Signing " + resp.params[0] + " of " + resp.params[1]);
-
-        const tokenString = sessionStorage.getItem('token');
-        const userToken = JSON.parse(tokenString);
-        var pdata = persist.getData();
-        var wallets = pdata.wallets;
-        var decData = LyraCrypto.decrypt(wallets[0].data, userToken);
-        var pvk = LyraCrypto.lyraDec(decData);
-
-        var signt = LyraCrypto.lyraSign(resp.params[1], pvk);
-        return ["der", signt];
-    }
-    else {
-        console.log("unsupported server call back method: " + resp.method);
-        return null;
-    }
 }
 
 function* wsonmessage() {
@@ -96,14 +104,14 @@ function* wsonmessage() {
     // }
 }
 
-function* wsonopen(event) {
+function* wsonopen() {
     console.log(new Date().toUTCString() + ' wss open.');
 
     ws.call('Monitor', [accountId]);
     //ws.call('Balance', [accountId], (resp) => this.lapp.updbal(resp), this.error_cb);
     console.log("wss created and monitored.");
 
-    yield put({ type: actionTypes.WSRPC_CONNECTED });
+    //yield put({ type: actionTypes.WSRPC_CONNECTED });
 }
 
 function* wsonclose() {
@@ -126,7 +134,7 @@ function* wsonclose() {
         onmessage: wsonmessage(),
         onopen: wsonopen(),
         onclose: wsonclose(),
-        onerror: wsonerror
+        onerror: wsonerror()
       });
 
     ws.call('Status', ['2.2.0.0', 'testnet']);
@@ -158,7 +166,7 @@ function* wsrpc (action) {
       onmessage: wsonmessage(),
       onopen: wsonopen(),
       onclose: wsonclose(),
-      onerror: wsonerror
+      onerror: wsonerror()
     });
 
     yield ws.call('Status', [ '2.2.0.0', 'devnet' ], 

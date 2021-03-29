@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Form, Input, Button, InputNumber, Select } from 'antd';
 import "antd/dist/antd.css";
 
-import lyraClient from '../lyra/client';
 import persist from '../lyra/persist';
 
 const { Option, OptGroup } = Select;
@@ -41,20 +40,19 @@ class Send extends Component {
     var pdata = await persist.getData();
 
     var sf = this;
-    var client = new lyraClient();
-    await client.CallAsync("Send", 
-      pdata.wallets[0].accountId,
-      values.amount,
-      values.destaddr,
-      values.tokenname)
-    .then(result => {
-      console.log("CallAsync success. " + result);
-      sf.setState({msg: "Token send successfully. Your balance is " + result.balance.LYR});
-    })
-    .catch(error => { 
-      console.log("CallAsync failed. " + error);
-
-    });
+    // var client = new lyraClient();
+    // await client.CallAsync("Send", 
+    //   pdata.wallets[0].accountId,
+    //   values.amount,
+    //   values.destaddr,
+    //   values.tokenname)
+    // .then(result => {
+    //   console.log("CallAsync success. " + result);
+    //   sf.setState({msg: "Token send successfully. Your balance is " + result.balance.LYR});
+    // })
+    // .catch(error => { 
+    //   console.log("CallAsync failed. " + error);
+    //});
     // this.ws.call('Send', [ 
     //   this.state.accountId,
     //   e.amount,
