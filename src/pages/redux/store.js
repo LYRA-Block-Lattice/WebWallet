@@ -14,7 +14,7 @@ const initState = {
         network: "",
         accountId: "",
         balance: 0,
-        unrecv: 0,
+        unrecvcnt: 0,
         unrecvlyr: 0,
     },
     existing: false,
@@ -65,6 +65,15 @@ const reducer = (state = initState, action) => {
             ...state,
             opening: false,
             error: action.payload
+        };
+        case actionTypes.WSRPC_SERVER_NOTIFY_RECV: 
+            return {
+            ...state,
+            wallet: {
+                ...state.wallet,
+                unrecvcnt: state.wallet.unrecvcnt + 1,
+                unrecvlyr: state.wallet.unrecvlyr + action.payload.content.funds["LYR"]
+            }
         };
         default: {
             return state;

@@ -53,19 +53,20 @@ function* openWallet(action) {
 }
 
 function* wscallback(servercall) {
-    // while(true) {
-    //     let evt = yield null;
-    //     console.log("wscallback from server", evt);
-    // }
-
-    console.log("wscallback called!", servercall);
     while(true)
     {
         console.log("wscallback called in while loop", servercall);
         let resp = yield servercall;
         console.log("wscallback from server", resp);
-        if (resp.method === "Sign") {
-            yield put({type: actionTypes.WSRPC_SERVER_SIGNREQ});
+        if (resp.method === "Notify") {            
+            console.log("Notify of", resp.params[0].catalog);
+            // if(resp.params[0].catalog === "Receiving") {
+            //     yield put({type: actionTypes.WSRPC_SERVER_NOTIFY_RECV, payload: resp.params[0]});
+            // }    
+            // else        
+            yield null;
+        }
+        else if (resp.method === "Sign") {
             console.log("Signing " + resp.params[0] + " of " + resp.params[1]);
     
             const tokenString = sessionStorage.getItem('token');
@@ -89,7 +90,8 @@ function* wscallback(servercall) {
 function* wsonmessage() {
     while(true) {
         let evt = yield null;
-        console.log("[message] Data received from server", evt);
+        console.log("got wsonmessage", evt);
+        yield put({type: actionTypes.WSRPC_SERVER_NOTIFY_RECV, payload: evt});
     }
     // yield put({type: actionTypes.WSRPC_MESSAGE});
     // var result = JSON.parse(event.data);
@@ -107,7 +109,7 @@ function* wsonmessage() {
 function* wsonopen() {
     console.log(new Date().toUTCString() + ' wss open.');
 
-    ws.call('Monitor', [accountId]);
+    yield ws.call('Monitor', [accountId]);
     //ws.call('Balance', [accountId], (resp) => this.lapp.updbal(resp), this.error_cb);
     console.log("wss created and monitored.");
 
@@ -137,7 +139,7 @@ function* wsonclose() {
         onerror: wsonerror()
       });
 
-    ws.call('Status', ['2.2.0.0', 'testnet']);
+    yield ws.call('Status', ['2.2.0.0', 'testnet']);
     console.log("force wss reopen.");
 }
 
