@@ -1,4 +1,4 @@
-import { put, takeLatest, takeEvery, call } from 'redux-saga/effects'
+import { put, takeLatest, takeEvery, getContext } from 'redux-saga/effects'
 
 import * as actionTypes from './actionTypes';
 import persist from '../../lyra/persist';
@@ -9,6 +9,7 @@ import { JsonRpcWebsocket } from '../../wsclient';
 let ws;
 let network;
 let accountId;
+let dispatch;
 
 function* checkWalletExists () {
     const data = yield persist.checkData();
@@ -153,8 +154,21 @@ function* wsrpc (action) {
         console.log("error ws.open");
     }
 
+    dispatch = yield getContext('dispatch');
+
     ws.on('Notify', (news) => {
+        switch(news.catalog) {
+            case 'Receiving': 
+                dispatch({type: actionTypes.WSRPC_SERVER_NOTIFY_RECV, payload: news.content });
+                break;
+            default:
+                break;
+        }
         console.log("Got news notify", news);
+    });
+
+    ws.on('Sign', (signReq) => {
+        console.log("Got Signing request", signReq);
     });
 
     try

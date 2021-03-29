@@ -1,4 +1,5 @@
 import { applyMiddleware, createStore } from "redux";
+import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
 import promise from 'redux-promise-middleware';
 
@@ -70,7 +71,7 @@ const reducer = (state = initState, action) => {
             wallet: {
                 ...state.wallet,
                 unrecvcnt: state.wallet.unrecvcnt + 1,
-                unrecvlyr: state.wallet.unrecvlyr + action.payload.content.funds["LYR"]
+                unrecvlyr: state.wallet.unrecvlyr + action.payload.funds["LYR"]
             }
         };
         default: {
@@ -84,17 +85,24 @@ const logger = (store) => (next) => (action) => {
     next(action);
 }
 
-const sagaMiddleware = createSagaMiddleware();
+const context = {
+    dispatch: () => { },
+}
+
+const sagaMiddleware = createSagaMiddleware({
+    context
+})
 
 const middleware = applyMiddleware(promise, logger, thunk, sagaMiddleware);
 
-const store = createStore(reducer, middleware);
+const store = createStore(reducer, initState, composeWithDevTools(middleware));
+context.dispatch = store.dispatch
 
 store.subscribe(() => {
     console.log("store changed", store.getState())
 })
 
-sagaMiddleware.run(rootSaga);
+store.sagaTask = sagaMiddleware.run(rootSaga);
 
 export const action = type => store.dispatch({type});
 //export const actionx = (type, payload) => store.dispatch({type, payload});
