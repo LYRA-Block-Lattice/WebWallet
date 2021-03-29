@@ -374,6 +374,14 @@
         // two yield. first feed the response, second got the signature.
         this.options.oncallback.next();
         var cbresult = this.options.oncallback.next(response);
+
+        if(response.method === "Notify") {
+          this.options.onmessage.next();
+          this.options.onmessage.next(response.params[0]);
+          return;
+          // just do nothing
+        }
+
         var request = {
           jsonrpc: '2.0',
           id: response.id,
