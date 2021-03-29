@@ -5417,6 +5417,11 @@ get-package-type@^0.1.0:
   resolved "https://registry.yarnpkg.com/get-package-type/-/get-package-type-0.1.0.tgz#8de2d803cff44df3bc6c456e6668b36c3926e11a"
   integrity sha512-pjzuKtY64GYfWizNAJ0fr9VqttZkNiK2iS430LtIHzjBEr6bX8Am2zm4sW4Ro5wjWW5cAlRL1qAMTcXbjNAO2Q==
 
+get-parameter-names@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/get-parameter-names/-/get-parameter-names-0.3.0.tgz#2d2237cd592e6c5b859ab2efdab435f008e5bb97"
+  integrity sha1-LSI3zVkubFuFmrLv2rQ18Ajlu5c=
+
 get-stream@^4.0.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/get-stream/-/get-stream-4.1.0.tgz#c1b255575f3dc21d59bfc79cd3d2b46b1c3a54b5"
@@ -7016,6 +7021,13 @@ jsonfile@^6.0.1:
     universalify "^2.0.0"
   optionalDependencies:
     graceful-fs "^4.1.6"
+
+jsonrpc-client-websocket@^1.4.2:
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/jsonrpc-client-websocket/-/jsonrpc-client-websocket-1.4.2.tgz#02eedb6e49162b7291943e42203a5c4dcf6677d2"
+  integrity sha512-ASe1d8MjLiWM7ilMGPzMGC1PvozY+yhn51nbF3DFwc2sDX6sVGy/GjUZTKmI93jHdp0GczaSCnKPaTdGacgpUA==
+  dependencies:
+    get-parameter-names "^0.3.0"
 
 jsprim@^1.2.2:
   version "1.4.1"
@@ -9751,7 +9763,7 @@ react-router@5.2.0:
     tiny-invariant "^1.0.2"
     tiny-warning "^1.0.0"
 
-react-scripts@4.0.3:
+react-scripts@^4.0.3:
   version "4.0.3"
   resolved "https://registry.yarnpkg.com/react-scripts/-/react-scripts-4.0.3.tgz#b1cafed7c3fa603e7628ba0f187787964cb5d345"
   integrity sha512-S5eO4vjUzUisvkIPB7jVsKtuH2HhWcASREYWHAQ1FP5HyCv3xgn+wpILAEWkmy+A+tTNbSZClhxjT3qz6g4L1A==

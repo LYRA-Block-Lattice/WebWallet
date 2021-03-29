@@ -1,9 +1,10 @@
-import { put, takeLatest, takeEvery, all } from 'redux-saga/effects'
+import { put, takeLatest, takeEvery, call } from 'redux-saga/effects'
 
 import * as actionTypes from './actionTypes';
 import persist from '../../lyra/persist';
 import LyraCrypto from '../../lyra/crypto';
-import JsonRpcClient from '../../lyra/jsonrpcclient';
+
+import { JsonRpcWebsocket } from '../../wsclient';
 
 let ws;
 let network;
@@ -52,7 +53,7 @@ function* openWallet(action) {
     }   
 }
 
-function* wscallback(servercall) {
+/*function* wscallback(servercall) {
     while(true)
     {
         console.log("wscallback called in while loop", servercall);
@@ -118,35 +119,16 @@ function* wsonopen() {
 
 function* wsonclose() {
     console.log("wss close.");
-    //yield put({ type: actionTypes.WSRPC_CLOSED });
+    yield put({ type: actionTypes.WSRPC_CLOSED });
     // lol force reopen
-    var url = 'wss://testnet.lyra.live/api/v1/socket';
-    if(network === 'mainnet')
-      url = 'wss://mainnet.lyra.live/api/v1/socket';
-    if(network === 'devnet')
-      url = 'wss://localhost:4504/api/v1/socket';
 
-    if(ws !== undefined) {
-        ws.close();
-    }
-
-    ws = new JsonRpcClient({
-        socketUrl: url,
-        oncallback: wscallback(),
-        onmessage: wsonmessage(),
-        onopen: wsonopen(),
-        onclose: wsonclose(),
-        onerror: wsonerror()
-      });
-
-    yield ws.call('Status', ['2.2.0.0', 'testnet']);
     console.log("force wss reopen.");
 }
 
 function* wsonerror(err) {
     console.log("wss error.", err);
     yield put({ type: actionTypes.WSRPC_ERROR, payload: err });
-}
+}*/
 
 function* wsrpc (action) {
     network = action.payload.network;
@@ -158,22 +140,37 @@ function* wsrpc (action) {
     if(network === 'devnet')
       url = 'wss://localhost:4504/api/v1/socket';
 
-    if(ws !== undefined) {
-        ws.close();
+    const requestTimeoutMs = 2000;
+    ws = new JsonRpcWebsocket(
+        url,
+        requestTimeoutMs,
+        (error) => { console.log("websocket error", error) });
+    
+    try{
+        yield ws.open();
+    }
+    catch(error) {
+        console.log("error ws.open");
     }
 
-    ws = new JsonRpcClient({
-      socketUrl: url,
-      oncallback: wscallback(),
-      onmessage: wsonmessage(),
-      onopen: wsonopen(),
-      onclose: wsonclose(),
-      onerror: wsonerror()
+    ws.on('Notify', (news) => {
+        console.log("Got news notify", news);
     });
 
-    yield ws.call('Status', [ '2.2.0.0', 'devnet' ], 
-        a => console.log("connected."), 
-        err => console.log("connect error"));
+    try
+    {
+        const response = yield ws.call('Status', [ '2.2.0.0', network ]); 
+        yield put({type: actionTypes.WSRPC_STATUS_SUCCESS, payload: response}); 
+        
+        yield ws.call('Monitor', [accountId]);
+    }    
+    catch(error) {
+        yield put({type: actionTypes.WSRPC_STATUS_FAILED});
+    };
+
+    // yield ws.call('Status', [ '2.2.0.0', 'devnet' ], 
+    //     a => console.log("connected."), 
+    //     err => console.log("connect error"));
 
     yield put({ type: actionTypes.WSRPC_CREATED });
 }

@@ -5,9 +5,7 @@ import promise from 'redux-promise-middleware';
 import createSagaMiddleware from 'redux-saga';
 
 import rootSaga from './sagas';
-import persist from '../../lyra/persist';
 import * as actionTypes from "./actionTypes";
-//import { openWallet } from "./actions";
 
 const initState = {
     wallet: {

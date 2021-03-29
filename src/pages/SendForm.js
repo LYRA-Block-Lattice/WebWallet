@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import { Form, Input, Button, InputNumber, Select } from 'antd';
 import "antd/dist/antd.css";
 
-import persist from '../lyra/persist';
-
 const { Option, OptGroup } = Select;
 
 const layout = {
@@ -37,9 +35,9 @@ class Send extends Component {
   async onFinish(values) {
     console.log("send token to: " + values.destaddr);
 
-    var pdata = await persist.getData();
+    // var pdata = await persist.getData();
 
-    var sf = this;
+    // var sf = this;
     // var client = new lyraClient();
     // await client.CallAsync("Send", 
     //   pdata.wallets[0].accountId,
