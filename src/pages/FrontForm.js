@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link, Redirect } from "react-router-dom";
 import { Badge } from 'antd';
+import {subscribe} from 'redux-subscriber';
 
 import { InfoIcon, PayIcon, SwapIcon } from '../lyra/icons';
 
@@ -21,6 +22,19 @@ class FrontFormCls extends Component {
     };
     this.send = this.send.bind(this)
   }
+
+  unsubscribe = subscribe('wallet.unrecvcnt', state => {
+    if(state.wallet.unrecvcnt === 0)
+    {
+      this.setState( { unrecvmsg: "" } );
+    }      
+    else {
+      if(state.wallet.unrecvlyr === 0)
+        this.setState( { unrecvmsg: "+ ? LYR" } );
+      else
+        this.setState( { unrecvmsg: "+ " + state.wallet.unrecvlyr.toFixed(4).replace(/\d(?=(\d{3})+\.)/g, '$&,') + " LYR" } );
+    } 
+  });
 
   render() {
     if(this.state.accountId === null)
@@ -86,19 +100,7 @@ class FrontFormCls extends Component {
     }
   }
   updurcv(un) {
-    if(this.state.unrecv === 0)
-    {
-      if(un)
-        this.setState( { unrecvmsg: "+ ? LYR" } );
-      else
-        this.setState( { unrecvmsg: "" } );
-    }      
-    else {
-      if(this.state.unrecvlyr === 0)
-        this.setState( { unrecvmsg: "+ ? LYR" } );
-      else
-        this.setState( { unrecvmsg: "+ " + this.state.unrecvlyr.toFixed(4).replace(/\d(?=(\d{3})+\.)/g, '$&,') + " LYR" } );
-    }      
+     
   }
 }
 

@@ -4,6 +4,7 @@ import thunk from 'redux-thunk';
 import promise from 'redux-promise-middleware';
 
 import createSagaMiddleware from 'redux-saga';
+import initSubscriber from 'redux-subscriber';
 
 import rootSaga from './sagas';
 import * as actionTypes from "./actionTypes";
@@ -109,6 +110,9 @@ context.dispatch = store.dispatch
 store.subscribe(() => {
     console.log("store changed", store.getState())
 })
+
+// "initSubscriber" returns "subscribe" function, so you can use it
+initSubscriber(store);
 
 store.sagaTask = sagaMiddleware.run(rootSaga);
 
