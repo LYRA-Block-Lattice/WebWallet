@@ -177,6 +177,10 @@ function* wsrpc (action) {
         yield put({type: actionTypes.WSRPC_STATUS_SUCCESS, payload: response}); 
         
         yield ws.call('Monitor', [accountId]);
+
+        // and balance
+        const balanceResp = yield ws.call('Balance', [accountId]); 
+        yield put({type: actionTypes.WALLET_BALANCE, payload: balanceResp.result}); 
     }    
     catch(error) {
         yield put({type: actionTypes.WSRPC_STATUS_FAILED});

@@ -12,19 +12,6 @@ class InfoForm extends Component {
         this.shwopvt = this.shwopvt.bind(this);
     }
 
-    async componentDidMount() {
-        // const tokenString = sessionStorage.getItem('token');
-        // const token = JSON.parse(tokenString);
-
-        // var pdata = await persist.getData();
-        // this.setState({network: pdata.network});
-        // var wallets = pdata.wallets;
-        // var decData = LyraCrypto.decrypt(wallets[0].data, token);
-        // var pvk = LyraCrypto.lyraDec(decData);
-        // var pub = LyraCrypto.lyraEncPub(LyraCrypto.prvToPub(pvk));
-        // this.setState({pub: pub});
-    }
-
     async shwopvt() {
         const tokenString = sessionStorage.getItem('token');
         const token = JSON.parse(tokenString);
@@ -69,8 +56,8 @@ const mapStateToProps = state => {
         pub: state.wallet.accountId,
         pvt: state.wallet.accountId,
         network: state.wallet.accountId,
-    };    
-  }
+    };
+}
 
 const Info = connect(mapStateToProps)(InfoForm);
 export default Info;

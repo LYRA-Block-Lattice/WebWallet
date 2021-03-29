@@ -26,6 +26,14 @@ const initState = {
 
 const reducer = (state = initState, action) => {
     switch(action.type) {
+        case actionTypes.WALLET_BALANCE: return {
+            ...state,
+            wallet: {
+                ...state.wallet,
+                balance: action.payload.balance['LYR'],
+                unrecvcnt: action.payload.unreceived ? state.wallet.unrecvcnt + 1 : state.wallet.unrecvcnt
+            }
+        }
         case "STORE_INIT_DONE": return {
             ...state,
             existing: action.payload !== undefined && action.payload !== null
@@ -48,7 +56,6 @@ const reducer = (state = initState, action) => {
             ...state,
             opening: false,
             name: "",
-            wallet: { },
             error: null
         };   
         case actionTypes.WALLET_OPEN_DONE: return {
@@ -56,6 +63,7 @@ const reducer = (state = initState, action) => {
             opening: true,
             name: action.payload.wallets[0].name,
             wallet: {
+                ...state.wallet,
                 network: action.payload.network,
                 accountId: action.payload.wallets[0].accountId,
             }

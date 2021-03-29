@@ -1,16 +1,22 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { Link, Redirect } from "react-router-dom";
 import { Badge } from 'antd';
 
 import { InfoIcon, PayIcon, SwapIcon } from '../lyra/icons';
 
-class FrontForm extends Component {
+const mapStateToProps = state => {
+  console.log("state is", state);
+  return {
+    balance: state.wallet.balance,
+    unrecvcnt: state.wallet.unrecvcnt,
+    unrecvlyr: state.wallet.unrecvlyr,
+  };
+}
+class FrontFormCls extends Component {
   constructor(props) {
     super(props);
     this.state = { 
-      balance: 0,
-      unrecv: 0,
-      unrecvlyr: 0,
       unrecvmsg: "",  
     };
     this.send = this.send.bind(this)
@@ -23,8 +29,8 @@ class FrontForm extends Component {
     return (      
       <div style={{ color: 'white' }}>
         <div>
-          <Badge count={this.state.unrecv}>
-            <span className="blas" style={{ color: 'orange', fontWeight: 'bolder' }} id="bala">{this.state.balance.toFixed(4).replace(/\d(?=(\d{3})+\.)/g, '$&,')}</span>
+          <Badge count={this.props.unrecvcnt}>
+            <span className="blas" style={{ color: 'orange', fontWeight: 'bolder' }} id="bala">{this.props.balance ? this.props.balance.toFixed(4).replace(/\d(?=(\d{3})+\.)/g, '$&,') : "0"}</span>
           </Badge>
             &nbsp;&nbsp;<span style={{ fontFamily: 'Times', color: 'white', fontSize: '3vw' }}>LYR</span>
         </div>
@@ -95,5 +101,7 @@ class FrontForm extends Component {
     }      
   }
 }
+
+const FrontForm = connect(mapStateToProps)(FrontFormCls);
 
 export default FrontForm;
