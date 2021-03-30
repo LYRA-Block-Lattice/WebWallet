@@ -21,7 +21,11 @@ function* restoreWallet (action) {
     var actId = LyraCrypto.lyraEncPub(LyraCrypto.prvToPub(pvt));
     var encData = LyraCrypto.encrypt(action.payload.privateKey, action.payload.password);
 
-    var wds = { network: 'testnet', wallets: [{ 
+    var wds = { 
+        pref: {
+            network: 'testnet'
+        },
+        wallets: [{ 
         name: action.payload.name, 
         accountId: actId, 
         data: encData
@@ -49,7 +53,7 @@ function* openWallet(action) {
     else {
         yield put({type: actionTypes.WALLET_OPEN_DONE, payload: pdata});
         yield put({type: actionTypes.WSRPC_CREATE, payload: {
-            network: pdata.network,
+            network: pdata.pref.network,
             accountId: wallets[0].accountId
         } });
         sessionStorage.setItem('token', JSON.stringify({pass: action.payload.password, pvt: pvt}));
@@ -70,58 +74,8 @@ function* receive(action) {
     };
 }
 
-/*function* wscallback(servercall) {
-    while(true)
-    {
-        console.log("wscallback called in while loop", servercall);
-        let resp = yield servercall;
-        console.log("wscallback from server", resp);
-        if (resp.method === "Notify") {            
-            console.log("Notify of", resp.params[0].catalog);
-            // if(resp.params[0].catalog === "Receiving") {
-            //     yield put({type: actionTypes.WSRPC_SERVER_NOTIFY_RECV, payload: resp.params[0]});
-            // }    
-            // else        
-            yield null;
-        }
-        else if (resp.method === "Sign") {
-
-        }
-        else {
-            console.log("unsupported server call back method: " + resp.method);
-            yield null;
-        }
-    }
-
-}
-
-function* wsonopen() {
-    console.log(new Date().toUTCString() + ' wss open.');
-
-    yield ws.call('Monitor', [accountId]);
-    //ws.call('Balance', [accountId], (resp) => this.lapp.updbal(resp), this.error_cb);
-    console.log("wss created and monitored.");
-
-    //yield put({ type: actionTypes.WSRPC_CONNECTED });
-}
-
-function* wsonclose() {
-    console.log("wss close.");
-    yield put({ type: actionTypes.WSRPC_CLOSED });
-    // lol force reopen
-
-    console.log("force wss reopen.");
-}
-
-function* wsonerror(err) {
-    console.log("wss error.", err);
-    yield put({ type: actionTypes.WSRPC_ERROR, payload: err });
-}*/
-
-function* wsrpc (action) {
-    network = action.payload.network;
-    accountId = action.payload.accountId;
-
+function* createWS(network) {
+    console.log("creating ws for", network);
     var url = 'wss://testnet.lyra.live/api/v1/socket';
     if(network === 'mainnet')
       url = 'wss://mainnet.lyra.live/api/v1/socket';
@@ -133,58 +87,77 @@ function* wsrpc (action) {
         url,
         requestTimeoutMs,
         (error) => { console.log("websocket error", error) });
-    
-    try{
-        yield ws.open();
-    }
-    catch(error) {
-        console.log("error ws.open");
-    }
 
+        try{
+            yield ws.open();
+        }
+        catch(error) {
+            console.log("error ws.open");
+        }    
+    
+        ws.on('Notify', (news) => {
+            switch(news.catalog) {
+                case 'Receiving': 
+                    dispatch({type: actionTypes.WSRPC_SERVER_NOTIFY_RECV, payload: news.content });
+                    break;
+                default:
+                    break;
+            }
+            console.log("Got news notify", news);
+        });
+    
+        ws.on('Sign', (hash, msg, accountId) => {
+            console.log("Signing " + hash + " of " + msg + " for " + accountId);
+        
+            try {
+                const userToken = JSON.parse(sessionStorage.getItem('token'));
+                var pvk = LyraCrypto.lyraDec(userToken.pvt);
+                var signt = LyraCrypto.lyraSign(msg, pvk);
+                console.log("Signature", signt);
+
+                return ["der", signt];
+            }
+            catch (err) {
+                console.log("Error sign message", err);
+                return ["err", err.toString()];
+            }
+        });
+    
+        try
+        {
+            const response = yield ws.call('Status', [ '2.2.0.0', network ]); 
+            yield put({type: actionTypes.WSRPC_STATUS_SUCCESS, payload: response}); 
+            
+            yield ws.call('Monitor', [accountId]);
+    
+            // and balance
+            const balanceResp = yield ws.call('Balance', [accountId]); 
+            yield put({type: actionTypes.WALLET_BALANCE, payload: balanceResp.result}); 
+        }    
+        catch(error) {
+            yield put({type: actionTypes.WSRPC_STATUS_FAILED, payload: error});
+        };
+    
+        yield put({ type: actionTypes.WSRPC_CREATED });
+}
+
+function* wsrpc (action) {
+    network = action.payload.network;
+    accountId = action.payload.accountId;
     dispatch = yield getContext('dispatch');
 
-    ws.on('Notify', (news) => {
-        switch(news.catalog) {
-            case 'Receiving': 
-                dispatch({type: actionTypes.WSRPC_SERVER_NOTIFY_RECV, payload: news.content });
-                break;
-            default:
-                break;
-        }
-        console.log("Got news notify", news);
-    });
+    yield createWS(network);
+}
 
-    ws.on('Sign', (hash, msg, accountId) => {
-        console.log("Signing " + hash + " of " + msg + " for " + accountId);
-    
-        const userToken = JSON.parse(sessionStorage.getItem('token'));
-        var pvk = LyraCrypto.lyraDec(userToken.pvt);
-        var signt = LyraCrypto.lyraSign(msg, pvk);
-        console.log("Signature", signt);
+function* savePref(action) {
+    var pdata = yield persist.getData();
+    pdata.pref.network = action.payload.network;
+    yield persist.setData(pdata);
 
-        return ["der", signt];
-    });
-
-    try
-    {
-        const response = yield ws.call('Status', [ '2.2.0.0', network ]); 
-        yield put({type: actionTypes.WSRPC_STATUS_SUCCESS, payload: response}); 
-        
-        yield ws.call('Monitor', [accountId]);
-
-        // and balance
-        const balanceResp = yield ws.call('Balance', [accountId]); 
-        yield put({type: actionTypes.WALLET_BALANCE, payload: balanceResp.result}); 
-    }    
-    catch(error) {
-        yield put({type: actionTypes.WSRPC_STATUS_FAILED});
-    };
-
-    // yield ws.call('Status', [ '2.2.0.0', 'devnet' ], 
-    //     a => console.log("connected."), 
-    //     err => console.log("connect error"));
-
-    yield put({ type: actionTypes.WSRPC_CREATED });
+    // need reconnect to api
+    yield ws.close();
+    network = pdata.pref.network;
+    yield createWS(network);
 }
 
 
@@ -196,5 +169,6 @@ export default function* rootSaga() {
     yield takeEvery(actionTypes.WALLET_OPEN, openWallet);
     yield takeEvery(actionTypes.WSRPC_CREATE, wsrpc);
     yield takeEvery(actionTypes.WALLET_RECEIVE, receive);
+    yield takeEvery(actionTypes.WALLET_CHANGE_NETWORK, savePref);
 }
 

@@ -10,13 +10,13 @@ import rootSaga from './sagas';
 import * as actionTypes from "./actionTypes";
 
 const initState = {
-    wallet: {
-        network: "",
+    wallet: {        
         accountId: "",
         balance: 0,
         unrecvcnt: 0,
         unrecvlyr: 0,
     },
+    network: "",
     existing: false,
     pending: false,
     name: "default",
@@ -65,10 +65,10 @@ const reducer = (state = initState, action) => {
             opening: true,
             name: action.payload.wallets[0].name,
             wallet: {
-                ...state.wallet,
-                network: action.payload.network,
+                ...state.wallet,                
                 accountId: action.payload.wallets[0].accountId,
-            }
+            },
+            network: action.payload.pref.network,
         };
         case actionTypes.WALLET_OPEN_FAILED: return {
             ...state,
@@ -82,6 +82,16 @@ const reducer = (state = initState, action) => {
                 ...state.wallet,
                 unrecvcnt: state.wallet.unrecvcnt + 1,
                 unrecvlyr: state.wallet.unrecvlyr + action.payload.funds["LYR"]
+            }
+        };
+        case actionTypes.WALLET_CHANGE_NETWORK: return {
+            ...state,
+            network: action.payload.network,
+            wallet: {
+                ...state.wallet,
+                balance: 0,
+                unrecvcnt: 0,
+                unrecvlyr: 0
             }
         };
         default: {

@@ -4,7 +4,8 @@ import { Redirect } from 'react-router-dom';
 import { Form, Button, Select } from 'antd';
 import "antd/dist/antd.css";
 
-import persist from '../lyra/persist';
+import store from './redux/store';
+import * as actionTypes from './redux/actionTypes';
 
 const { Option } = Select;
 
@@ -26,7 +27,7 @@ const tailLayout = {
 const mapStateToProps = state => {
     console.log("state is", state);
     return {
-      network: state.wallet.network,
+      network: state.network,
     };
   }
 
@@ -41,11 +42,6 @@ class PreferenceForm extends Component {
         this.handleChange = this.handleChange.bind(this);
       }
     
-    async componentDidMount() {
-        var pdata = await persist.getData();
-        this.setState({network: pdata.network});
-    }
-
     onFinish(values) {
         sessionStorage.setItem('token', null);
         this.setState({closed: true});
@@ -54,9 +50,7 @@ class PreferenceForm extends Component {
     async handleChange(value) {
         console.log(value); 
 
-        var pdata = await persist.getData();
-        pdata.network = value;
-        await persist.setData(pdata);
+        store.dispatch({type: actionTypes.WALLET_CHANGE_NETWORK, payload: {network: value}});
     }
 
     render() {
