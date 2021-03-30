@@ -9,21 +9,6 @@ import * as actionTypes from './redux/actionTypes';
 
 const { Option } = Select;
 
-const layout = {
-    labelCol: {
-        span: 8,
-    },
-    wrapperCol: {
-        span: 16,
-    },
-};
-const tailLayout = {
-    wrapperCol: {
-        offset: 8,
-        span: 16,
-    },
-};
-
 const mapStateToProps = state => {
     console.log("state is", state);
     return {
@@ -60,8 +45,7 @@ class PreferenceForm extends Component {
 
         return (
             <div>
-                <Form
-                    {...layout}
+                <Form                    
                     name="basic"
                     initialValues={{
                         remember: true,
@@ -89,7 +73,7 @@ class PreferenceForm extends Component {
                         </Select>
                     </Form.Item>
 
-                    <Form.Item {...tailLayout}>
+                    <Form.Item>
                         <Button type="primary" htmlType="submit">
                             Close Wallet
                         </Button>

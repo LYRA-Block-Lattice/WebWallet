@@ -4,21 +4,6 @@ import "antd/dist/antd.css";
 
 const { Option, OptGroup } = Select;
 
-const layout = {
-  labelCol: {
-    span: 8,
-  },
-  wrapperCol: {
-    span: 16,
-  },
-};
-const tailLayout = {
-  wrapperCol: {
-    offset: 8,
-    span: 16,
-  },
-};
-
 class Send extends Component {
   constructor(props) {
     super(props);
@@ -63,7 +48,7 @@ class Send extends Component {
     return (
       <div>
         <Form
-          {...layout}
+          
           name="basic"
           initialValues={{
             remember: true,
@@ -117,7 +102,7 @@ class Send extends Component {
             <InputNumber min={1} max={92233720368} />
           </Form.Item>
 
-          <Form.Item {...tailLayout}>
+          <Form.Item>
             <Button type="primary" htmlType="submit">
               Send
             </Button>

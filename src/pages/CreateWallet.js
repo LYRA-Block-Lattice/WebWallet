@@ -5,21 +5,6 @@ import persist from '../lyra/persist';
 
 import LyraCrypto from '../lyra/crypto';
 
-const layout = {
-    labelCol: {
-        span: 8,
-    },
-    wrapperCol: {
-        span: 16,
-    },
-};
-const tailLayout = {
-    wrapperCol: {
-        offset: 8,
-        span: 16,
-    },
-};
-
 export default class CreateWallet extends Component {
     constructor(props) {
         super(props);
@@ -61,9 +46,9 @@ export default class CreateWallet extends Component {
 
         return (
             <div>
-                <div {...layout}>Create New Wallet</div>
+                <div>Create New Wallet</div>
                 <Form
-                    {...layout}
+                    
                     name="basic"
                     initialValues={{
                         remember: true,
@@ -94,7 +79,7 @@ export default class CreateWallet extends Component {
                         <Input.Password />
                     </Form.Item>
 
-                    <Form.Item {...tailLayout}>
+                    <Form.Item>
                         <Button type="primary" htmlType="submit">
                             Create a Wallet
                       </Button>

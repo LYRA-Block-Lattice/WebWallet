@@ -21,6 +21,7 @@ class FrontFormCls extends Component {
   constructor(props) {
     super(props);
     this.state = { 
+      balancemsg: "",
       unrecvmsg: "",  
       unsub: null
     };
@@ -31,6 +32,8 @@ class FrontFormCls extends Component {
     const unsub = subscribe('wallet', state => {
       if(state.opening)
       {
+        var msg = state.wallet.balance.toFixed(4).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+        this.setState({balancemsg: msg});
         if(state.wallet.unrecvcnt === 0)
         {
           this.setState( { unrecvmsg: "" } );
@@ -59,7 +62,7 @@ class FrontFormCls extends Component {
       <div style={{ color: 'white' }}>
         <div>
           <Badge count={this.props.unrecvcnt}>
-            <span className="blas" style={{ color: 'orange', fontWeight: 'bolder' }} id="bala">{/*this.props.opening ? this.props.balance.toFixed(4).replace(/\d(?=(\d{3})+\.)/g, '$&,') : "0"*/}</span>
+            <span className="blas" style={{ color: 'orange', fontWeight: 'bolder' }} id="bala">{this.state.balancemsg}</span>
           </Badge>
             &nbsp;&nbsp;<span style={{ fontFamily: 'Times', color: 'white', fontSize: '3vw' }}>LYR</span>
         </div>

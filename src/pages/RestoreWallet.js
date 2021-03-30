@@ -5,21 +5,6 @@ import { Form, Input, Button } from 'antd';
 
 import * as actionTypes from './redux/actionTypes';
 
-const layout = {
-    labelCol: {
-        span: 8,
-    },
-    wrapperCol: {
-        span: 16,
-    },
-};
-const tailLayout = {
-    wrapperCol: {
-        offset: 8,
-        span: 16,
-    },
-};
-
 class RestoreWallet extends Component {
     constructor(props) {
         super(props);
@@ -38,19 +23,6 @@ class RestoreWallet extends Component {
             password: values.password
         }});
 
-        // var pvt = LyraCrypto.lyraDec(values.pvtkey);
-        // var actId = LyraCrypto.lyraEncPub(LyraCrypto.prvToPub(pvt));
-        // var encData = LyraCrypto.encrypt(values.pvtkey, values.password);
-
-        // var wds = { network: 'testnet', wallets: [{ 
-        //     name: 'default', 
-        //     accountId: actId, 
-        //     data: encData
-        // }]};
-
-        // await persist.setData(wds);
-
-        // use redirect to open wallet
         this.setState({done: true});
     }
 
@@ -65,9 +37,9 @@ class RestoreWallet extends Component {
 
         return (
             <div>
-                <div {...layout}>Use this for test: eSAErSXn2djzLgWFxd8vtFfnmgrUAhEntHCgKFwTPi8AY3hnG</div>
+                <div >Use this for test: eSAErSXn2djzLgWFxd8vtFfnmgrUAhEntHCgKFwTPi8AY3hnG</div>
                 <Form
-                    {...layout}
+                    
                     name="basic"
                     initialValues={{
                         remember: true,
@@ -106,7 +78,7 @@ class RestoreWallet extends Component {
                         <Input.Password />
                     </Form.Item>
 
-                    <Form.Item {...tailLayout}>
+                    <Form.Item>
                         <Button type="primary" htmlType="submit">
                             Restore by Private Key
                       </Button>

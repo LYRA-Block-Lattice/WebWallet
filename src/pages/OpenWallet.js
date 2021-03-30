@@ -11,21 +11,6 @@ const { confirm } = Modal;
 
 const { Option } = Select;
 
-const layout = {
-    labelCol: {
-        span: 8,
-    },
-    wrapperCol: {
-        span: 16,
-    },
-};
-const tailLayout = {
-    wrapperCol: {
-        offset: 8,
-        span: 16,
-    },
-};
-
 const passwordAlert = () => {
     message.error('Wrong password!');
   };
@@ -78,7 +63,7 @@ class OpenWalletPage extends Component {
 
     OpenWalletForm = () => (
         <Form
-        {...layout}
+        
         name="basic"
         initialValues={{
             remember: true,
@@ -104,7 +89,7 @@ class OpenWalletPage extends Component {
                 <Input.Password />
             </Form.Item>
 
-            <Form.Item {...tailLayout}>
+            <Form.Item>
                 <Button type="primary" htmlType="submit">
                     Open Wallet
             </Button>
