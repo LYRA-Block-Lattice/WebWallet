@@ -70,6 +70,12 @@ const reducer = (state = initState, action) => {
             },
             network: action.payload.pref.network,
         };
+        case actionTypes.WALLET_CLOSED: return {
+            ...state,
+            opening: false,
+            name: '',
+            wallet: { },
+        };
         case actionTypes.WALLET_OPEN_FAILED: return {
             ...state,
             opening: false,

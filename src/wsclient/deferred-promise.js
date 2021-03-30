@@ -1,4 +1,3 @@
-"use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DeferredPromise = void 0;
 var DeferredPromise = /** @class */ (function () {

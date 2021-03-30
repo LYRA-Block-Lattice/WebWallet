@@ -43,8 +43,8 @@ class PreferenceForm extends Component {
       }
     
     onFinish(values) {
-        sessionStorage.setItem('token', null);
         this.setState({closed: true});
+        store.dispatch({type: actionTypes.WALLET_CLOSE});
     }
 
     async handleChange(value) {

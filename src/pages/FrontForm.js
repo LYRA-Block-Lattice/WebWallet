@@ -11,6 +11,7 @@ import * as actionTypes from "./redux/actionTypes";
 const mapStateToProps = state => {
   console.log("state is", state);
   return {
+    opening: state.opening,
     balance: state.wallet.balance,
     unrecvcnt: state.wallet.unrecvcnt,
     unrecvlyr: state.wallet.unrecvlyr,
@@ -21,32 +22,44 @@ class FrontFormCls extends Component {
     super(props);
     this.state = { 
       unrecvmsg: "",  
+      unsub: null
     };
     this.send = this.send.bind(this)
   }
 
-  unsubscribe = subscribe('wallet.unrecvcnt', state => {
-    if(state.wallet.unrecvcnt === 0)
-    {
-      this.setState( { unrecvmsg: "" } );
-    }      
-    else {
-      if(state.wallet.unrecvlyr === 0)
-        this.setState( { unrecvmsg: "+ ? LYR" } );
-      else
-        this.setState( { unrecvmsg: "+ " + state.wallet.unrecvlyr.toFixed(4).replace(/\d(?=(\d{3})+\.)/g, '$&,') + " LYR" } );
-    } 
-  });
+  componentDidMount() {
+    const unsub = subscribe('wallet', state => {
+      if(state.opening)
+      {
+        if(state.wallet.unrecvcnt === 0)
+        {
+          this.setState( { unrecvmsg: "" } );
+        }      
+        else {
+          if(state.wallet.unrecvlyr === 0)
+            this.setState( { unrecvmsg: "+ ? LYR" } );
+          else
+            this.setState( { unrecvmsg: "+ " + state.wallet.unrecvlyr.toFixed(4).replace(/\d(?=(\d{3})+\.)/g, '$&,') + " LYR" } );
+        } 
+      }
+    });
+
+    this.setState({unsub: unsub});
+  }
+
+  componentWillUnmount () {
+    this.state.unsub();
+  }
 
   render() {
-    if(this.state.accountId === null)
+    if(!this.props.opening)
       return <Redirect to="/open" />;
 
     return (      
       <div style={{ color: 'white' }}>
         <div>
           <Badge count={this.props.unrecvcnt}>
-            <span className="blas" style={{ color: 'orange', fontWeight: 'bolder' }} id="bala">{this.props.balance ? this.props.balance.toFixed(4).replace(/\d(?=(\d{3})+\.)/g, '$&,') : "0"}</span>
+            <span className="blas" style={{ color: 'orange', fontWeight: 'bolder' }} id="bala">{/*this.props.opening ? this.props.balance.toFixed(4).replace(/\d(?=(\d{3})+\.)/g, '$&,') : "0"*/}</span>
           </Badge>
             &nbsp;&nbsp;<span style={{ fontFamily: 'Times', color: 'white', fontSize: '3vw' }}>LYR</span>
         </div>

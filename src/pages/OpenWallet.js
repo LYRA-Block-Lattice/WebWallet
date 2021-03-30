@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { Form, Input, Button, Select, message, Modal } from 'antd';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import "antd/dist/antd.css";
@@ -39,7 +39,7 @@ class OpenWalletPage extends Component {
     }
 
     componentDidUpdate(prevProps){
-        if(this.props.Err !== null){ passwordAlert(); }
+        if(this.props.Err !== null) { passwordAlert(); }
      }
 
     async onFinish(values) {
@@ -113,6 +113,10 @@ class OpenWalletPage extends Component {
     )
 
     render() {
+        if(this.props.IsOpened) {
+            return <Redirect to="/" />;
+        }
+
         return (
             <div>
                 { this.props.IsExists ? <this.OpenWalletForm /> : null }
