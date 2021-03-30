@@ -83,6 +83,16 @@ const walletReducer = (state = initState, action) => {
                 unrecvlyr: state.wallet.unrecvlyr + action.payload.funds["LYR"]
             }
         };
+        case actionTypes.WSRPC_SERVER_NOTIFY_SETTLEMENT: 
+            return {
+            ...state,
+            wallet: {
+                ...state.wallet,
+                balance: state.wallet.balance + action.payload.funds['LYR'],
+                unrecvcnt: state.wallet.unrecvcnt > 0 ? state.wallet.unrecvcnt - 1 : 0,
+                unrecvlyr: state.wallet.unrecvlyr > action.payload.funds['LYR'] ? state.wallet.unrecvlyr - action.payload.funds["LYR"] : 0
+            }
+        };
         case actionTypes.WALLET_CHANGE_NETWORK: return {
             ...state,
             network: action.payload.network,

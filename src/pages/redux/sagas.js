@@ -126,7 +126,11 @@ function* createWS(network) {
     ws = new JsonRpcWebsocket(
         url,
         requestTimeoutMs,
-        (error) => { console.log("websocket error", error) });
+        async (error) => { 
+            console.log("websocket error", error);
+            // reconnect
+            await ws.open();
+        });
 
     try {
         yield ws.open();
@@ -142,6 +146,9 @@ function* createWS(network) {
         switch (news.catalog) {
             case 'Receiving':
                 dispatch({ type: actionTypes.WSRPC_SERVER_NOTIFY_RECV, payload: news.content });
+                break;
+            case 'Settlement':
+                dispatch({ type: actionTypes.WSRPC_SERVER_NOTIFY_SETTLEMENT, payload: news.content });
                 break;
             default:
                 break;

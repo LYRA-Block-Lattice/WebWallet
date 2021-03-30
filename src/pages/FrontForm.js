@@ -5,7 +5,6 @@ import { Badge } from 'antd';
 import {subscribe} from 'redux-subscriber';
 
 import { InfoIcon, PayIcon, SwapIcon } from '../lyra/icons';
-import store from './redux/store';
 import * as actionTypes from "./redux/actionTypes";
 
 const mapStateToProps = state => {
@@ -59,7 +58,7 @@ class FrontFormCls extends Component {
 
     return (      
       <div style={{ color: 'white' }}>
-        <div>
+        <div onClick={() => this.receive()} >
           <Badge count={this.props.unrecvcnt}>
             <span className="blas" style={{ color: 'orange', fontWeight: 'bolder' }} id="bala">{this.state.balancemsg}</span>
           </Badge>
