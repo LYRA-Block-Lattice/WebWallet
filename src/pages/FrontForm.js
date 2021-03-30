@@ -28,20 +28,20 @@ class FrontFormCls extends Component {
   }
 
   componentDidMount() {
-    const unsub = subscribe('wallet', state => {
-      if(state.opening)
+    const unsub = subscribe('app.wallet', state => {
+      if(state.app.opening)
       {
-        var msg = state.wallet.balance.toFixed(4).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+        var msg = state.app.wallet.balance.toFixed(4).replace(/\d(?=(\d{3})+\.)/g, '$&,');
         this.setState({balancemsg: msg});
-        if(state.wallet.unrecvcnt === 0)
+        if(state.app.wallet.unrecvcnt === 0)
         {
           this.setState( { unrecvmsg: "" } );
         }      
         else {
-          if(state.wallet.unrecvlyr === 0)
+          if(state.app.wallet.unrecvlyr === 0)
             this.setState( { unrecvmsg: "+ ? LYR" } );
           else
-            this.setState( { unrecvmsg: "+ " + state.wallet.unrecvlyr.toFixed(4).replace(/\d(?=(\d{3})+\.)/g, '$&,') + " LYR" } );
+            this.setState( { unrecvmsg: "+ " + state.app.wallet.unrecvlyr.toFixed(4).replace(/\d(?=(\d{3})+\.)/g, '$&,') + " LYR" } );
         } 
       }
     });
@@ -98,7 +98,7 @@ class FrontFormCls extends Component {
     this.setState({ showSend: false });
   }
   receive() {
-    store.dispatch({type: actionTypes.WALLET_RECEIVE});
+    this.props.dispatch({type: actionTypes.WALLET_RECEIVE});
   }
 
   updbal(resp) {

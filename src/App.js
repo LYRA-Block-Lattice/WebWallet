@@ -1,8 +1,6 @@
 import React from 'react';
-import PropTypes from 'prop-types'
 import './App.less';
-import { BrowserRouter, Link, Route, Switch } from 'react-router-dom';
-import { ConnectedRouter } from 'connected-react-router';
+import { Link, Route, Switch } from 'react-router-dom';
 
 import CreateWallet from './pages/CreateWallet';
 import RestoreWallet from './pages/RestoreWallet';
@@ -15,46 +13,40 @@ import OpenWallet from './pages/OpenWallet';
 
 import { HomeIcon } from './lyra/icons';
 
-function App({history}) {
+function App() {
   return (
-    <ConnectedRouter history={history}>
-      <BrowserRouter>
-        <div className="ldark">
-          <Link to="/"><HomeIcon /></Link>
-        </div>
-        <Switch>
-          <Route path="/info">
-            <Info />
-          </Route>
-          <Route path="/send">
-            <Send />
-          </Route>
-          <Route path="/swap">
-            <Swap />
-          </Route>
-          <Route path="/pref">
-            <Preference />
-          </Route>
-          <Route path="/create">
-            <CreateWallet />
-          </Route>
-          <Route path="/restore">
-            <RestoreWallet />
-          </Route>
-          <Route path="/open">
-            <OpenWallet />
-          </Route>
-          <Route path="/">
-            <MainPage />
-          </Route>
-        </Switch>
-      </BrowserRouter>
-    </ConnectedRouter>
+    <div>
+      <div className="ldark">
+        <Link to="/"><HomeIcon /></Link>
+      </div>
+      <Switch>
+        <Route path="/info">
+          <Info />
+        </Route>
+        <Route path="/send">
+          <Send />
+        </Route>
+        <Route path="/swap">
+          <Swap />
+        </Route>
+        <Route path="/pref">
+          <Preference />
+        </Route>
+        <Route path="/create">
+          <CreateWallet />
+        </Route>
+        <Route path="/restore">
+          <RestoreWallet />
+        </Route>
+        <Route path="/open">
+          <OpenWallet />
+        </Route>
+        <Route path="/">
+          <MainPage />
+        </Route>
+      </Switch>
+    </div>
   );
-}
-
-App.propTypes = {
-  history: PropTypes.object,
 }
 
 export default App;

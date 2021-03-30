@@ -1,4 +1,5 @@
 import { applyMiddleware, createStore, compose } from "redux";
+import { createBrowserHistory } from 'history'
 
 //import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
@@ -12,8 +13,7 @@ import rootReducer from './reducers'
 
 import rootSaga from './sagas';
 
-//export const action = type => store.dispatch({type});
-//export const actionx = (type, payload) => store.dispatch({type, payload});
+export const history = createBrowserHistory()
 
 const logger = (store) => (next) => (action) => {
     console.log("action fired", action);
@@ -28,12 +28,12 @@ const sagaMiddleware = createSagaMiddleware({
     context
 })
 
-export default function configureStore(initialState, history) {
+export default function configureStore(initialState) {
     let store = {};
     const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
  
     let createStoreWithMiddleware = composeEnhancers(
-        applyMiddleware(sagaMiddleware, routerMiddleware(history), logger, thunk, promise)
+        applyMiddleware(routerMiddleware(history), sagaMiddleware, logger, thunk, promise)
     )(createStore);
     
     //const middleware = applyMiddleware(promise, logger, thunk, sagaMiddleware, routerMiddleware(history));

@@ -5,21 +5,22 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 import { Provider } from 'react-redux';
-import { createBrowserHistory } from 'history'
+import { ConnectedRouter } from 'connected-react-router'
 
-import configureStore from './pages/redux/store';
-import initState from './pages/redux/wallet';
+import configureStore, { history } from './pages/redux/store';
+//import initState from './pages/redux/wallet';
 
 // for history
-const history = createBrowserHistory();
 
-const store = configureStore(initState, history);
+const store = configureStore();
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <App history={history} />
-    </Provider>    
+      <ConnectedRouter history={history}>
+        <App />
+      </ConnectedRouter>
+    </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );

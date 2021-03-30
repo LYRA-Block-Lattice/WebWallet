@@ -1,7 +1,7 @@
 import * as actionTypes from "./actionTypes";
 
-export const initState = {
-    wallet: {        
+const initState = {
+    wallet: {
         accountId: "",
         balance: 0,
         unrecvcnt: 0,

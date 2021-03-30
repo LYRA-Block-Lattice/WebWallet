@@ -8,7 +8,7 @@ import logo from '../logo.png';
 import FrontForm from './FrontForm';
 
 export default function MainPage() {
-    const opening = useSelector(state => state.opening);
+    const opening = useSelector(state => state.app.opening);
 
     if (!opening) {
         return <OpenWallet />

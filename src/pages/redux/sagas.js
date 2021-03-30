@@ -85,7 +85,7 @@ function* openWallet(action) {
             });
             sessionStorage.setItem('token', JSON.stringify({ pass: action.payload.password, pvt: pvt }));
 
-            yield put(push("/"));
+            yield put(push("/main"));
         }
     }
     catch(err) {
