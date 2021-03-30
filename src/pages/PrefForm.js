@@ -10,7 +10,6 @@ import * as actionTypes from './redux/actionTypes';
 const { Option } = Select;
 
 const mapStateToProps = state => {
-    console.log("state is", state);
     return {
       network: state.network,
     };

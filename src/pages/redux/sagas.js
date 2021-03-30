@@ -16,6 +16,27 @@ function* checkWalletExists() {
     yield put({ type: actionTypes.STORE_INIT_DONE, payload: data });
 }
 
+function* createWallet(action) {
+    var pvtHex = LyraCrypto.lyraGenWallet();
+    var prvKey = LyraCrypto.lyraEncPvt(pvtHex);
+    var actId = LyraCrypto.lyraEncPub(LyraCrypto.prvToPub(pvtHex));
+    var encData = LyraCrypto.encrypt(prvKey, action.payload.password);
+
+    var wds = {
+        pref: {
+            network: 'testnet'
+        },
+        wallets: [{
+            name: action.payload.name,
+            accountId: actId,
+            data: encData
+        }]
+    };
+
+    yield persist.setData(wds);
+    yield put({ type: actionTypes.WALLET_CREATE_DONE});
+}
+
 function* restoreWallet(action) {
     var pvt = LyraCrypto.lyraDec(action.payload.privateKey);
     var actId = LyraCrypto.lyraEncPub(LyraCrypto.prvToPub(pvt));
@@ -176,6 +197,7 @@ function* savePref(action) {
 export default function* rootSaga() {
     console.log('rootSaga is running.');
     yield takeLatest(actionTypes.STORE_INIT, checkWalletExists);
+    yield takeEvery(actionTypes.WALLET_CREATE, createWallet);
     yield takeEvery(actionTypes.WALLET_RESTORE, restoreWallet);
     yield takeEvery(actionTypes.WALLET_REMOVE, removeWallet);
     yield takeEvery(actionTypes.WALLET_OPEN, openWallet);

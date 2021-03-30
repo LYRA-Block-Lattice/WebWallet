@@ -9,7 +9,6 @@ import store from './redux/store';
 import * as actionTypes from "./redux/actionTypes";
 
 const mapStateToProps = state => {
-  console.log("state is", state);
   return {
     opening: state.opening,
     balance: state.wallet.balance,

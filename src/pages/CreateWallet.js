@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import { Form, Input, Button } from 'antd';
-import persist from '../lyra/persist';
+import { connect } from 'react-redux';
 
-import LyraCrypto from '../lyra/crypto';
+import * as actionTypes from "./redux/actionTypes";
 
-export default class CreateWallet extends Component {
+class CreateWalletForm extends Component {
     constructor(props) {
         super(props);
         this.state = { 
@@ -16,21 +16,10 @@ export default class CreateWallet extends Component {
     async onFinish(values) {
         console.log('Success:', values);
 
-        //var pvt = LyraCrypto.lyraDec(values.pvtkey);
-        //var actId = LyraCrypto.lyraEncPub(LyraCrypto.prvToPub(pvt));
-
-        var pvtHex = LyraCrypto.lyraGenWallet();
-        var prvKey = LyraCrypto.lyraEncPvt(pvtHex);
-        var actId = LyraCrypto.lyraEncPub(LyraCrypto.prvToPub(pvtHex));
-        var encData = LyraCrypto.encrypt(prvKey, values.password);
-
-        var wds = { network: 'testnet', wallets: [{ 
-            name: 'default', 
-            accountId: actId, 
-            data: encData
-        }]};
-
-        await persist.setData(wds);
+        this.props.dispatch({type: actionTypes.WALLET_CREATE, payload: {
+            name: values.walletname,
+            password: values.password
+        }})
 
         this.setState({done: true});
     }
@@ -51,7 +40,7 @@ export default class CreateWallet extends Component {
                     
                     name="basic"
                     initialValues={{
-                        remember: true,
+                        walletname: "default",
                     }}
                     onFinish={this.onFinish}
                     onFinishFailed={this.onFinishFailed}
@@ -60,7 +49,7 @@ export default class CreateWallet extends Component {
                         label="Name of the wallet"
                         name="walletname"
                     >
-                        <Input placeholder="Wallet Name" defaultValue="default" disabled />
+                        <Input placeholder="Wallet Name" disabled />
                     </Form.Item>
 
                     <Form.Item
@@ -91,5 +80,16 @@ export default class CreateWallet extends Component {
             </div>
         );
     }
-
 }
+
+const mapStateToProps = state => {
+    return {
+        IsExists: state.existing,
+        IsOpened: state.opening,
+        Err: state.error
+    };    
+  }
+
+const CreateWallet = connect(mapStateToProps)(CreateWalletForm);
+
+export default CreateWallet;

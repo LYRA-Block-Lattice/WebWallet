@@ -43,7 +43,6 @@ class InfoForm extends Component {
 }
 
 const mapStateToProps = state => {
-    console.log("state is", state);
     return {
         pub: state.wallet.accountId,
         network: state.wallet.network,

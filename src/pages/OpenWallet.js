@@ -117,7 +117,6 @@ class OpenWalletPage extends Component {
 }
 
 const mapStateToProps = state => {
-    console.log("state is", state);
     return {
         IsExists: state.existing,
         IsOpened: state.opening,
