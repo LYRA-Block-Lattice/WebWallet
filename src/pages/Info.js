@@ -2,26 +2,18 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Button } from 'antd';
 import "antd/dist/antd.css";
-
-import LyraCrypto from '../lyra/crypto';
-import persist from '../lyra/persist';
-
 class InfoForm extends Component {
     constructor(props) {
         super(props);
+        this.state = { 
+            pvt: null
+          };
         this.shwopvt = this.shwopvt.bind(this);
     }
 
     async shwopvt() {
         const userToken = JSON.parse(sessionStorage.getItem('token'));
-        const token = userToken.pass;
-
-        var pdata = await persist.getData();
-        var wallets = pdata.wallets;
-        var decData = LyraCrypto.decrypt(wallets[0].data, token);
-        var pvk = LyraCrypto.lyraDec(decData);
-        var pvtkey = LyraCrypto.lyraEncPvt(pvk);
-        this.setState({pvt: pvtkey});
+        this.setState({pvt: userToken.pvt});
     }
 
     render() {
@@ -29,10 +21,10 @@ class InfoForm extends Component {
         //     return <OpenWallet setToken={setToken} />
         // }
     
-        if(this.props.pvt !== null)
+        if(this.state.pvt !== null)
             return (<div>
                 <p>Your private key is:</p>
-                <pre>{this.props.pvt}</pre>
+                <pre>{this.state.pvt}</pre>
                 <p>Please save it properly.</p>
             </div>);
 
@@ -54,8 +46,7 @@ const mapStateToProps = state => {
     console.log("state is", state);
     return {
         pub: state.wallet.accountId,
-        pvt: state.wallet.accountId,
-        network: state.wallet.accountId,
+        network: state.wallet.network,
     };
 }
 

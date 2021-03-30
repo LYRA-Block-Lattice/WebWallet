@@ -41,6 +41,7 @@ function* openWallet(action) {
     var wallets = pdata.wallets;
     var decData = LyraCrypto.decrypt(wallets[0].data, action.payload.password);
     var pvk = LyraCrypto.lyraDec(decData);
+    var pvt = LyraCrypto.lyraEncPvt(pvk);
 
     if(pvk === undefined) {
         yield put({type: actionTypes.WALLET_OPEN_FAILED});
@@ -51,7 +52,7 @@ function* openWallet(action) {
             network: pdata.network,
             accountId: wallets[0].accountId
         } });
-        sessionStorage.setItem('token', JSON.stringify({pass: action.payload.password, pvk: pvk}));
+        sessionStorage.setItem('token', JSON.stringify({pass: action.payload.password, pvt: pvt}));
     }   
 }
 
@@ -157,9 +158,10 @@ function* wsrpc (action) {
         console.log("Signing " + hash + " of " + msg + " for " + accountId);
     
         const userToken = JSON.parse(sessionStorage.getItem('token'));
-        var signt = LyraCrypto.lyraSign(msg, userToken.pvk);
+        var pvk = LyraCrypto.lyraDec(userToken.pvt);
+        var signt = LyraCrypto.lyraSign(msg, pvk);
         console.log("Signature", signt);
-        
+
         return ["der", signt];
     });
 
