@@ -1,110 +1,19 @@
-import { applyMiddleware, createStore } from "redux";
-import { composeWithDevTools } from 'redux-devtools-extension';
+import { applyMiddleware, createStore, compose } from "redux";
+
+//import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
 import promise from 'redux-promise-middleware';
 
 import createSagaMiddleware from 'redux-saga';
 import initSubscriber from 'redux-subscriber';
 
+import { routerMiddleware } from 'connected-react-router'
+import rootReducer from './reducers'
+
 import rootSaga from './sagas';
-import * as actionTypes from "./actionTypes";
 
-const initState = {
-    wallet: {        
-        accountId: "",
-        balance: 0,
-        unrecvcnt: 0,
-        unrecvlyr: 0,
-    },
-    network: "",
-    existing: false,
-    pending: false,
-    name: "default",
-    opening: false,
-    password: "",
-    error: null
-}
-
-const reducer = (state = initState, action) => {
-    switch(action.type) {
-        case actionTypes.WALLET_BALANCE: return {
-            ...state,
-            wallet: {
-                ...state.wallet,
-                balance: action.payload.balance['LYR'],
-                unrecvcnt: action.payload.unreceived ? state.wallet.unrecvcnt + 1 : 0,
-                unrecvlyr: action.payload.unreceived ? state.wallet.unrecvcnt : 0
-            }
-        }
-        case "STORE_INIT_DONE": return {
-            ...state,
-            existing: action.payload !== undefined && action.payload !== null
-        }
-        case "STORE_INIT_REJECTED": return {
-            ...state,
-            existing: false
-        }
-        case actionTypes.WALLET_RESTORE_DONE: return {
-             ...state,
-             existing: true,
-             opening: false,
-        };
-        case actionTypes.WALLET_REMOVE_DONE: return {
-            ...state,
-            existing: false,
-            opening: false,
-        };     
-        case actionTypes.WALLET_OPEN: return {
-            ...state,
-            opening: false,
-            name: "",
-            error: null
-        };   
-        case actionTypes.WALLET_OPEN_DONE: return {
-            ...state,
-            opening: true,
-            name: action.payload.wallets[0].name,
-            wallet: {
-                ...state.wallet,                
-                accountId: action.payload.wallets[0].accountId,
-            },
-            network: action.payload.pref.network,
-        };
-        case actionTypes.WALLET_CLOSED: return {
-            ...state,
-            opening: false,
-            name: '',
-            wallet: { },
-        };
-        case actionTypes.WALLET_OPEN_FAILED: return {
-            ...state,
-            opening: false,
-            error: action.payload
-        };
-        case actionTypes.WSRPC_SERVER_NOTIFY_RECV: 
-            return {
-            ...state,
-            wallet: {
-                ...state.wallet,
-                unrecvcnt: state.wallet.unrecvcnt + 1,
-                unrecvlyr: state.wallet.unrecvlyr + action.payload.funds["LYR"]
-            }
-        };
-        case actionTypes.WALLET_CHANGE_NETWORK: return {
-            ...state,
-            network: action.payload.network,
-            wallet: {
-                ...state.wallet,
-                balance: 0,
-                unrecvcnt: 0,
-                unrecvlyr: 0
-            }
-        };
-        default: {
-            return state;
-        }
-    }    
-}
+//export const action = type => store.dispatch({type});
+//export const actionx = (type, payload) => store.dispatch({type, payload});
 
 const logger = (store) => (next) => (action) => {
     console.log("action fired", action);
@@ -119,25 +28,41 @@ const sagaMiddleware = createSagaMiddleware({
     context
 })
 
-const middleware = applyMiddleware(promise, logger, thunk, sagaMiddleware);
+export default function configureStore(initialState, history) {
+    let store = {};
+    const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+ 
+    let createStoreWithMiddleware = composeEnhancers(
+        applyMiddleware(sagaMiddleware, routerMiddleware(history), logger, thunk, promise)
+    )(createStore);
+    
+    //const middleware = applyMiddleware(promise, logger, thunk, sagaMiddleware, routerMiddleware(history));
 
-const store = createStore(reducer, initState, composeWithDevTools(middleware));
-context.dispatch = store.dispatch
+    store = createStoreWithMiddleware(rootReducer(history), initialState);
+  
+    // // Hot reloading
+    // if (module.hot) {
+    //   // Enable Webpack hot module replacement for reducers
+    //   module.hot.accept('./reducers', () => {
+    //     store.replaceReducer(createRootReducer(history));
+    //   });
+    // }
+  
+    //const store = createStore(reducer, initState, composeWithDevTools(middleware));
+    context.dispatch = store.dispatch
 
-store.subscribe(() => {
-    console.log("store changed", store.getState())
-})
+    store.subscribe(() => {
+        console.log("store changed", store.getState())
+    })
 
-// "initSubscriber" returns "subscribe" function, so you can use it
-initSubscriber(store);
+    // "initSubscriber" returns "subscribe" function, so you can use it
+    initSubscriber(store);
 
-store.sagaTask = sagaMiddleware.run(rootSaga);
+    store.sagaTask = sagaMiddleware.run(rootSaga);
 
-export const action = type => store.dispatch({type});
-//export const actionx = (type, payload) => store.dispatch({type, payload});
+    store.dispatch({type: 'STORE_INIT'});
+    //store.dispatch(openWallet("default", "aaa"));
 
-action(actionTypes.STORE_INIT);
-//store.dispatch(openWallet("default", "aaa"));
-
-export default store;
+    return store
+  }
 

@@ -118,9 +118,9 @@ class OpenWalletPage extends Component {
 
 const mapStateToProps = state => {
     return {
-        IsExists: state.existing,
-        IsOpened: state.opening,
-        Err: state.error
+        IsExists: state.app.existing,
+        IsOpened: state.app.opening,
+        Err: state.app.error
     };    
   }
 

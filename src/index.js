@@ -5,12 +5,20 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 import { Provider } from 'react-redux';
-import store from './pages/redux/store';
+import { createBrowserHistory } from 'history'
+
+import configureStore from './pages/redux/store';
+import initState from './pages/redux/wallet';
+
+// for history
+const history = createBrowserHistory();
+
+const store = configureStore(initState, history);
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+      <App history={history} />
     </Provider>    
   </React.StrictMode>,
   document.getElementById('root')

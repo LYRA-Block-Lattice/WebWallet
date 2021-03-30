@@ -1,4 +1,5 @@
 import { put, takeLatest, takeEvery, getContext } from 'redux-saga/effects'
+import { push } from 'connected-react-router'
 
 import * as actionTypes from './actionTypes';
 import persist from '../../lyra/persist';
@@ -63,24 +64,32 @@ function* removeWallet(action) {
 }
 
 function* openWallet(action) {
-    var pdata = yield persist.checkData();
-    var wallets = pdata.wallets;
-    var decData = LyraCrypto.decrypt(wallets[0].data, action.payload.password);
-    var pvk = LyraCrypto.lyraDec(decData);
-    var pvt = LyraCrypto.lyraEncPvt(pvk);
+    try
+    {
+        var pdata = yield persist.checkData();
+        var wallets = pdata.wallets;
+        var decData = LyraCrypto.decrypt(wallets[0].data, action.payload.password);
+        var pvk = LyraCrypto.lyraDec(decData);
+        var pvt = LyraCrypto.lyraEncPvt(pvk);
+    
+        if (pvk === undefined) {
+            throw new Error("private key is empty.");
+        }
+        else {
+            yield put({ type: actionTypes.WALLET_OPEN_DONE, payload: pdata });
+            yield put({
+                type: actionTypes.WSRPC_CREATE, payload: {
+                    network: pdata.pref.network,
+                    accountId: wallets[0].accountId
+                }
+            });
+            sessionStorage.setItem('token', JSON.stringify({ pass: action.payload.password, pvt: pvt }));
 
-    if (pvk === undefined) {
-        yield put({ type: actionTypes.WALLET_OPEN_FAILED });
+            yield put(push("/"));
+        }
     }
-    else {
-        yield put({ type: actionTypes.WALLET_OPEN_DONE, payload: pdata });
-        yield put({
-            type: actionTypes.WSRPC_CREATE, payload: {
-                network: pdata.pref.network,
-                accountId: wallets[0].accountId
-            }
-        });
-        sessionStorage.setItem('token', JSON.stringify({ pass: action.payload.password, pvt: pvt }));
+    catch(err) {
+        yield put({ type: actionTypes.WALLET_OPEN_FAILED, payload: err });
     }
 }
 

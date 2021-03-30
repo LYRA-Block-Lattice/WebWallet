@@ -11,7 +11,7 @@ const { Option } = Select;
 
 const mapStateToProps = state => {
     return {
-      network: state.network,
+      network: state.app.network,
     };
   }
 

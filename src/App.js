@@ -1,8 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types'
 import './App.less';
 import { BrowserRouter, Link, Route, Switch } from 'react-router-dom';
-
-//import LyraContext from './lyra/context';
+import { ConnectedRouter } from 'connected-react-router';
 
 import CreateWallet from './pages/CreateWallet';
 import RestoreWallet from './pages/RestoreWallet';
@@ -15,9 +15,9 @@ import OpenWallet from './pages/OpenWallet';
 
 import { HomeIcon } from './lyra/icons';
 
-function App() {
+function App({history}) {
   return (
-    //<LyraContext.Provider>
+    <ConnectedRouter history={history}>
       <BrowserRouter>
         <div className="ldark">
           <Link to="/"><HomeIcon /></Link>
@@ -49,8 +49,12 @@ function App() {
           </Route>
         </Switch>
       </BrowserRouter>
-    //</LyraContext.Provider>
+    </ConnectedRouter>
   );
+}
+
+App.propTypes = {
+  history: PropTypes.object,
 }
 
 export default App;

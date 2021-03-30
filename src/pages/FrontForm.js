@@ -10,10 +10,10 @@ import * as actionTypes from "./redux/actionTypes";
 
 const mapStateToProps = state => {
   return {
-    opening: state.opening,
-    balance: state.wallet.balance,
-    unrecvcnt: state.wallet.unrecvcnt,
-    unrecvlyr: state.wallet.unrecvlyr,
+    opening: state.app.opening,
+    balance: state.app.wallet.balance,
+    unrecvcnt: state.app.wallet.unrecvcnt,
+    unrecvlyr: state.app.wallet.unrecvlyr,
   };
 }
 class FrontFormCls extends Component {
