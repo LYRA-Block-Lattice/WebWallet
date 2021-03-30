@@ -32,7 +32,8 @@ const reducer = (state = initState, action) => {
             wallet: {
                 ...state.wallet,
                 balance: action.payload.balance['LYR'],
-                unrecvcnt: action.payload.unreceived ? state.wallet.unrecvcnt + 1 : state.wallet.unrecvcnt
+                unrecvcnt: action.payload.unreceived ? state.wallet.unrecvcnt + 1 : 0,
+                unrecvlyr: action.payload.unreceived ? state.wallet.unrecvcnt : 0
             }
         }
         case "STORE_INIT_DONE": return {

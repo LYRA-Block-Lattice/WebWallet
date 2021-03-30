@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { Form, Button, Select } from 'antd';
 import "antd/dist/antd.css";
@@ -22,7 +23,14 @@ const tailLayout = {
     },
 };
 
-class Preference extends Component {
+const mapStateToProps = state => {
+    console.log("state is", state);
+    return {
+      network: state.wallet.network,
+    };
+  }
+
+class PreferenceForm extends Component {
     constructor(props) {
         super(props);
         this.state = { 
@@ -68,7 +76,7 @@ class Preference extends Component {
                     fields={[
                         {
                           name: ["network"],
-                          value: this.state.network,
+                          value: this.props.network,
                         },
                       ]}
                     onFinish={this.onFinish}
@@ -98,5 +106,7 @@ class Preference extends Component {
         );
     }
 };
+
+const Preference = connect(mapStateToProps)(PreferenceForm);
 
 export default Preference;

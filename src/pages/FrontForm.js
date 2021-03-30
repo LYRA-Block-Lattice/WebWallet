@@ -5,6 +5,8 @@ import { Badge } from 'antd';
 import {subscribe} from 'redux-subscriber';
 
 import { InfoIcon, PayIcon, SwapIcon } from '../lyra/icons';
+import store from './redux/store';
+import * as actionTypes from "./redux/actionTypes";
 
 const mapStateToProps = state => {
   console.log("state is", state);
@@ -81,7 +83,7 @@ class FrontFormCls extends Component {
     this.setState({ showSend: false });
   }
   receive() {
-    this.ws.call('Receive', [ this.state.accountId ], (resp) => this.lapp.updbal(resp), this.error_cb);
+    store.dispatch({type: actionTypes.WALLET_RECEIVE});
   }
 
   updbal(resp) {

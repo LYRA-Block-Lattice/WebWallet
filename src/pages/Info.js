@@ -13,8 +13,8 @@ class InfoForm extends Component {
     }
 
     async shwopvt() {
-        const tokenString = sessionStorage.getItem('token');
-        const token = JSON.parse(tokenString);
+        const userToken = JSON.parse(sessionStorage.getItem('token'));
+        const token = userToken.pass;
 
         var pdata = await persist.getData();
         var wallets = pdata.wallets;

@@ -4,7 +4,7 @@ import * as actionTypes from './actionTypes';
 import persist from '../../lyra/persist';
 import LyraCrypto from '../../lyra/crypto';
 
-import { JsonRpcWebsocket } from '../../wsclient';
+import { JsonRpcWebsocket, WebsocketReadyStates } from '../../wsclient';
 
 let ws;
 let network;
@@ -51,7 +51,22 @@ function* openWallet(action) {
             network: pdata.network,
             accountId: wallets[0].accountId
         } });
+        sessionStorage.setItem('token', JSON.stringify({pass: action.payload.password, pvk: pvk}));
     }   
+}
+
+function* receive(action) {
+    try
+    {
+        if(ws.state === WebsocketReadyStates.CLOSED) {
+            yield ws.open();
+        }   
+        const balanceResp = yield ws.call('Receive', [accountId]); 
+        yield put({type: actionTypes.WALLET_BALANCE, payload: balanceResp.result}); 
+    }    
+    catch(error) {
+        yield put({type: actionTypes.WSRPC_CALL_FAILED, payload: error});
+    };
 }
 
 /*function* wscallback(servercall) {
@@ -69,17 +84,7 @@ function* openWallet(action) {
             yield null;
         }
         else if (resp.method === "Sign") {
-            console.log("Signing " + resp.params[0] + " of " + resp.params[1]);
-    
-            const tokenString = sessionStorage.getItem('token');
-            const userToken = JSON.parse(tokenString);
-            var pdata = persist.getData();
-            var wallets = pdata.wallets;
-            var decData = LyraCrypto.decrypt(wallets[0].data, userToken);
-            var pvk = LyraCrypto.lyraDec(decData);
-    
-            var signt = LyraCrypto.lyraSign(resp.params[1], pvk);
-            yield ["der", signt];
+
         }
         else {
             console.log("unsupported server call back method: " + resp.method);
@@ -87,25 +92,6 @@ function* openWallet(action) {
         }
     }
 
-}
-
-function* wsonmessage() {
-    while(true) {
-        let evt = yield null;
-        console.log("got wsonmessage", evt);
-        yield put({type: actionTypes.WSRPC_SERVER_NOTIFY_RECV, payload: evt});
-    }
-    // yield put({type: actionTypes.WSRPC_MESSAGE});
-    // var result = JSON.parse(event.data);
-    // if (result.method === "Notify") {
-    //     var news = result.params[0];
-    //     console.log("WS Notify: " + news.catalog)
-    //     if (news.catalog === "Receiving") {
-    //         this.setState({ unrecvlyr: this.state.unrecvlyr + news.content.funds.LYR });
-    //         this.setState({ unrecv: this.state.unrecv + 1 });
-    //         this.updurcv();
-    //     }
-    // }
 }
 
 function* wsonopen() {
@@ -141,7 +127,7 @@ function* wsrpc (action) {
     if(network === 'devnet')
       url = 'wss://localhost:4504/api/v1/socket';
 
-    const requestTimeoutMs = 2000;
+    const requestTimeoutMs = 10000;
     ws = new JsonRpcWebsocket(
         url,
         requestTimeoutMs,
@@ -167,8 +153,14 @@ function* wsrpc (action) {
         console.log("Got news notify", news);
     });
 
-    ws.on('Sign', (signReq) => {
-        console.log("Got Signing request", signReq);
+    ws.on('Sign', (hash, msg, accountId) => {
+        console.log("Signing " + hash + " of " + msg + " for " + accountId);
+    
+        const userToken = JSON.parse(sessionStorage.getItem('token'));
+        var signt = LyraCrypto.lyraSign(msg, userToken.pvk);
+        console.log("Signature", signt);
+        
+        return ["der", signt];
     });
 
     try
@@ -201,5 +193,6 @@ export default function* rootSaga() {
     yield takeEvery(actionTypes.WALLET_REMOVE, removeWallet);
     yield takeEvery(actionTypes.WALLET_OPEN, openWallet);
     yield takeEvery(actionTypes.WSRPC_CREATE, wsrpc);
+    yield takeEvery(actionTypes.WALLET_RECEIVE, receive);
 }
 
