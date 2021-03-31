@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Button } from 'antd';
 import "antd/dist/antd.css";
+import QRCode from 'qrcode.react';
+
 class InfoForm extends Component {
     constructor(props) {
         super(props);
@@ -31,6 +33,18 @@ class InfoForm extends Component {
         return (            
             <div>
                 <h2>Information about your wallet</h2>
+                <p>Scan to pay me:</p>
+                <QRCode value={this.props.pub}
+                    size={256}
+                    imageSettings={{
+                        src: "/images/logo3.png",
+                        x: null,
+                        y: null,
+                        height: 48,
+                        width: 48,
+                        excavate: true,
+                    }}
+                />
                 <p>Your wallet address is:</p>
                 <pre>{this.props.pub}</pre>
                 <p>Current connected blockchain:</p>
@@ -45,7 +59,7 @@ class InfoForm extends Component {
 const mapStateToProps = state => {
     return {
         pub: state.app.wallet.accountId,
-        network: state.app.wallet.network,
+        network: state.app.network,
     };
 }
 
