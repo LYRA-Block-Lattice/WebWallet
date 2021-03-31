@@ -1,5 +1,5 @@
 import { applyMiddleware, createStore, compose } from "redux";
-import { createBrowserHistory } from 'history'
+import { createHashHistory  } from 'history'
 
 //import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
@@ -13,7 +13,7 @@ import rootReducer from './reducers'
 
 import rootSaga from './sagas';
 
-export const history = createBrowserHistory()
+export const history = createHashHistory ()
 
 const logger = (store) => (next) => (action) => {
     console.log("action fired", action);
