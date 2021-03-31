@@ -5,7 +5,7 @@ import * as actionTypes from './actionTypes';
 import persist from '../../lyra/persist';
 import LyraCrypto from '../../lyra/crypto';
 
-import { JsonRpcWebsocket, WebsocketReadyStates } from '../../wsclient';
+import { JsonRpcWebsocket, WebsocketReadyStates } from 'jsonrpc-client-websocket';
 
 let ws;
 let network;
