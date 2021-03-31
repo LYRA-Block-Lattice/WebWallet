@@ -37,7 +37,7 @@ class RestoreWallet extends Component {
 
         return (
             <div>
-                <div >Use this for test: eSAErSXn2djzLgWFxd8vtFfnmgrUAhEntHCgKFwTPi8AY3hnG</div>
+                <div >Always keep the private key safely.</div>
                 <Form
                     
                     name="basic"

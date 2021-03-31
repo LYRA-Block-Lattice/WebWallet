@@ -21,12 +21,17 @@ class FrontFormCls extends Component {
     this.state = { 
       balancemsg: "",
       unrecvmsg: "",  
-      unsub: null
+      unsub: null,
+      tag: null,
     };
   }
 
   receive() {
-    this.props.dispatch({type: actionTypes.WALLET_RECEIVE});
+    this.setState({tag: '_' + Math.random().toString(36).substr(2, 9)});
+    this.props.dispatch({type: actionTypes.WALLET_RECEIVE, payload: {
+      accountId: this.props.accountId,
+      tag: this.state.tag
+    }});
   }
 
   componentDidMount() {

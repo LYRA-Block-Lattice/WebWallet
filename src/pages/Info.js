@@ -45,7 +45,7 @@ class InfoForm extends Component {
                         excavate: true,
                     }}
                 />
-                <p>Your wallet address is:</p>
+                <p>My wallet address is:</p>
                 <p className="laddr">{this.props.pub}</p>
                 <p>Current connected blockchain:</p>
                 <pre>{this.props.network}</pre>
