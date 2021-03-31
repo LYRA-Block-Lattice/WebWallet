@@ -20,15 +20,28 @@ const walletReducer = (state = initState, action) => {
     if(action === undefined) { return state }
 
     switch(action.type) {
-        case actionTypes.WALLET_BALANCE: return {
-            ...state,
-            wallet: {
-                ...state.wallet,
-                balance: action.payload.balance['LYR'],
-                unrecvcnt: action.payload.unreceived ? state.wallet.unrecvcnt + 1 : 0,
-                unrecvlyr: action.payload.unreceived ? state.wallet.unrecvcnt : 0
+        case actionTypes.WALLET_BALANCE: 
+            if(action.payload.balance !== undefined) {
+                return {
+                    ...state,
+                    wallet: {
+                        ...state.wallet,
+                        balance: action.payload.balance['LYR'],
+                        unrecvcnt: action.payload.unreceived ? state.wallet.unrecvcnt + 1 : 0,
+                        unrecvlyr: action.payload.unreceived ? state.wallet.unrecvcnt : 0
+                    }
+                }
+            }else{
+                return {
+                    ...state,
+                    wallet: {
+                        ...state.wallet,
+                        balance: 0,
+                        unrecvcnt: action.payload.unreceived ? state.wallet.unrecvcnt + 1 : 0,
+                        unrecvlyr: action.payload.unreceived ? state.wallet.unrecvcnt : 0
+                    }
+                }
             }
-        }
         case "STORE_INIT_DONE": return {
             ...state,
             existing: action.payload !== undefined && action.payload !== null
