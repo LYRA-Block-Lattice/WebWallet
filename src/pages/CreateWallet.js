@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Form, Input, Button } from 'antd';
 import { connect } from 'react-redux';
 
@@ -8,9 +8,6 @@ import * as actionTypes from "./redux/actionTypes";
 class CreateWalletForm extends Component {
     constructor(props) {
         super(props);
-        this.state = { 
-            done: false
-          };
         this.onFinish = this.onFinish.bind(this);
     }
     async onFinish(values) {
@@ -20,8 +17,6 @@ class CreateWalletForm extends Component {
             name: values.walletname,
             password: values.password
         }})
-
-        this.setState({done: true});
     }
 
     onFinishFailed(errorInfo) {
@@ -29,10 +24,6 @@ class CreateWalletForm extends Component {
     }
 
     render() {
-        if(this.state.done) {
-            return <Redirect to="/" />;
-        }
-
         return (
             <div>
                 <div>Create New Wallet</div>

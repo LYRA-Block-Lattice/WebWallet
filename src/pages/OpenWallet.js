@@ -25,6 +25,8 @@ class OpenWalletPage extends Component {
 
     componentDidUpdate(prevProps){
         if(this.props.Err !== null) { passwordAlert(); }
+
+        // check if wallet created 
      }
 
     async onFinish(values) {

@@ -1,7 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux'
-import { Link } from "react-router-dom";
-import OpenWallet from './OpenWallet';
+import { Link, Redirect } from 'react-router-dom';
 import { SettingsIcon } from '../lyra/icons';
 
 import FrontForm from './FrontForm';
@@ -10,7 +9,7 @@ export default function MainPage() {
     const opening = useSelector(state => state.app.opening);
 
     if (!opening) {
-        return <OpenWallet />
+        return <Redirect to="/open" />;
     }
 
     if (opening)

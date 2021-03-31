@@ -36,6 +36,7 @@ function* createWallet(action) {
 
     yield persist.setData(wds);
     yield put({ type: actionTypes.WALLET_CREATE_DONE});
+    yield put(push("/open"));
 }
 
 function* restoreWallet(action) {
@@ -85,7 +86,7 @@ function* openWallet(action) {
             });
             sessionStorage.setItem('token', JSON.stringify({ pass: action.payload.password, pvt: pvt }));
 
-            yield put(push("/main"));
+            yield put(push("/"));
         }
     }
     catch(err) {
@@ -99,6 +100,7 @@ function* closeWallet() {
     yield ws.close();
     ws = null;
     yield put({ type: actionTypes.WALLET_CLOSED });
+    yield put(push("/"));
 }
 
 function* receive(action) {

@@ -4,7 +4,6 @@ import { Redirect } from 'react-router-dom';
 import { Form, Button, Select } from 'antd';
 import "antd/dist/antd.css";
 
-import store from './redux/store';
 import * as actionTypes from './redux/actionTypes';
 
 const { Option } = Select;
@@ -28,13 +27,13 @@ class PreferenceForm extends Component {
     
     onFinish(values) {
         this.setState({closed: true});
-        store.dispatch({type: actionTypes.WALLET_CLOSE});
+        this.props.dispatch({type: actionTypes.WALLET_CLOSE});
     }
 
     async handleChange(value) {
         console.log(value); 
 
-        store.dispatch({type: actionTypes.WALLET_CHANGE_NETWORK, payload: {network: value}});
+        this.props.dispatch({type: actionTypes.WALLET_CHANGE_NETWORK, payload: {network: value}});
     }
 
     render() {

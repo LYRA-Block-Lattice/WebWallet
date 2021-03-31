@@ -9,7 +9,6 @@ import * as actionTypes from "./redux/actionTypes";
 
 const mapStateToProps = state => {
   return {
-    state0: state,
     opening: state.app.opening,
     balance: state.app.wallet.balance,
     unrecvcnt: state.app.wallet.unrecvcnt,
@@ -29,17 +28,35 @@ class FrontFormCls extends Component {
 
   componentDidMount() {
     const unsub = subscribe('app.wallet', store => {
-      this.update();
+      this.update(store);
     });
 
     this.setState({unsub: unsub});
 
-    this.update();
+    this.update2();
   }
 
-  update() {
-    let state = this.props.state0;
-    if(state.app.opening)
+  update2() {
+    if(this.props.opening && this.props.balance !== undefined)
+    {
+      var msg = this.props.balance.toFixed(4).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+      this.setState({balancemsg: msg});
+      if(this.props.unrecvcnt === 0)
+      {
+        this.setState( { unrecvmsg: "" } );
+      }      
+      else {
+        if(this.props.unrecvlyr === 0)
+          this.setState( { unrecvmsg: "+ ? LYR" } );
+        else
+          this.setState( { unrecvmsg: "+ " + this.props.unrecvlyr.toFixed(4).replace(/\d(?=(\d{3})+\.)/g, '$&,') + " LYR" } );
+      } 
+    }
+  }
+
+  update(store) {
+    let state = store;
+    if(state.app.opening && state.app.wallet.balance !== undefined)
     {
       var msg = state.app.wallet.balance.toFixed(4).replace(/\d(?=(\d{3})+\.)/g, '$&,');
       this.setState({balancemsg: msg});

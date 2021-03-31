@@ -37,6 +37,7 @@ const walletReducer = (state = initState, action) => {
             ...state,
             existing: false
         }
+        case actionTypes.WALLET_CREATE_DONE: 
         case actionTypes.WALLET_RESTORE_DONE: return {
              ...state,
              existing: true,
