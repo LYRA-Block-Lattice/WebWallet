@@ -114,7 +114,7 @@ function* receive(action) {
     };
 }
 
-function* createWS(network) {
+function* createWS() {
     console.log("creating ws for", network);
     var url = 'wss://testnet.lyra.live/api/v1/socket';
     if (network === 'mainnet')
@@ -123,13 +123,14 @@ function* createWS(network) {
         url = 'wss://localhost:4504/api/v1/socket';
 
     const requestTimeoutMs = 10000;
+
     ws = new JsonRpcWebsocket(
         url,
         requestTimeoutMs,
-        async (error) => { 
+        (error) => { 
             console.log("websocket error", error);
             // reconnect
-            await ws.open();
+            dispatch({ type: actionTypes.WSRPC_CLOSED, payload: error });
         });
 
     try {
@@ -195,7 +196,7 @@ function* wsrpc(action) {
     accountId = action.payload.accountId;
     dispatch = yield getContext('dispatch');
 
-    yield createWS(network);
+    yield createWS();
 }
 
 function* savePref(action) {
@@ -206,7 +207,7 @@ function* savePref(action) {
     // need reconnect to api
     yield ws.close();
     network = pdata.pref.network;
-    yield createWS(network);
+    yield createWS();
 }
 
 
@@ -219,6 +220,7 @@ export default function* rootSaga() {
     yield takeEvery(actionTypes.WALLET_OPEN, openWallet);
     yield takeEvery(actionTypes.WALLET_CLOSE, closeWallet);
     yield takeEvery(actionTypes.WSRPC_CREATE, wsrpc);
+    yield takeEvery(actionTypes.WSRPC_CLOSED, createWS);
     yield takeEvery(actionTypes.WALLET_RECEIVE, receive);
     yield takeEvery(actionTypes.WALLET_CHANGE_NETWORK, savePref);
 }

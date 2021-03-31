@@ -1,22 +1,21 @@
+"use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DeferredPromise = void 0;
-var DeferredPromise = /** @class */ (function () {
-    function DeferredPromise() {
-        var _this = this;
-        this.promise = new Promise(function (resolve, reject) {
-            _this.deferResolve = resolve;
-            _this.deferReject = reject;
+class DeferredPromise {
+    constructor() {
+        this.promise = new Promise((resolve, reject) => {
+            this.deferResolve = resolve;
+            this.deferReject = reject;
         });
     }
-    DeferredPromise.prototype.asPromise = function () {
+    asPromise() {
         return this.promise;
-    };
-    DeferredPromise.prototype.resolve = function (result) {
+    }
+    resolve(result) {
         this.deferResolve(result);
-    };
-    DeferredPromise.prototype.reject = function (error) {
+    }
+    reject(error) {
         this.deferReject(error);
-    };
-    return DeferredPromise;
-}());
+    }
+}
 exports.DeferredPromise = DeferredPromise;

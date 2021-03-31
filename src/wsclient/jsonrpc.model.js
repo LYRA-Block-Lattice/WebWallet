@@ -1,3 +1,4 @@
+"use strict";
 /* tslint:disable:max-classes-per-file */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.JsonRpcRequest = exports.JsonRpcResponse = exports.JsonRpcError = exports.JsonRpcErrorCodes = void 0;
@@ -13,21 +14,12 @@ var JsonRpcErrorCodes;
     JsonRpcErrorCodes[JsonRpcErrorCodes["INVALID_RESPONSE"] = -32001] = "INVALID_RESPONSE";
     JsonRpcErrorCodes[JsonRpcErrorCodes["REQUEST_TIMEOUT"] = -32002] = "REQUEST_TIMEOUT";
 })(JsonRpcErrorCodes = exports.JsonRpcErrorCodes || (exports.JsonRpcErrorCodes = {}));
-var JsonRpcError = /** @class */ (function () {
-    function JsonRpcError() {
-    }
-    return JsonRpcError;
-}());
+class JsonRpcError {
+}
 exports.JsonRpcError = JsonRpcError;
-var JsonRpcResponse = /** @class */ (function () {
-    function JsonRpcResponse() {
-    }
-    return JsonRpcResponse;
-}());
+class JsonRpcResponse {
+}
 exports.JsonRpcResponse = JsonRpcResponse;
-var JsonRpcRequest = /** @class */ (function () {
-    function JsonRpcRequest() {
-    }
-    return JsonRpcRequest;
-}());
+class JsonRpcRequest {
+}
 exports.JsonRpcRequest = JsonRpcRequest;
