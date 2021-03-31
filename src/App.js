@@ -11,13 +11,11 @@ import MainPage from './pages/MainPage';
 import Info from './pages/Info';
 import OpenWallet from './pages/OpenWallet';
 
-import { HomeIcon } from './lyra/icons';
-
 function App() {
   return (
     <div>
       <div className="ldark">
-        <Link to="/"><HomeIcon /></Link>
+        <Link to="/"><img src="/images/logo2.png" alt="Logo"></img></Link>
       </div>
       <Switch>
         <Route path="/info">

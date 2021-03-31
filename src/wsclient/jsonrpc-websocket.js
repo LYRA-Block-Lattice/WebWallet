@@ -57,7 +57,7 @@ class JsonRpcWebsocket {
             params,
         };
         try {
-            console.log("Sending request", request);
+            //console.log("Sending request", request);
             this.websocket.send(JSON.stringify(request));
         }
         catch (e) {

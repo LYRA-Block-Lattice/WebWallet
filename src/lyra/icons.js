@@ -4,14 +4,12 @@ const iconStyle = {
   height: '32px',
   width: '32px',
   margin: '16px',
-  fill: 'lightcyan'
 }
 
 const smallIconStyle = {
   height: '24px',
   width: '24px',
   margin: '8px',
-  fill: 'lightcyan'
 }
 
 const HeartSvg = () => (

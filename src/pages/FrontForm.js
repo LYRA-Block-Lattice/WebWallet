@@ -9,6 +9,7 @@ import * as actionTypes from "./redux/actionTypes";
 
 const mapStateToProps = state => {
   return {
+    state0: state,
     opening: state.app.opening,
     balance: state.app.wallet.balance,
     unrecvcnt: state.app.wallet.unrecvcnt,
@@ -27,25 +28,32 @@ class FrontFormCls extends Component {
   }
 
   componentDidMount() {
-    const unsub = subscribe('app.wallet', state => {
-      if(state.app.opening)
-      {
-        var msg = state.app.wallet.balance.toFixed(4).replace(/\d(?=(\d{3})+\.)/g, '$&,');
-        this.setState({balancemsg: msg});
-        if(state.app.wallet.unrecvcnt === 0)
-        {
-          this.setState( { unrecvmsg: "" } );
-        }      
-        else {
-          if(state.app.wallet.unrecvlyr === 0)
-            this.setState( { unrecvmsg: "+ ? LYR" } );
-          else
-            this.setState( { unrecvmsg: "+ " + state.app.wallet.unrecvlyr.toFixed(4).replace(/\d(?=(\d{3})+\.)/g, '$&,') + " LYR" } );
-        } 
-      }
+    const unsub = subscribe('app.wallet', store => {
+      this.update();
     });
 
     this.setState({unsub: unsub});
+
+    this.update();
+  }
+
+  update() {
+    let state = this.props.state0;
+    if(state.app.opening)
+    {
+      var msg = state.app.wallet.balance.toFixed(4).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+      this.setState({balancemsg: msg});
+      if(state.app.wallet.unrecvcnt === 0)
+      {
+        this.setState( { unrecvmsg: "" } );
+      }      
+      else {
+        if(state.app.wallet.unrecvlyr === 0)
+          this.setState( { unrecvmsg: "+ ? LYR" } );
+        else
+          this.setState( { unrecvmsg: "+ " + state.app.wallet.unrecvlyr.toFixed(4).replace(/\d(?=(\d{3})+\.)/g, '$&,') + " LYR" } );
+      } 
+    }
   }
 
   componentWillUnmount () {
@@ -57,12 +65,12 @@ class FrontFormCls extends Component {
       return <Redirect to="/open" />;
 
     return (      
-      <div style={{ color: 'white' }}>
+      <div>
         <div onClick={() => this.receive()} >
           <Badge count={this.props.unrecvcnt}>
-            <span className="blas" style={{ color: 'orange', fontWeight: 'bolder' }} id="bala">{this.state.balancemsg}</span>
+            <span className="blas" style={{ fontWeight: 'bolder' }} id="bala">{this.state.balancemsg}</span>
           </Badge>
-            &nbsp;&nbsp;<span style={{ fontFamily: 'Times', color: 'white', fontSize: '3vw' }}>LYR</span>
+            &nbsp;&nbsp;<span style={{ fontFamily: 'Times', fontSize: '3vw' }}>LYR</span>
         </div>
         <div onClick={() => this.receive()} style={{ fontFamily: 'Times', fontSize: '12pt' }}>
           {this.state.unrecvmsg}

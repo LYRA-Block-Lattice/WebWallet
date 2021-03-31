@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import OpenWallet from './OpenWallet';
 import { SettingsIcon } from '../lyra/icons';
 
-import logo from '../logo.png';
 import FrontForm from './FrontForm';
 
 export default function MainPage() {
@@ -23,11 +22,7 @@ export default function MainPage() {
                 </Link>
                 </div>
                 <div className="App">
-                    <header className="App-header">
-                        <img src={logo} className="App-logo" alt="logo" />
-                        <br /><br />
-                        <FrontForm></FrontForm>
-                    </header>
+                    <FrontForm></FrontForm>
                 </div>
             </div>
         );
