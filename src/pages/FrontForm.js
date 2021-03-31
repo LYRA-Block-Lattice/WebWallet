@@ -23,10 +23,16 @@ class FrontFormCls extends Component {
       unrecvmsg: "",  
       unsub: null
     };
-    this.send = this.send.bind(this)
+  }
+
+  receive() {
+    this.props.dispatch({type: actionTypes.WALLET_RECEIVE});
   }
 
   componentDidMount() {
+    if(typeof this.state.unsub === 'function')
+      this.state.unsub();
+
     const unsub = subscribe('app.wallet', store => {
       this.update(store);
     });
@@ -107,42 +113,6 @@ class FrontFormCls extends Component {
         </div>               
       </div>
     );
-  }
-
-  send(values) {
-    console.log("send token by values: " + values);
-    // this.setState({showSendConfirm: true});
-    // return;
-    // do validate 
-    this.ws.call('Send', [ 
-      this.state.accountId,
-      values.amount,
-      values.destaddr,
-      values.tokenname
-    ], (resp) => this.lapp.updbal(resp), this.error_cb);
-    this.setState({ showSend: false });
-  }
-  receive() {
-    this.props.dispatch({type: actionTypes.WALLET_RECEIVE});
-  }
-
-  updbal(resp) {
-    if(resp.balance)
-    {
-      this.setState( { balance: resp.balance.LYR} );
-      if(!resp.unreceived)
-      {
-        this.setState( { unrecv: 0 } );
-        this.setState( { unrecvlyr: 0 } );
-      }
-      if (resp.unreceived && this.state.unrecv === 0) {
-        this.setState( { unrecv: this.state.unrecv + 1} );
-      }
-      this.updurcv(resp.unreceived);
-    }
-  }
-  updurcv(un) {
-     
   }
 }
 
