@@ -13,7 +13,11 @@ const initState = {
     name: "default",
     opening: false,
     password: "",
-    error: null
+    tx: {
+        tag: null,  
+        result: null,
+    },
+    error: null,
 }
 
 const walletReducer = (state = initState, action) => {
@@ -42,13 +46,34 @@ const walletReducer = (state = initState, action) => {
                     }
                 }
             }
-        case "STORE_INIT_DONE": return {
+        case actionTypes.STORE_INIT_DONE: return {
             ...state,
             existing: action.payload !== undefined && action.payload !== null
         }
-        case "STORE_INIT_REJECTED": return {
+        case actionTypes.WALLET_RECEIVE:
+        case actionTypes.WALLET_SEND: return {
             ...state,
-            existing: false
+            error: null,
+            tx: {
+                tag: action.payload.tag,  
+                result: "pending",
+            },
+        }
+        case actionTypes.WSRPC_CALL_SUCCESS: return {
+            ...state,
+            error: null,
+            tx: {
+                tag: action.payload.tag,
+                result: "success",
+            },
+        }
+        case actionTypes.WSRPC_CALL_FAILED: return {
+            ...state,
+            error: action.payload.error,
+            tx: {
+                tag: action.payload.tag,
+                result: "failed",
+            },
         }
         case actionTypes.WALLET_CREATE_DONE: 
         case actionTypes.WALLET_RESTORE_DONE: return {

@@ -46,7 +46,7 @@ class InfoForm extends Component {
                     }}
                 />
                 <p>Your wallet address is:</p>
-                <pre>{this.props.pub}</pre>
+                <p className="laddr">{this.props.pub}</p>
                 <p>Current connected blockchain:</p>
                 <pre>{this.props.network}</pre>
                 <Button type="link" onClick={this.shwopvt}>Show my private key</Button>

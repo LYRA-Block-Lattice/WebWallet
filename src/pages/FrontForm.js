@@ -74,7 +74,8 @@ class FrontFormCls extends Component {
   }
 
   componentWillUnmount () {
-    this.state.unsub();
+    if(typeof this.state.unsub === 'function')
+      this.state.unsub();
   }
 
   render() {

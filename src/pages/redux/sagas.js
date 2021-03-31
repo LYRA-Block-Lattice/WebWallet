@@ -110,9 +110,37 @@ function* receive(action) {
         }
         const balanceResp = yield ws.call('Receive', [accountId]);
         yield put({ type: actionTypes.WALLET_BALANCE, payload: balanceResp.result });
+        yield put({ type: actionTypes.WSRPC_CALL_SUCCESS, 
+            payload: {tag: action.payload.tag} });
     }
     catch (error) {
-        yield put({ type: actionTypes.WSRPC_CALL_FAILED, payload: error });
+        yield put({ type: actionTypes.WSRPC_CALL_FAILED, payload: {
+            error: error, 
+            tag: action.payload.tag
+        }});
+    };
+}
+
+function* send(action) {
+    try {
+        if (ws.state === WebsocketReadyStates.CLOSED) {
+            yield ws.open();
+        }
+        const balanceResp = yield ws.call('Send', [
+            accountId, 
+            action.payload.amount,
+            action.payload.destaddr,
+            action.payload.tokenname
+        ]);
+        yield put({ type: actionTypes.WALLET_BALANCE, payload: balanceResp.result });
+        yield put({ type: actionTypes.WSRPC_CALL_SUCCESS, 
+            payload: {tag: action.payload.tag} });
+    }
+    catch (error) {
+        yield put({ type: actionTypes.WSRPC_CALL_FAILED, payload: {
+            error: error, 
+            tag: action.payload.tag
+        }});
     };
 }
 
@@ -224,6 +252,7 @@ export default function* rootSaga() {
     yield takeEvery(actionTypes.WSRPC_CREATE, wsrpc);
     yield takeEvery(actionTypes.WSRPC_CLOSED, createWS);
     yield takeEvery(actionTypes.WALLET_RECEIVE, receive);
+    yield takeEvery(actionTypes.WALLET_SEND, send);
     yield takeEvery(actionTypes.WALLET_CHANGE_NETWORK, savePref);
 }
 
