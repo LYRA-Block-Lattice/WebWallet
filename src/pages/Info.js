@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Button } from 'antd';
-import "antd/dist/antd.css";
+//import "antd/dist/antd.css";
 import QRCode from 'qrcode.react';
 
 class InfoForm extends Component {

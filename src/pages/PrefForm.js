@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { Form, Button, Select } from 'antd';
-import "antd/dist/antd.css";
+//import "antd/dist/antd.css";
 
 import * as actionTypes from './redux/actionTypes';
 

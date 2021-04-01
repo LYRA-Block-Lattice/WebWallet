@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { subscribe } from 'redux-subscriber';
 import { Form, Input, Button, InputNumber, Select, message } from 'antd';
-import "antd/dist/antd.css";
+//import "antd/dist/antd.css";
 import QrReader from 'react-qr-reader';
 
 import * as actionTypes from './redux/actionTypes';

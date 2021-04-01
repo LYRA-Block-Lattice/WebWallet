@@ -1,20 +1,12 @@
 import React from 'react';
-import './App.less';
-import { Link, Route, Switch } from 'react-router-dom';
-
-import CreateWallet from './pages/CreateWallet';
-import RestoreWallet from './pages/RestoreWallet';
-import Preference from './pages/PrefForm';
-import Send from './pages/SendForm';
-import Swap from './pages/SwapForm';
-import MainPage from './pages/MainPage';
-import Info from './pages/Info';
-import OpenWallet from './pages/OpenWallet';
+//import './App.less';
+import Main from './pages/Main';
 
 function App() {
   return (
     <div>
-      <div className="ldark">
+      <Main />
+      {/* <div className="ldark">
         <Link to="/"><img src="/images/logo2.png" alt="Logo"></img></Link>
       </div>
       <Switch>
@@ -42,7 +34,7 @@ function App() {
         <Route path="/">
           <MainPage />
         </Route>
-      </Switch>
+      </Switch> */}
     </div>
   );
 }
