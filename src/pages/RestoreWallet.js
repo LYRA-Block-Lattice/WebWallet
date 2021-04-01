@@ -31,10 +31,6 @@ class RestoreWallet extends Component {
     }
 
     render() {
-        if(this.state.done) {
-            return <Redirect to="/" />;
-        }
-
         return (
             <div>
                 <div >Always keep the private key safely.</div>

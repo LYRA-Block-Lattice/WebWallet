@@ -108,8 +108,8 @@ class OpenWalletPage extends Component {
             <div>
                 { this.props.IsExists ? <this.OpenWalletForm /> : null }
 
-                <p><Link to="/create">Create New Wallet</Link></p>
-                <p><Link to="/restore">Restore by Private Key</Link></p> 
+                <p><Link to="/wallet/create">Create New Wallet</Link></p>
+                <p><Link to="/wallet/restore">Restore by Private Key</Link></p> 
 
                 { this.props.IsExists ? <p><Button type="link" onClick={this.showConfirm}>Remove Wallet</Button></p> : null }
                    

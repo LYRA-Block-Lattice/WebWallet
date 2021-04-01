@@ -36,7 +36,7 @@ function* createWallet(action) {
 
     yield persist.setData(wds);
     yield put({ type: actionTypes.WALLET_CREATE_DONE});
-    yield put(push("/open"));
+    yield put(push("/wallet/open"));
 }
 
 function* restoreWallet(action) {
@@ -57,6 +57,8 @@ function* restoreWallet(action) {
 
     yield persist.setData(wds);
     yield put({ type: actionTypes.WALLET_RESTORE_DONE });
+
+    yield put(push("/wallet/open"));
 }
 
 function* removeWallet(action) {

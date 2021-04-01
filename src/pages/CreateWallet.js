@@ -66,7 +66,7 @@ class CreateWalletForm extends Component {
                     </Form.Item>
                 </Form>
 
-                <p><Link to="/restore">Have a Private Key? Restore it.</Link></p>
+                <p><Link to="/wallet/restore">Have a Private Key? Restore it.</Link></p>
 
             </div>
         );
