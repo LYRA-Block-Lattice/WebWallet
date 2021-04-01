@@ -1,6 +1,6 @@
 {
   "short_name": "Lyra Wallet",
-  "name": "Browser based web wallet for Lyra blockchain",
+  "name": "Web Wallet for Lyra",
   "icons": [
     {
       "src": "favicon.ico",
