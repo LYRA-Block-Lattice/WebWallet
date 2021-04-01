@@ -159,7 +159,7 @@ export default function Main() {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap>
+          <Typography style={{color: 'white'}} variant="h6" noWrap>
             Lyra 
           </Typography>
         </Toolbar>

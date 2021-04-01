@@ -90,8 +90,8 @@ class FrontFormCls extends Component {
   }
 
   render() {
-    // if(!this.props.opening)
-    //   return <Redirect to="/open" />;
+    if(!this.props.opening)
+      return <Redirect to="/wallet/open" />;
 
     return (      
       <div>

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import { Form, Input, Button, Select, message, Modal } from 'antd';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
-//import "antd/dist/antd.css";
+import "antd/dist/antd.css";
 
 import { connect } from 'react-redux';
 import * as actionTypes from './redux/actionTypes';
