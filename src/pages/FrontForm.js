@@ -106,13 +106,13 @@ class FrontFormCls extends Component {
         </div>
         <p>&nbsp;</p>
         <div>
-          <Link to="/info">
+          <Link to="/wallet/info">
             <InfoIcon></InfoIcon>
           </Link>
-          <Link to="/send">
+          <Link to="/wallet/send">
             <PayIcon></PayIcon>
           </Link>
-          <Link to="/swap">
+          <Link to="/wallet/swap">
             <SwapIcon></SwapIcon>
           </Link>
         </div>               
