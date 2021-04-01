@@ -4,8 +4,8 @@ import { Link, Redirect } from "react-router-dom";
 import { Badge } from 'antd';
 import {subscribe} from 'redux-subscriber';
 
-import { InfoIcon, PayIcon, SwapIcon } from '../lyra/icons';
 import * as actionTypes from "./redux/actionTypes";
+import SimpleBottomNavigation from "./SimpleBottomNavigation";
 
 const mapStateToProps = state => {
   return {
@@ -106,16 +106,8 @@ class FrontFormCls extends Component {
         </div>
         <p>&nbsp;</p>
         <div>
-          <Link to="/wallet/info">
-            <InfoIcon></InfoIcon>
-          </Link>
-          <Link to="/wallet/send">
-            <PayIcon></PayIcon>
-          </Link>
-          <Link to="/wallet/swap">
-            <SwapIcon></SwapIcon>
-          </Link>
-        </div>               
+          <SimpleBottomNavigation />
+        </div>             
       </div>
     );
   }
