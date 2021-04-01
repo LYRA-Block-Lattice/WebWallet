@@ -1,3 +1,5 @@
+import { Route, Switch } from 'react-router-dom';
+
 import HomeIcon from '@material-ui/icons/Home';
 import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
 import SwapCallsIcon from '@material-ui/icons/SwapCalls';
@@ -52,7 +54,8 @@ const WalletMenu = [
         icon: <VpnKeyIcon />,
         link: "/open",
         rndr: <OpenWallet />,
-    },];
+    }
+];
 
 const MainMenu = [
     {
@@ -60,7 +63,7 @@ const MainMenu = [
         icon: <AccountBalanceWalletIcon />,
         link: "/wallet",
         rndr: <FrontForm />,
-        submenu: [WalletMenu]
+        submenu: WalletMenu
     },
     {
         text: "Token Swap",
@@ -73,7 +76,7 @@ const MainMenu = [
         icon: <LocalMallIcon />,
         link: "/chaos",
         rndr: <Chaos />,
-    },
+    }
 ];
 
 const SysMenu = [
@@ -82,19 +85,42 @@ const SysMenu = [
         icon: <SettingsIcon />,
         link: "/pref",
         rndr: <PrefForm />,
-    },
+    }
 ];
 
 const HomeMenu = [
     {
         text: "Home",
         icon: <HomeIcon />,
-        link: "/",
-        rndr: <Welcome />,
-    },
+        link: "/welcome",
+        rndr: <Welcome name="Lyrians" />,
+    }
 ];
 
 const Menus = [HomeMenu, MainMenu, SysMenu]
 
 export default Menus;
+
+export const Switches = () => <Switch>
+    <Route path="/swap" component={Swap} />
+    <Route path="/chaos" component={Chaos} />
+    <Route path="/pref" component={PrefForm} />
+    <Route
+        path="/wallet"
+        render={({ match: { path } }) => (
+            <>
+                <Route path={`${path}/`} component={FrontForm} exact />
+                <Route path={`${path}/info`} component={Info} />
+                <Route path={`${path}/send`} component={Send} />
+                <Route path={`${path}/create`} component={CreateWallet} />
+                <Route path={`${path}/restore`} component={RestoreWallet} />
+                <Route path={`${path}/open`} component={OpenWallet} />
+            </>
+        )}
+    />
+    <Route path="/wallet" component={FrontForm} />
+    <Route path="/">
+        <Welcome name="Lyrians" />
+        </Route>
+</Switch>
 

@@ -37,9 +37,9 @@ class PreferenceForm extends Component {
     }
 
     render() {
-        if(this.state.closed) {
-            return <Redirect to="/" />;
-        }
+        // if(this.state.closed) {
+        //     return <Redirect to="/" />;
+        // }
 
         return (
             <div>

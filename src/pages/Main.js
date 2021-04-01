@@ -29,9 +29,9 @@ import FrontForm from './FrontForm';
 import Welcome from './Welcome';
 import Chaos from './Chaos';
 
-import Menus from './Menus';
+import Menus, { Switches } from './Menus';
 import NavBar from './NavBar';
-import { Zoom } from '@material-ui/core';
+import Item from 'antd/lib/list/Item';
 
 const drawerWidth = 240;
 
@@ -125,6 +125,21 @@ export default function Main() {
     )
   }
 
+  const createRoute = (menu, path) => {
+    console.log("for menu", menu);
+    return menu.map(item => {
+      console.log("map to item", item);
+      var xpath = path + item.link
+      console.log("path is ", xpath);
+      return <>
+        <Route path={xpath} key={Item.text}>
+          {item.rndr}
+        </Route>
+        { 'submenu' in item ? item.submenu.map(sub => { return createRoute(sub, xpath)}) : ""}
+      </>
+    });
+  }
+
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -165,7 +180,7 @@ export default function Main() {
         </div>
         <List>
         {
-          Menus.map((mnu) => createMenu(mnu, ""))
+          Menus.map((mnu, i) => createMenu(mnu, ""))
         }
         </List>
       </Drawer>
@@ -179,38 +194,7 @@ export default function Main() {
           <NavBar />
         </div>
         <div className="App">
-          <Switch>
-            <Route path="/info">
-              <Info />
-            </Route>
-            <Route path="/send">
-              <Send />
-            </Route>
-            <Route path="/swap">
-              <Swap />
-            </Route>
-            <Route path="/pref">
-              <Preference />
-            </Route>
-            <Route path="/create">
-              <CreateWallet />
-            </Route>
-            <Route path="/restore">
-              <RestoreWallet />
-            </Route>
-            <Route path="/open">
-              <OpenWallet />
-            </Route>
-            <Route path="/wallet">
-              <FrontForm />
-            </Route>
-            <Route path="/chaos">
-              <Chaos />
-            </Route>
-            <Route path="/">
-              <Welcome name="Lyrians" />
-            </Route>
-          </Switch>
+          <Switches />
         </div>
       </main>
     </div>
