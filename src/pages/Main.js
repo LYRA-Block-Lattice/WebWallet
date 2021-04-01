@@ -16,18 +16,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 
-import { Link, Route, Switch } from 'react-router-dom';
-
-import CreateWallet from './CreateWallet';
-import RestoreWallet from './RestoreWallet';
-import Preference from './PrefForm';
-import Send from './SendForm';
-import Swap from './Swap';
-import Info from './Info';
-import OpenWallet from './OpenWallet';
-import FrontForm from './FrontForm';
-import Welcome from './Welcome';
-import Chaos from './Chaos';
+import { Link, Route } from 'react-router-dom';
 
 import Menus, { Switches } from './Menus';
 import NavBar from './NavBar';

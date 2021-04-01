@@ -1,5 +1,6 @@
 {
   "name": "lyra-wallet",
+  "homepage": "https://wallet.testnet.lyra.live/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
