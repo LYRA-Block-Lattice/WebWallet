@@ -1,9 +1,9 @@
 import Icon from '@ant-design/icons';
 
 const iconStyle = {
-  height: '32px',
-  width: '32px',
-  margin: '16px',
+  height: '24px',
+  width: '24px',
+  margin: '0px',
 }
 
 const smallIconStyle = {

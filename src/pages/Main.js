@@ -15,8 +15,6 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
 
 import { Link, Route, Switch } from 'react-router-dom';
 
@@ -29,6 +27,8 @@ import Info from './Info';
 import OpenWallet from './OpenWallet';
 import FrontForm from './FrontForm';
 import Welcome from './Welcome';
+
+import Menus from './Menus';
 
 const drawerWidth = 240;
 
@@ -122,7 +122,7 @@ export default function Main() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap>
-            Lyra Chaos
+            Lyra
           </Typography>
         </Toolbar>
       </AppBar>
@@ -140,24 +140,21 @@ export default function Main() {
             {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
           </IconButton>
         </div>
-        <Divider />
-        <List>
-          {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-        </List>
-        <Divider />
-        <List>
-          {['All mail', 'Trash', 'Spam'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-        </List>
+        {
+          Menus.map((menu) => (
+            <div>
+              <Divider />
+              <List>
+                {menu.map((item) => (
+                  <ListItem button component={Link} to={item.link}>
+                    <ListItemIcon>{item.icon}</ListItemIcon>
+                    <ListItemText primary={item.text} />
+                  </ListItem>
+                ))}
+              </List>
+            </div>
+          ))
+        }
       </Drawer>
       <main
         className={clsx(classes.content, {
@@ -188,11 +185,11 @@ export default function Main() {
             <Route path="/open">
               <OpenWallet />
             </Route>
-            <Route path="/welcome">
-              <Welcome />
+            <Route path="/wallet">
+              <FrontForm />
             </Route>
             <Route path="/">
-              <FrontForm />
+              <Welcome name="Lyrians" />
             </Route>
           </Switch>
         </div>
