@@ -9,7 +9,7 @@ import { InfoIcon, PayIcon, SwapIcon } from '../lyra/icons';
 
 const useStyles = makeStyles({
   root: {
-    width: 500,
+    width: '100%'
   },
 });
 
