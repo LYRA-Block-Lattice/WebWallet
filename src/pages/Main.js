@@ -22,13 +22,16 @@ import CreateWallet from './CreateWallet';
 import RestoreWallet from './RestoreWallet';
 import Preference from './PrefForm';
 import Send from './SendForm';
-import Swap from './SwapForm';
+import Swap from './Swap';
 import Info from './Info';
 import OpenWallet from './OpenWallet';
 import FrontForm from './FrontForm';
 import Welcome from './Welcome';
+import Chaos from './Chaos';
 
 import Menus from './Menus';
+import NavBar from './NavBar';
+import { Zoom } from '@material-ui/core';
 
 const drawerWidth = 240;
 
@@ -102,6 +105,26 @@ export default function Main() {
     setOpen(false);
   };
 
+  const createMenu = (menu, path) => {
+    return (
+      <>
+        <Divider />
+        <List>
+        {
+            menu.map((item) => {
+              return (
+              <ListItem button key={item.text} component={Link} to={path + item.link}>
+                <ListItemIcon>{item.icon}</ListItemIcon>
+                <ListItemText primary={item.text} />
+              </ListItem>
+              )
+            })
+        }
+        </List>
+      </>
+    )
+  }
+
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -122,7 +145,7 @@ export default function Main() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap>
-            Lyra
+            Lyra 
           </Typography>
         </Toolbar>
       </AppBar>
@@ -140,21 +163,11 @@ export default function Main() {
             {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
           </IconButton>
         </div>
+        <List>
         {
-          Menus.map((menu) => (
-            <div>
-              <Divider />
-              <List>
-                {menu.map((item) => (
-                  <ListItem button component={Link} to={item.link}>
-                    <ListItemIcon>{item.icon}</ListItemIcon>
-                    <ListItemText primary={item.text} />
-                  </ListItem>
-                ))}
-              </List>
-            </div>
-          ))
+          Menus.map((mnu) => createMenu(mnu, ""))
         }
+        </List>
       </Drawer>
       <main
         className={clsx(classes.content, {
@@ -162,6 +175,9 @@ export default function Main() {
         })}
       >
         <div className={classes.drawerHeader} />
+        <div>
+          <NavBar />
+        </div>
         <div className="App">
           <Switch>
             <Route path="/info">
@@ -187,6 +203,9 @@ export default function Main() {
             </Route>
             <Route path="/wallet">
               <FrontForm />
+            </Route>
+            <Route path="/chaos">
+              <Chaos />
             </Route>
             <Route path="/">
               <Welcome name="Lyrians" />
