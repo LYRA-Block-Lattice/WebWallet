@@ -22,6 +22,7 @@ class PreferenceForm extends Component {
         };
         this.onFinish = this.onFinish.bind(this);
         this.handleChange = this.handleChange.bind(this);
+        this.forceSWupdate = this.forceSWupdate.bind(this);
       }
     
     onFinish(values) {
@@ -34,6 +35,21 @@ class PreferenceForm extends Component {
 
         this.props.dispatch({type: actionTypes.WALLET_CHANGE_NETWORK, payload: {network: value}});
     }
+
+    forceSWupdate () {
+        if ('serviceWorker' in navigator) {
+            console.log("refresh service registration.");
+          navigator.serviceWorker.getRegistrations().then(function (registrations) {
+            for (let registration of registrations) {
+              registration.update()
+            }
+          })
+        }
+        else
+        {
+            console.log("no service registration.");
+        }
+      }
 
     render() {
         // if(this.state.closed) {
@@ -77,6 +93,8 @@ class PreferenceForm extends Component {
                     </Form.Item>
 
                 </Form>
+
+                <Button type="link" onClick={this.forceSWupdate}>Refresh App</Button>
             </div>
         );
     }

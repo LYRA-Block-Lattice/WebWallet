@@ -102,19 +102,20 @@ const Menus = [HomeMenu, MainMenu, SysMenu]
 export default Menus;
 
 export const Switches = () => <Switch>
-    <Route path="/swap" component={Swap} />
-    <Route path="/chaos" component={Chaos} />
-    <Route path="/pref" component={PrefForm} />
+    <Route path="/swap" key="swap" component={Swap} />
+    <Route path="/chaos" key="chaos" component={Chaos} />
+    <Route path="/pref" key="pref" component={PrefForm} />
     <Route
         path="/wallet"
+        key="wallet"
         render={({ match: { path } }) => (
             <>
-                <Route path={`${path}/`} component={FrontForm} exact />
-                <Route path={`${path}/info`} component={Info} />
-                <Route path={`${path}/send`} component={Send} />
-                <Route path={`${path}/create`} component={CreateWallet} />
-                <Route path={`${path}/restore`} component={RestoreWallet} />
-                <Route path={`${path}/open`} component={OpenWallet} />
+                <Route path={`${path}/`} key="walletroot" component={FrontForm} exact />
+                <Route path={`${path}/info`} key="walletinfo" component={Info} />
+                <Route path={`${path}/send`} key="walletsend" component={Send} />
+                <Route path={`${path}/create`} key="walletcreate" component={CreateWallet} />
+                <Route path={`${path}/restore`} key="walletrestore" component={RestoreWallet} />
+                <Route path={`${path}/open`} key="walletopen" component={OpenWallet} />
             </>
         )}
     />
