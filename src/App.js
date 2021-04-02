@@ -1,41 +1,65 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import './App.css';
+
+import { withSnackbar } from "notistack";
+import * as serviceWorker from "./serviceWorkerRegistration";
+import { Button } from "@material-ui/core";
+
 import Main from './pages/Main';
 
-const isIOS = !!global.navigator.userAgent && /iPad|iPhone|iPod/.test(global.navigator.userAgent)
 
-const getAppVersion = () => {
-  const url = `/version.json?c=${Date.now()}`
-  const headers = {
-    'Cache-Control': 'no-cache, no-store, must-revalidate'
-  }
-
-  return fetch(url, { headers }).then(response => response.json())
-}
-
-const handleScreenFocus = () => {
-  if (isIOS) {
-    const currentVersion = global.localStorage.getItem('appVersion')
-
-    getAppVersion()
-      .then((data) => {
-        if (data.version !== currentVersion) {
-          global.localStorage.setItem('appVersion', data.version)
-
-          window.location.reload()
-        }
-      })
-  }
-}
 class App extends Component {
-
-  componentDidMount() {
-    global.addEventListener('focus', handleScreenFocus, false)
+  constructor(props) {
+    super(props);
+    this.state = {
+      newVersionAvailable: false,
+      waitingWorker: {},
+    };
   }
 
-  componentWillUnmount() {
-    global.removeEventListener('focus', handleScreenFocus, false)
-  }
+  onServiceWorkerUpdate = (registration) => {
+    this.setState({
+      waitingWorker: registration && registration.waiting,
+      newVersionAvailable: true,
+    });
+  };
+
+  updateServiceWorker = () => {
+    const { waitingWorker } = this.state;
+    waitingWorker && waitingWorker.postMessage({ type: "SKIP_WAITING" });
+    this.setState({ newVersionAvailable: false });
+    window.location.reload();
+  };
+
+  refreshAction = (key) => { //render the snackbar button
+    return (
+      <Fragment>
+        <Button
+          className="snackbar-button"
+          size="small"
+          onClick={this.updateServiceWorker}
+        >
+          {"refresh"}
+        </Button>
+      </Fragment>
+    );
+  };
+
+
+  componentDidMount = () => {
+    const { enqueueSnackbar } = this.props;
+    const { newVersionAvailable } = this.state;
+    if (process.env.NODE_ENV === 'production') {
+      serviceWorker.register({ onUpdate: this.onServiceWorkerUpdate });
+    }
+
+    if (newVersionAvailable) //show snackbar with refresh button
+      enqueueSnackbar("A new version was released", {
+        persist: true,
+        variant: "success",
+        action: this.refreshAction(),
+      });
+  };
 
   render() {
     return (
@@ -46,4 +70,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default withSnackbar(App); //uses the snackbar context

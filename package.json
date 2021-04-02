@@ -16,6 +16,7 @@
     "jsonrpc-client-websocket": "^1.4.2",
     "jsrsasign": "^10.1.12",
     "localforage": "^1.9.0",
+    "notistack": "^1.0.5",
     "qrcode.react": "^1.0.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -46,7 +47,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "powershell .vscode\\genver.ps1 && react-scripts build && npm run replace-sw",
+    "build": "powershell .vscode\\genver.ps1 && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "build-sw": "workbox injectManifest workbox.config.js",
