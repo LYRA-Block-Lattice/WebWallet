@@ -13,16 +13,25 @@ const mapStateToProps = state => {
     };
   }
 
+const getAppVersion = () => {
+    const url = `/version.json?c=${Date.now()}`
+    const headers = {
+      'Cache-Control': 'no-cache, no-store, must-revalidate'
+    }
+
+    return fetch(url, { headers }).then(response => response.json())
+  }
 class PreferenceForm extends Component {
+
     constructor(props) {
         super(props);
         this.state = { 
           closed: false,
-          network: ''
+          network: '',
+          version: ''
         };
         this.onFinish = this.onFinish.bind(this);
-        this.handleChange = this.handleChange.bind(this);
-        this.forceSWupdate = this.forceSWupdate.bind(this);
+        this.handleChange = this.handleChange.bind(this); 
       }
     
     onFinish(values) {
@@ -36,20 +45,15 @@ class PreferenceForm extends Component {
         this.props.dispatch({type: actionTypes.WALLET_CHANGE_NETWORK, payload: {network: value}});
     }
 
-    forceSWupdate () {
-        if ('serviceWorker' in navigator) {
-            console.log("refresh service registration.");
-          navigator.serviceWorker.getRegistrations().then(function (registrations) {
-            for (let registration of registrations) {
-              registration.update()
-            }
-          })
-        }
-        else
-        {
-            console.log("no service registration.");
-        }
-      }
+    componentDidMount() {
+        getAppVersion()
+        .then((data) => {
+          this.setState({version: data.version});
+        })
+        .catch(err => {
+          console.log("error get version", err);
+        });
+    }
 
     render() {
         // if(this.state.closed) {
@@ -94,7 +98,8 @@ class PreferenceForm extends Component {
 
                 </Form>
 
-                <Button type="link" onClick={this.forceSWupdate}>Refresh App</Button>
+                <br/><br/><br/><br/><br/><br/>
+                <div><i>Lyra PWA Version: {this.state.version}</i></div>
             </div>
         );
     }
