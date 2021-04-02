@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link, Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import { Badge } from 'antd';
 import {subscribe} from 'redux-subscriber';
 

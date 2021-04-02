@@ -16,11 +16,10 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 
-import { Link, Route } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import Menus, { Switches } from './Menus';
 import NavBar from './NavBar';
-import Item from 'antd/lib/list/Item';
 
 const drawerWidth = 240;
 
@@ -112,21 +111,6 @@ export default function Main() {
         </List>
       </>
     )
-  }
-
-  const createRoute = (menu, path) => {
-    console.log("for menu", menu);
-    return menu.map(item => {
-      console.log("map to item", item);
-      var xpath = path + item.link
-      console.log("path is ", xpath);
-      return <>
-        <Route path={xpath} key={Item.text}>
-          {item.rndr}
-        </Route>
-        { 'submenu' in item ? item.submenu.map(sub => { return createRoute(sub, xpath)}) : ""}
-      </>
-    });
   }
 
   return (
