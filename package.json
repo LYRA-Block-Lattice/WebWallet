@@ -33,6 +33,7 @@
     "redux-thunk": "^2.3.0",
     "styled-components": "^5.2.2",
     "web-vitals": "^1.0.1",
+    "workbox-webpack-plugin": "^6.1.2",
     "yarn": "^1.22.10"
   },
   "scripts": {

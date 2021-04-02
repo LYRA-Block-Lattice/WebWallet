@@ -8,9 +8,16 @@ import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router'
 
 import configureStore, { history } from './pages/redux/store';
-//import initState from './pages/redux/wallet';
 
-// for history
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js').then(registration => {
+      console.log('SW registered: ', registration);
+    }).catch(registrationError => {
+      console.log('SW registration failed: ', registrationError);
+    });
+  });
+}
 
 const store = configureStore();
 
