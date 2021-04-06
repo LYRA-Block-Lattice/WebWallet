@@ -1,9 +1,11 @@
 import { put, takeLatest, takeEvery, getContext } from 'redux-saga/effects'
 import { push } from 'connected-react-router'
+import LyraCrypto from 'lyra-crypto';
+import AES from 'crypto-js/aes';
+import CryptoJS from 'crypto-js';
 
 import * as actionTypes from './actionTypes';
 import persist from '../../lyra/persist';
-import LyraCrypto from '../../lyra/crypto';
 
 import { JsonRpcWebsocket, WebsocketReadyStates } from 'jsonrpc-client-websocket';
 
@@ -18,10 +20,8 @@ function* checkWalletExists() {
 }
 
 function* createWallet(action) {
-    var pvtHex = LyraCrypto.lyraGenWallet();
-    var prvKey = LyraCrypto.lyraEncPvt(pvtHex);
-    var actId = LyraCrypto.lyraEncPub(LyraCrypto.prvToPub(pvtHex));
-    var encData = LyraCrypto.encrypt(prvKey, action.payload.password);
+    const {prvKey, actId} = LyraCrypto.GenerateWallet();
+    var encData = AES.encrypt(prvKey, action.payload.password);    
 
     var wds = {
         pref: {
@@ -30,7 +30,7 @@ function* createWallet(action) {
         wallets: [{
             name: action.payload.name,
             accountId: actId,
-            data: encData
+            data: encData.toString()
         }]
     };
 
@@ -40,9 +40,8 @@ function* createWallet(action) {
 }
 
 function* restoreWallet(action) {
-    var pvt = LyraCrypto.lyraDec(action.payload.privateKey);
-    var actId = LyraCrypto.lyraEncPub(LyraCrypto.prvToPub(pvt));
-    var encData = LyraCrypto.encrypt(action.payload.privateKey, action.payload.password);
+    var actId = LyraCrypto.GetAccountIdFromPrivateKey(action.payload.privateKey);
+    var encData = AES.encrypt(action.payload.privateKey, action.payload.password);
 
     var wds = {
         pref: {
@@ -51,7 +50,7 @@ function* restoreWallet(action) {
         wallets: [{
             name: action.payload.name,
             accountId: actId,
-            data: encData
+            data: encData.toString()
         }]
     };
 
@@ -71,12 +70,14 @@ function* openWallet(action) {
     {
         var pdata = yield persist.checkData();
         var wallets = pdata.wallets;
-        var decData = LyraCrypto.decrypt(wallets[0].data, action.payload.password);
-        var pvk = LyraCrypto.lyraDec(decData);
-        var pvt = LyraCrypto.lyraEncPvt(pvk);
+        var decData = AES.decrypt(wallets[0].data, action.payload.password);
+        if(decData === undefined)
+            throw new Error("private key is invalid.");
+        
+        const prvKey = decData.toString(CryptoJS.enc.Utf8);
     
-        if (pvk === undefined) {
-            throw new Error("private key is empty.");
+        if (!LyraCrypto.isPrivateKeyValid(prvKey)) {
+            throw new Error("private key is invalid.");
         }
         else {
             yield put({ type: actionTypes.WALLET_OPEN_DONE, payload: pdata });
@@ -86,7 +87,7 @@ function* openWallet(action) {
                     accountId: wallets[0].accountId
                 }
             });
-            sessionStorage.setItem('token', JSON.stringify({ pass: action.payload.password, pvt: pvt }));
+            sessionStorage.setItem('token', JSON.stringify({ pass: action.payload.password, pvt: prvKey }));
 
             yield put(push("/wallet"));
         }
@@ -194,8 +195,7 @@ function* createWS() {
 
         try {
             const userToken = JSON.parse(sessionStorage.getItem('token'));
-            var pvk = LyraCrypto.lyraDec(userToken.pvt);
-            var signt = LyraCrypto.lyraSign(msg, pvk);
+            var signt = LyraCrypto.Sign(msg, userToken.pvt);
             console.log("Signature", signt);
 
             return ["der", signt];
