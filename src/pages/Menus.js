@@ -26,31 +26,31 @@ import RestoreWallet from './RestoreWallet';
 
 const WalletMenu = [
     {
-        text: "Info",
+        key: "Info",
         icon: <InfoIcon />,
         link: "/info",
         rndr: <Info />,
     },
     {
-        text: "Send",
+        key: "Send",
         icon: <SendIcon />,
         link: "/send",
         rndr: <Send />,
     },
     {
-        text: "Create",
+        key: "Create",
         icon: <AddIcon />,
         link: "/create",
         rndr: <CreateWallet />,
     },
     {
-        text: "Restore",
+        key: "Restore",
         icon: <RestoreIcon />,
         link: "/restore",
         rndr: <RestoreWallet />,
     },
     {
-        text: "Open",
+        key: "Open",
         icon: <VpnKeyIcon />,
         link: "/open",
         rndr: <OpenWallet />,
@@ -59,20 +59,20 @@ const WalletMenu = [
 
 const MainMenu = [
     {
-        text: "Wallet",
+        key: "Wallet",
         icon: <AccountBalanceWalletIcon />,
         link: "/wallet",
         rndr: <FrontForm />,
         submenu: WalletMenu
     },
     {
-        text: "Token Swap",
+        key: "Token Swap",
         icon: <SwapCallsIcon />,
         link: "/swap",
         rndr: <Swap />,
     },
     {
-        text: "Chaos",
+        key: "Chaos",
         icon: <LocalMallIcon />,
         link: "/chaos",
         rndr: <Chaos />,
@@ -81,7 +81,7 @@ const MainMenu = [
 
 const SysMenu = [
     {
-        text: "Settings",
+        key: "Settings",
         icon: <SettingsIcon />,
         link: "/pref",
         rndr: <PrefForm />,
@@ -90,7 +90,7 @@ const SysMenu = [
 
 const HomeMenu = [
     {
-        text: "Home",
+        key: "Home",
         icon: <HomeIcon />,
         link: "/welcome",
         rndr: <Welcome name="Lyrians" />,

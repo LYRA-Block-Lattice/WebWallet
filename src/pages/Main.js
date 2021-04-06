@@ -7,15 +7,14 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ListItem from '@material-ui/core/ListItem';
+import Divider from '@material-ui/core/Divider';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-
 import { Link } from 'react-router-dom';
 
 import Menus, { Switches } from './Menus';
@@ -96,17 +95,17 @@ export default function Main() {
   const createMenu = (menu, path) => {
     return (
       <>
-        <Divider />
-        <List>
+        <Divider key={"a"+path} />
+        <List key={'b'+path}>
         {
             menu.map((item) => {
               return (
-              <ListItem button key={item.text} component={Link} to={path + item.link}>
+              <ListItem button key={item.key} component={Link} to={path + item.link}>
                 <ListItemIcon>{item.icon}</ListItemIcon>
-                <ListItemText primary={item.text} />
+                <ListItemText primary={item.key} />
               </ListItem>
               )
-            })
+            }) 
         }
         </List>
       </>
