@@ -1,11 +1,14 @@
-import { combineReducers } from 'redux';
-import { connectRouter } from 'connected-react-router';
+import { combineReducers } from "redux";
+import { connectRouter } from "connected-react-router";
 
-import walletReducer from './wallet';
+import walletReducer from "./walletreducer";
+import dexReducer from "./dexreducer";
 
-const rootReducer = (history) => combineReducers({
+const rootReducer = (history) =>
+  combineReducers({
     app: walletReducer,
-    router: connectRouter(history)
-  })
+    router: connectRouter(history),
+    dex: dexReducer,
+  });
 
- export default rootReducer;
+export default rootReducer;
