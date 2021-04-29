@@ -1,6 +1,7 @@
 import { Component } from "react";
 import { connect } from "react-redux";
 import SignUp from "./dex/Auth/Auth";
+import Main from "./dex/Main";
 
 class SwapPage extends Component {
   render() {
@@ -8,12 +9,13 @@ class SwapPage extends Component {
       return <SignUp />;
     }
 
-    return <div>swap token! TBA</div>;
+    return <Main />;
   }
 }
 
 const mapStateToProps = (state) => {
   return {
+    userId: state.dex.userId,
     loggedin: state.dex.loggedin,
   };
 };

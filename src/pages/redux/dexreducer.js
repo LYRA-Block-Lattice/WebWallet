@@ -13,10 +13,20 @@ const dexReducer = (state = initState, action) => {
   }
 
   switch (action.type) {
-    case actionTypes.DEX_SIGNIN:
+    case actionTypes.DEX_SIGNIN_OK:
+      //localStorage.setItem("profile", JSON.stringify({ ...action?.data }));
+
       return {
         ...state,
+        userid: action.payload.result.name,
+        loggedin: action.payload.token !== undefined,
+        pending: false,
+        error: null,
       };
+    case actionTypes.DEX_LOGOUT:
+      //localStorage.clear();
+
+      return { ...state, userid: null, loggedin: false, errors: null };
 
     default: {
       return state;

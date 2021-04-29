@@ -6,7 +6,7 @@ import CryptoJS from "crypto-js";
 
 import * as actionTypes from "./actionTypes";
 import persist from "../../lyra/persist";
-import Dex from "../../lyra/dexapi";
+import * as Dex from "../../lyra/dexapi";
 
 import {
   JsonRpcWebsocket,
@@ -266,6 +266,18 @@ function* savePref(action) {
   yield createWS();
 }
 
+function* dexSignIn(action) {
+  try {
+    const { data } = yield Dex.signIn(action.payload);
+
+    yield put({ type: actionTypes.DEX_SIGNIN_OK, payload: data });
+
+    yield put(push("/swap"));
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export default function* rootSaga() {
   console.log("rootSaga is running.");
   yield takeLatest(actionTypes.STORE_INIT, checkWalletExists);
@@ -279,4 +291,7 @@ export default function* rootSaga() {
   yield takeEvery(actionTypes.WALLET_RECEIVE, receive);
   yield takeEvery(actionTypes.WALLET_SEND, send);
   yield takeEvery(actionTypes.WALLET_CHANGE_NETWORK, savePref);
+
+  // DeX
+  yield takeEvery(actionTypes.DEX_SIGNIN, dexSignIn);
 }
