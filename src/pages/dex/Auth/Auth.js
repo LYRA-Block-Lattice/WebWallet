@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import { connect } from "react-redux";
 import {
   Avatar,
   Button,
@@ -8,7 +9,10 @@ import {
   Typography,
   Container,
 } from "@material-ui/core";
-import { useHistory } from "react-router-dom";
+import Snackbar from "@material-ui/core/Snackbar";
+import MuiAlert from "@material-ui/lab/Alert";
+
+//import { useHistory } from "react-router-dom";
 import { GoogleLogin } from "react-google-login";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 
@@ -27,12 +31,23 @@ const initialState = {
   confirmPassword: "",
 };
 
-const SignUp = () => {
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
+const SignUpForm = ({ error }) => {
   const [form, setForm] = useState(initialState);
   const [isSignup, setIsSignup] = useState(false);
+  const [open, setOpen] = React.useState(false);
+  //const [error, setError] = useState(null);
   const dispatch = useDispatch();
-  const history = useHistory();
+  //const history = useHistory();
   const classes = useStyles();
+
+  useEffect(() => {
+    console.log("in useEffect: error is: ", error);
+    setOpen(error !== null);
+  }, [error]);
 
   const [showPassword, setShowPassword] = useState(false);
   const handleShowPassword = () => setShowPassword(!showPassword);
@@ -54,12 +69,10 @@ const SignUp = () => {
   };
 
   const googleSuccess = async (res) => {
-    const result = res?.profileObj;
-    const token = res?.tokenId;
-
+    //const result = res?.profileObj;
+    //const token = res?.tokenId;
     // try {
     //   dispatch({ type: AUTH, data: { result, token } });
-
     //   history.push("/");
     // } catch (error) {
     //   console.log(error);
@@ -71,6 +84,14 @@ const SignUp = () => {
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -161,8 +182,23 @@ const SignUp = () => {
           </Grid>
         </form>
       </Paper>
+      <Snackbar open={open} autoHideDuration={6000}>
+        <Alert onClose={handleClose} severity="warning">
+          {error}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };
 
+const mapStateToProps = (state) => {
+  return {
+    userId: state.dex.userId,
+    loggedin: state.dex.loggedin,
+    isSignup: state.dex.signedup,
+    error: state.dex.error,
+  };
+};
+
+const SignUp = connect(mapStateToProps)(SignUpForm);
 export default SignUp;

@@ -1,12 +1,12 @@
 import { Component } from "react";
 import { connect } from "react-redux";
-import SignUp from "./dex/Auth/Auth";
+import { Redirect } from "react-router-dom";
 import Main from "./dex/Main";
 
 class SwapPage extends Component {
   render() {
     if (!this.props.loggedin) {
-      return <SignUp />;
+      return <Redirect to="/swap/signin" />;
     }
 
     return <Main />;

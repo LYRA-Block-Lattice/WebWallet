@@ -1,6 +1,7 @@
 import * as actionTypes from "./actionTypes";
 
 const initState = {
+  signedup: false,
   userid: null,
   loggedin: false,
   pending: false,
@@ -13,9 +14,28 @@ const dexReducer = (state = initState, action) => {
   }
 
   switch (action.type) {
+    case actionTypes.DEX_ERROR:
+      return {
+        ...state,
+        error: action.payload,
+      };
+    case actionTypes.DEX_SIGNUP:
+      return {
+        ...state,
+        signedup: false,
+        error: null,
+      };
+    case actionTypes.DEX_SIGNUP_OK:
+      return {
+        ...state,
+        signedup: true,
+      };
+    case actionTypes.DEX_SIGNIN:
+      return {
+        ...state,
+        error: null,
+      };
     case actionTypes.DEX_SIGNIN_OK:
-      //localStorage.setItem("profile", JSON.stringify({ ...action?.data }));
-
       return {
         ...state,
         userid: action.payload.result.name,
@@ -24,8 +44,6 @@ const dexReducer = (state = initState, action) => {
         error: null,
       };
     case actionTypes.DEX_LOGOUT:
-      //localStorage.clear();
-
       return { ...state, userid: null, loggedin: false, errors: null };
 
     default: {

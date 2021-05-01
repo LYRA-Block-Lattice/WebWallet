@@ -275,6 +275,23 @@ function* dexSignIn(action) {
     yield put(push("/swap"));
   } catch (error) {
     console.log(error);
+    yield put({ type: actionTypes.DEX_ERROR, payload: error });
+  }
+}
+
+function* dexSignUp(action) {
+  try {
+    // yield put({ type: actionTypes.DEX_ERROR, payload: "something wrong!!!" });
+    // return;
+
+    const { data } = yield Dex.signUp(action.payload);
+
+    yield put({ type: actionTypes.DEX_SIGNUP_OK, payload: data });
+
+    yield put(push("/swap"));
+  } catch (error) {
+    console.log(error);
+    yield put({ type: actionTypes.DEX_ERROR, payload: error });
   }
 }
 
@@ -294,4 +311,5 @@ export default function* rootSaga() {
 
   // DeX
   yield takeEvery(actionTypes.DEX_SIGNIN, dexSignIn);
+  yield takeEvery(actionTypes.DEX_SIGNUP, dexSignUp);
 }
