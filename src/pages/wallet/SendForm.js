@@ -6,7 +6,7 @@ import { Form, Input, Button, InputNumber, Select, message } from "antd";
 import "antd/dist/antd.css";
 import QrReader from "react-qr-reader";
 
-import * as actionTypes from "./redux/actionTypes";
+import * as actionTypes from "../redux/actionTypes";
 
 const { Option, OptGroup } = Select;
 

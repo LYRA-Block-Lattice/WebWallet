@@ -18,11 +18,11 @@ import Swap from "./Swap";
 import Chaos from "./Chaos";
 import PrefForm from "./PrefForm";
 
-import Send from "./SendForm";
-import Info from "./Info";
-import OpenWallet from "./OpenWallet";
-import CreateWallet from "./CreateWallet";
-import RestoreWallet from "./RestoreWallet";
+import Send from "./wallet/SendForm";
+import Info from "./wallet/Info";
+import OpenWallet from "./wallet/OpenWallet";
+import CreateWallet from "./wallet/CreateWallet";
+import RestoreWallet from "./wallet/RestoreWallet";
 
 import SignIn from "./dex/Auth/SignIn";
 import SignUp from "./dex/Auth/SignUp";
