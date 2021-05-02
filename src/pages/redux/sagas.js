@@ -275,7 +275,10 @@ function* dexSignIn(action) {
     yield put(push("/swap"));
   } catch (error) {
     console.log(error);
-    yield put({ type: actionTypes.DEX_ERROR, payload: error.message });
+    yield put({
+      type: actionTypes.DEX_ERROR,
+      payload: error.response ? error.response.data.message : error.message,
+    });
   }
 }
 
@@ -291,7 +294,10 @@ function* dexSignUp(action) {
     yield put(push("/swap"));
   } catch (error) {
     console.log(error);
-    yield put({ type: actionTypes.DEX_ERROR, payload: error.message });
+    yield put({
+      type: actionTypes.DEX_ERROR,
+      payload: error.response ? error.response.data.message : error.message,
+    });
   }
 }
 

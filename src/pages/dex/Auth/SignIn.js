@@ -7,28 +7,17 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
-import Box from "@material-ui/core/Box";
+
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import * as actionTypes from "../../redux/actionTypes";
-
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {"Copyright © "}
-      <Link color="inherit" href="https://material-ui.com/">
-        Your Website
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
+import { Modal } from "antd";
+import "antd/dist/antd.css";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -55,19 +44,41 @@ const initialState = {
   password: "",
 };
 
-const SignInForm = () => {
+const SignInForm = (props) => {
   const classes = useStyles();
-  const dispatch = useDispatch();
   const [form, setForm] = useState(initialState);
+  const error = useSelector((state) => state.dex.error);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    dispatch({ type: actionTypes.DEX_SIGNIN, payload: form });
+    props.dispatch({ type: actionTypes.DEX_SIGNIN, payload: form });
   };
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
+
+  useEffect(() => {
+    console.log("in useEffect: error is: ", error);
+    if (error !== null) {
+      showModal();
+    }
+  }, [error]);
+
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleOk = () => {
+    setIsModalVisible(false);
+    props.dispatch({ type: actionTypes.DEX_ERROR_CLEAR });
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+    props.dispatch({ type: actionTypes.DEX_ERROR_CLEAR });
+  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -134,6 +145,14 @@ const SignInForm = () => {
       {/* <Box mt={8}>
         <Copyright />
       </Box> */}
+      <Modal
+        title="Error message"
+        visible={isModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
+        <p>{error}</p>
+      </Modal>
     </Container>
   );
 };
