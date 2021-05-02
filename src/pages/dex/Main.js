@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { Button } from "@material-ui/core";
 
 import * as actionTypes from "../redux/actionTypes";
+import Xrp from "./Coins/xrp";
 
 class MainPage extends Component {
   constructor(props) {
@@ -19,6 +20,7 @@ class MainPage extends Component {
     return (
       <div>
         <h1>Hello {this.props.userId}, Welcome to Lyra DeX!</h1>
+        <Xrp />
         <div>
           {" "}
           <Button
