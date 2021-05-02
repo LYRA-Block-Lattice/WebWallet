@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -12,6 +12,10 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
+
+import { connect } from "react-redux";
+import { useDispatch } from "react-redux";
+import * as actionTypes from "../../redux/actionTypes";
 
 function Copyright() {
   return (
@@ -46,8 +50,24 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignIn() {
+const initialState = {
+  email: "",
+  password: "",
+};
+
+const SignInForm = () => {
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const [form, setForm] = useState(initialState);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    dispatch({ type: actionTypes.DEX_SIGNIN, payload: form });
+  };
+
+  const handleChange = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
 
   return (
     <Container component="main" maxWidth="xs">
@@ -59,7 +79,7 @@ export default function SignIn() {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <form className={classes.form} noValidate>
+        <form className={classes.form} noValidate onSubmit={handleSubmit}>
           <TextField
             variant="outlined"
             margin="normal"
@@ -70,6 +90,7 @@ export default function SignIn() {
             name="email"
             autoComplete="email"
             autoFocus
+            onChange={handleChange}
           />
           <TextField
             variant="outlined"
@@ -81,6 +102,7 @@ export default function SignIn() {
             type="password"
             id="password"
             autoComplete="current-password"
+            onChange={handleChange}
           />
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
@@ -102,7 +124,7 @@ export default function SignIn() {
               </Link>
             </Grid>
             <Grid item>
-              <Link href="#" variant="body2">
+              <Link href="/#/swap/signup" variant="body2">
                 {"Don't have an account? Sign Up"}
               </Link>
             </Grid>
@@ -114,4 +136,16 @@ export default function SignIn() {
       </Box> */}
     </Container>
   );
-}
+};
+
+const mapStateToProps = (state) => {
+  return {
+    userId: state.dex.userId,
+    loggedin: state.dex.loggedin,
+    isSignup: state.dex.signedup,
+    error: state.dex.error,
+  };
+};
+
+const SignIn = connect(mapStateToProps)(SignInForm);
+export default SignIn;

@@ -19,12 +19,17 @@ const dexReducer = (state = initState, action) => {
         ...state,
         error: action.payload,
       };
-    case actionTypes.DEX_SIGNUP:
+    case actionTypes.DEX_ERROR_CLEAR:
       return {
         ...state,
-        signedup: false,
         error: null,
       };
+    // case actionTypes.DEX_SIGNUP:
+    //   return {
+    //     ...state,
+    //     signedup: false,
+    //     error: null,
+    //   };
     case actionTypes.DEX_SIGNUP_OK:
       return {
         ...state,
