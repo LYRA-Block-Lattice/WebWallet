@@ -1,7 +1,7 @@
 import { Component } from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
-import Main from "./dex/Main";
+import DexMain from "./dex";
 
 class SwapPage extends Component {
   render() {
@@ -9,7 +9,7 @@ class SwapPage extends Component {
       return <Redirect to="/swap/signin" />;
     }
 
-    return <Main />;
+    return <DexMain />;
   }
 }
 

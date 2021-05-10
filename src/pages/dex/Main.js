@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { Button } from "@material-ui/core";
 
 import * as actionTypes from "../redux/actionTypes";
-import Xrp from "./Coins/xrp";
+import Xrp from "./Wallets/xrp";
 
 class MainPage extends Component {
   constructor(props) {

@@ -6,6 +6,7 @@ const initState = {
   loggedin: false,
   pending: false,
   error: null,
+  coins: [],
 };
 
 const dexReducer = (state = initState, action) => {
