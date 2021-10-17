@@ -24,8 +24,9 @@ function* checkWalletExists() {
 }
 
 function* createWallet(action) {
-  const { prvKey, actId } = LyraCrypto.GenerateWallet();
-  var encData = AES.encrypt(prvKey, action.payload.password);
+  debugger;
+  var w = LyraCrypto.GenerateWallet();
+  var encData = AES.encrypt(w.privateKey, action.payload.password);
 
   var wds = {
     pref: {
@@ -34,7 +35,7 @@ function* createWallet(action) {
     wallets: [
       {
         name: action.payload.name,
-        accountId: actId,
+        accountId: w.accountId,
         data: encData.toString(),
       },
     ],
