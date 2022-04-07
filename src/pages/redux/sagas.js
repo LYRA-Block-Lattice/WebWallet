@@ -1,6 +1,6 @@
 import { put, takeLatest, takeEvery, getContext } from "redux-saga/effects";
 import { push } from "connected-react-router";
-import LyraCrypto from "lyra-crypto";
+import { LyraCrypto } from "lyra-crypto";
 import AES from "crypto-js/aes";
 import CryptoJS from "crypto-js";
 
@@ -24,7 +24,6 @@ function* checkWalletExists() {
 }
 
 function* createWallet(action) {
-  debugger;
   var w = LyraCrypto.GenerateWallet();
   var encData = AES.encrypt(w.privateKey, action.payload.password);
 

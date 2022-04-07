@@ -8276,12 +8276,13 @@ lru-cache@^6.0.0:
   dependencies:
     yallist "^4.0.0"
 
-lyra-crypto@^0.1.4:
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/lyra-crypto/-/lyra-crypto-0.1.4.tgz#e5cfdd0cb059ddf3df95cc52480c287efb46b650"
-  integrity sha512-H7rqZu/YNmk6ur9ZSVQAihUDKKbc9XYQQPIoW3QPnwr7SgMGtULbid+K4/n0TrHvIazEDGOFn2A2eanb8nYD3g==
+lyra-crypto@^0.2.2:
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/lyra-crypto/-/lyra-crypto-0.2.2.tgz#377aca6a571147774a4c12e46607e73920a2a2d0"
+  integrity sha512-zYmUHMqwqrstORDxPOWZ8Lj7ar0s+E5Q9gPoQVLgECmJh3dfN6BNYWY2ZsaXrwU47P9ZPBaYKjDhAVIDue3V9w==
   dependencies:
     buffer "^6.0.3"
+    jsonrpc-client-websocket "^1.4.2"
     typescript "^4.2.3"
 
 lz-string@^1.4.4:
