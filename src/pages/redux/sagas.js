@@ -194,6 +194,7 @@ function* createWS() {
     return;
 
   ws.on("Notify", (news) => {
+    console.log("on notify: " + news.catalog);
     switch (news.catalog) {
       case "Receiving":
         dispatch({
@@ -229,7 +230,7 @@ function* createWS() {
   });
 
   try {
-    const response = yield ws.call("Status", ["2.2.0.0", network]);
+    const response = yield ws.call("Status", ["3.3.0.0", network]);
     yield put({ type: actionTypes.WSRPC_STATUS_SUCCESS, payload: response });
 
     yield ws.call("Monitor", [accountId]);
